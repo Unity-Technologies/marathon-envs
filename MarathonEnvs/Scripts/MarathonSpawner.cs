@@ -141,6 +141,11 @@ namespace MLAgents
                     item.constraints = RigidbodyConstraints.FreezePositionZ;
             }
 
+            if (this.gameObject.layer != 0) {
+                foreach (var item in GetComponentsInChildren<Collider>())
+                    item.gameObject.layer = this.gameObject.layer;
+            }
+
             // restore positions and orientation
             this.gameObject.transform.rotation = _orginalTransformRotation;
             this.gameObject.transform.position = _orginalTransformPosition;
