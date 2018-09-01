@@ -58,21 +58,7 @@ namespace MLAgents
 
 
 		void Start () {
-            // TODO remove test code:-
-            // var subClassStr = @"<joint axis=""99 -1 0"" />";
-            // var globalStr = @"<joint damping="".1"" armature=""0.01"" limited=""true"" solimplimit=""0 .99 .01"" />";
-            // var xdocStr = @"<joint name=""right_hip"" range=""-20 100"" axis=""0 -1 0"" />";
-            // var subClass = XElement.Parse(subClassStr);
-            // var global = XElement.Parse(globalStr);
-            // var xdoc = XElement.Parse(xdocStr);
-            // var attributes = 
-            //     global.Attributes()
-            //     .Concat(subClass.Attributes())
-            //     .Concat(xdoc.Attributes())
-            //     .GroupBy(x=>x.Name)
-            //     .Select(x=>x.Last());
-            // var working = new XElement("joint", attributes);
-            // var e = "e";
+		    
 		}
 
 		void Update () {
@@ -248,9 +234,7 @@ namespace MLAgents
                     }
                 }
             }
-        }
-		// List<KeyValuePair<string, Joint>> ParseBody(XElement xdoc, string bodyName, GameObject parentBody, GameObject geom = null, GameObject parentGeom = null, XElement parentXdoc = null, List<XElement> jointDocsQueue = null)
-        
+        }        
         
         private class JointDocQueueItem{
             public XElement JointXDoc {get;set;}
@@ -328,7 +312,6 @@ namespace MLAgents
                 bodies.Add(body);
                 body.transform.parent = this.transform;
                 ApplyClassToBody(element, body, parentBody);
-                // var newJoints = ParseBody(element, element.Attribute("name")?.Value, body, geom, parentGeom, xdoc, jointDocsQueue);
                 var newJoints = ParseBody(element, body, geom, parentGeom, jointDocsQueue);
                 if (newJoints != null) joints.AddRange(newJoints);
             }
@@ -349,15 +332,13 @@ namespace MLAgents
                 switch (attribute.Name.LocalName)
                 {
                     case "name":
-                        //DebugPrint($"{name} {attribute.Name.LocalName}={attribute.Value}");
                         body.name = attribute.Value;
                         break;
                     case "pos":
-                        // DebugPrint($"{name} {attribute.Name.LocalName}={attribute.Value}");
                         if (_useWorldSpace)
                             body.transform.position = MarathonHelper.ParsePosition(attribute.Value);
                         else {
-                            body.transform.position = MarathonHelper.ParsePosition(attribute.Value) + parentBody.transform.position;// (geom ?? parentBody).transform.position;
+                            body.transform.position = MarathonHelper.ParsePosition(attribute.Value) + parentBody.transform.position;
                         }
                         break;
                     case "quat":
@@ -472,8 +453,6 @@ namespace MLAgents
         {
             foreach (var attribute in classElement.Attributes())
             {
-                // <geom name="rail" pos="0 0 0" quat="0.707 0 0.707 0"  size="0.02 1" type="capsule"/>
-				// <geom fromto="0 0 0 0.001 0 0.6" name="cpole" rgba="0 0.7 0.7 1" size="0.049 0.3" type="capsule"/>
                 switch (attribute.Name.LocalName)
                 {
                     case "name": // optional
@@ -762,7 +741,6 @@ namespace MLAgents
             return xdoc;
         }
 
-        //GameObject parentGeom, GameObject parentBody)
 		List<KeyValuePair<string, Joint>> ParseJoint(XElement xdoc, GeomItem parentGeom, GeomItem childGeom, GameObject body)
 		{
             _jointXDocs.Add(xdoc.Attribute("name").Value, xdoc);
@@ -778,8 +756,6 @@ namespace MLAgents
 
 			var type = element.Attribute("type")?.Value;
 			if (type == null) {
-				// DebugPrint($"--- WARNING: ParseJoint: no type found. Ignoring ({element.ToString()}");
-				// return joints;
 				DebugPrint($"--- WARNING: ParseJoint: no type found. Assuming Hinge: ({element.ToString()}");
                 type = "hinge";
 			}
@@ -806,20 +782,15 @@ namespace MLAgents
             if (existingJoint) {
                 bone = new GameObject();
                 bone.transform.SetPositionAndRotation(childGeom.Geom.transform.position, childGeom.Geom.transform.rotation);
-                // bone.transform.localScale = parentGeom.Geom.transform.localScale;
-                //bone.transform.SetPositionAndRotation(childGeom.Geom.transform.position, parentGeom.Geom.transform.rotation);
                 bone.transform.localScale = childGeom.Geom.transform.localScale;
                 bone.transform.parent = childGeom.Geom.transform;
                 bone.name = jointName;
                 var boneRidgedBody = bone.AddComponent<Rigidbody>();
                 boneRidgedBody.useGravity = false;
                 joint = bone.AddComponent(jointType) as Joint;
-                // existingBone.GetComponent<Joint>().connectedBody = boneRidgedBody;
                 existingJoint.connectedBody = boneRidgedBody;
                 childGeom.Bones.Add(bone);
             } else {
-                //var parentJoint = parentGeom.Geom.AddComponent<FixedJoint>();
-                //parentJoint.connectedBody = boneRidgedBody;
                 joint = childGeom.Geom.AddComponent(jointType) as Joint;
                 if (!childGeom.Bones.Contains(childGeom.Geom))
                     childGeom.Bones.Add(childGeom.Geom);
@@ -1022,16 +993,6 @@ namespace MLAgents
                 as ConfigurableJoint;
             return FindTrueBase(parentRb, mJoints);
         }
-        // Transform FindTrueBase (Joint joint, List<MarathonJoint> mJoints)
-        // {
-        //     var rb = joint.GetComponent<Rigidbody>();
-        //     if (rb.useGravity)
-        //         return rb.transform;
-        //     var parentRb = mJoints
-        //         .Select(x=>x.Joint)
-        //         .First(x=>x.connectedBody == rb);
-        //     return FindTrueBase(parentRb, mJoints);
-        // }
         Transform FindTrueTarget (Joint joint, List<MarathonJoint> mJoints)
         {
             var targetRB = joint.connectedBody;

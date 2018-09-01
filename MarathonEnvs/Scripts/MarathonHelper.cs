@@ -148,8 +148,6 @@ namespace MLAgents
 			var collider = instance.AddComponent<CapsuleCollider>();
 			var offset = start - end;
 			var position = start - (offset / 2.0f);
-			// var offset = end - start;
-			// var position = start + (offset / 2.0f);
 			var height = offset.magnitude;
 			collider.height = height+(width*2) * .90f;
 			collider.radius = width * .90f;
@@ -157,16 +155,11 @@ namespace MLAgents
 			procCap.radius = width;
 			procCap.CreateMesh();
 
-			// offset = RightToLeft(offset);
-			// position = RightToLeft(position);
-
             instance.transform.parent = parent.transform.root;			
 			instance.transform.up = offset;
-			//instance.transform.localScale = scale;
 			if (useWorldSpace){
 				instance.transform.position = position;
 			} else {
-				// instance.transform.localPosition = position;
 				instance.transform.position = position + parent.transform.position;
 				instance.transform.rotation = instance.transform.rotation*parent.transform.rotation;
 			}
@@ -182,7 +175,6 @@ namespace MLAgents
 			if (useWorldSpace){
 				instance.transform.position = position;
 			} else {
-				// instance.transform.localPosition = position;
 				instance.transform.position = position + parent.transform.position;
 				instance.transform.rotation = instance.transform.rotation*parent.transform.rotation;
 			}

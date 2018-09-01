@@ -132,9 +132,6 @@ namespace MLAgents
             }
             MarathonJoints = null;
             MarathonSensors = null;
-            // var joints = this.GetComponentsInChildren<Joint>().ToList();
-            // foreach (var item in joints)
-            //     Destroy(item.gameObject);
             var rbs = this.GetComponentsInChildren<Rigidbody>().ToList();
             foreach (var item in rbs){
                 if (item != null) 
@@ -257,7 +254,6 @@ namespace MLAgents
                 rawVelocity = FocalRidgedBody.velocity.x;
 
             var maxSpeed = 4f; // meters per second
-            //rawVelocity = Mathf.Clamp(rawVelocity,-maxSpeed,maxSpeed);
 			var velocity = rawVelocity / maxSpeed;
             if (ShowMonitor) {
                 Monitor.Log("MaxDistance", FocalPointMaxDistanceTraveled.ToString());
@@ -271,8 +267,6 @@ namespace MLAgents
         {
             var qpos2 = (GetAngleFromUp() % 180 ) / 180;
             var uprightBonus = 0.5f * (2 - (Mathf.Abs(qpos2)*2)-1);
-            // if (ShowMonitor)
-                // Monitor.Log("uprightBonus", uprightBonus, MonitorType.text);
             return uprightBonus;
         }
         internal float GetUprightBonus(string bodyPart)
@@ -281,8 +275,6 @@ namespace MLAgents
             var angleFromUp = Vector3.Angle(toFocalAngle, Vector3.up);
             var qpos2 = (angleFromUp % 180 ) / 180;
             var uprightBonus = 0.5f * (2 - (Mathf.Abs(qpos2)*2)-1);
-            // if (ShowMonitor)
-            //     Monitor.Log($"upright[{bodyPart}] Bonus", uprightBonus, MonitorType.text);
             return uprightBonus;
         }
 
@@ -309,25 +301,16 @@ namespace MLAgents
         internal float GetLeftBonus(string bodyPart)
         {
             var bonus = GetDirectionBonus(bodyPart, Vector3.left);
-            // if (ShowMonitor)
-            //     Monitor.Log($"left[{bodyPart}] Bonus", bonus, MonitorType.text);
-            // print (bonus);
             return bonus;
         }       
         internal float GetRightBonus(string bodyPart)
         {
             var bonus = GetDirectionBonus(bodyPart, Vector3.right);
-            // if (ShowMonitor)
-            //     Monitor.Log($"right[{bodyPart}] Bonus", bonus, MonitorType.text);
-            // print (bonus);
             return bonus;
         }       
         internal float GetForwardBonus(string bodyPart)
         {
             var bonus = GetDirectionBonus(bodyPart, Vector3.forward);
-            // if (ShowMonitor)
-            //     Monitor.Log($"forward[{bodyPart}] Bonus", bonus, MonitorType.text);
-            // print (bonus);
             return bonus;
         }
         internal float GetHeightPenality(float maxHeight)
@@ -335,10 +318,6 @@ namespace MLAgents
             var height = GetHeight();
             var heightPenality = maxHeight - height;
 			heightPenality = Mathf.Clamp(heightPenality, 0f, maxHeight);
-            // if (ShowMonitor) {
-            //     Monitor.Log("height", height, MonitorType.text);
-            //     Monitor.Log("heightPenality", heightPenality, MonitorType.text);
-            // }
             return heightPenality;
         }    
         internal float GetEffort(string[] ignorJoints = null)
@@ -387,7 +366,6 @@ namespace MLAgents
         {
             var angleFromUp = Vector3.Angle(FocalPoint.transform.forward, Vector3.up);
             if (ShowMonitor) {
-                // Monitor.Log("AngleFromUp", angleFromUp);
             }
             return angleFromUp; 
         }
@@ -470,7 +448,6 @@ namespace MLAgents
         public void SetMarathonJoints(List<MarathonJoint> marathonJoints)
         {
             MarathonJoints = marathonJoints;
-            // targets = Enumerable.Repeat(0f, MarathonJoints.Count).ToArray();
             var target = FindTopMesh(MarathonJoints.FirstOrDefault()?.Joint.gameObject, null);
             if (CameraTarget != null && MarathonJoints != null) {
                 var smoothFollow = CameraTarget.GetComponent<SmoothFollow>();
@@ -503,9 +480,6 @@ namespace MLAgents
             if (meshRenderers != null && meshRenderers.Length >0)
                 topmostNode = meshRenderers[0].gameObject;
             
-            // var parent = curNode.transform.parent;//curNode.GetComponentInParent<Transform>()?.gameObject;
-            // if (parent != null)
-            //     return FindTopMesh(curNode, topmostNode);
             return (topmostNode);
             
         }
@@ -519,8 +493,6 @@ namespace MLAgents
             FocalPointMaxDistanceTraveled = Mathf.Max(FocalPointMaxDistanceTraveled, FocalPoint.transform.position.x);
 
             var topJoint = MarathonJoints[0];
-            //var topTransform = topJoint.Joint.transform.parent.transform;
-            // var topRidgedBody = topJoint.Joint.transform.parent.GetComponent<Rigidbody>();
             var topTransform = topJoint.Joint.transform;
             var topRidgedBody = topJoint.Joint.transform.GetComponent<Rigidbody>();
             qpos[0] = topTransform.position.x;
@@ -534,12 +506,7 @@ namespace MLAgents
             qvel[2] = topRidgedBody.velocity.z;
             for (int i = 0; i < MarathonJoints.Count; i++)
             {
-                // UpdateJointAngle(MarathonJoints[i], dt);
-                // qpos[3+i] = JointAngles[i] = MarathonJoints[i].AngleWithinRange;
-                // qvel[3+i] = JointVelocity[i] = MarathonJoints[i].AngularVelocityPerSecond / 1000;
-
                 var joint = MarathonJoints[i].Joint;
-                // var targ = joint.transform.parent.transform;
                 var targ = joint.transform;
                 float pos = 0f;
                 float globPos = 0f;
