@@ -15,7 +15,6 @@ public class MarathonTestBedAgent : MarathonAgent {
         Monitor.SetActive(true);
 
         StepRewardFunction = StepRewardTestBed;
-        // TerminateFunction = TerminateOnNonFootHitTerrain;
         TerminateFunction = TerminateNever;
         ObservationsFunction = ObservationsDefault;
         base.SetupBodyParts();
