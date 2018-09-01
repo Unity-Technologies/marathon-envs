@@ -2,9 +2,10 @@ using UnityEngine;
 
 namespace MLAgents
 {
-	public class HandleOverlap : MonoBehaviour {
+    public class HandleOverlap : MonoBehaviour
+    {
         public GameObject Parent;
-        
+
         /// <summary>
         /// OnCollisionEnter is called when this collider/rigidbody has begun
         /// touching another rigidbody/collider.
@@ -19,6 +20,6 @@ namespace MLAgents
             if (myCollider.transform.root != other.transform.root)
                 return;
             Physics.IgnoreCollision(myCollider, other.collider);
-        }        
+        }
     }
 }
