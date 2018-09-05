@@ -29,7 +29,7 @@ An early version of this work was presented March 19th, 2018 at the AI Summit - 
 ### Active Research using ML-Agents + MarathonEnvs
  * [Mastering Dynamic Environments](https://github.com/Sohojoe/ActiveRagdollAssaultCourse)
  * [Controllers](https://github.com/Sohojoe/ActiveRagdollControllers)
- * [Style Transfer](https://github.com/Sohojoe/ActiveRagdollControllers)
+ * [Style Transfer](https://github.com/Sohojoe/ActiveRagdollStyleTransfer)
 
 
 ---
