@@ -4,12 +4,22 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 
 ![MarathonEnvs](images/MarathonEnvsBanner.gif)
 
-**Mujoco** is a high end physics simulator used for bleeding edge research into robotics and reinforcement learning. Many of the standard benchmarks are implemented in Mujoco. 
-
 **MarathonEnvs** enables the reproduction of these benchmarks within Unity ml-agents using Unity’s native physics simulator, PhysX. MarathonEnvs maybe useful for:
+
 * Video Game researchers interested in apply bleeding edge robotics research into the domain of locomotion and AI for video games.
-* Traditional academic researchers looking to leverage the strengths of Unity and ml-agents along with the body of existing research and benchmarks in MuJoCo.
-* Benchmarking current and future algorithms within Unity ml-agents. For example, comparing the performance of ml-agents PPO implementation with OpenAI.Baselines implementation of PPO (see below).
+* Traditional academic researchers looking to leverage the strengths of Unity and ML-Agents along with the body of existing research and benchmarks provided by projects such as the [DeepMind Control Suite](https://github.com/deepmind/dm_control), or [OpenAI Mujoco](http://gym.openai.com/envs/#mujoco) environments.
+
+---
+## Getting Started
+
+### Requirements
+ * Unity 2018.2 (Download [here](https://unity3d.com/get-unity/download)).
+ * ML-Agents Toolkit v0.5 (Learn more [here](https://github.com/Unity-Technologies/ml-agents)).
+
+### Installation
+ * Clone [ml-agents repository](https://github.com/Unity-Technologies/ml-agents).
+ * Install [ML-Agents Toolkit](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Installation.md).
+ * Add `MarathonEnvs` sub-folder from this repository to `MLAgentsSDK\Assets\` in cloned ml-agents repository.
 
 ---
 ## Publications & Usage 
@@ -20,18 +30,6 @@ An early version of this work was presented March 19th, 2018 at the AI Summit - 
  * [Mastering Dynamic Environments](https://github.com/Sohojoe/ActiveRagdollAssaultCourse)
  * [Controllers](https://github.com/Sohojoe/ActiveRagdollControllers)
  * [Style Transfer](https://github.com/Sohojoe/ActiveRagdollControllers)
-
-
----
-
-## Benchmarking ML-Agents vs OpenAI Baselines
-
-
-|  |  |
-| --- | --- |
-| ![Compare](images/ML-Agents%20PPO%20vs%20OpenAI%20Baselines%20PPO.png) | ML-Agents PPO implementation is **3x more sample efficent** than OpenAI Baselines PPO implementation |
-
-Comparison of learning momemtum between ML-Agents.PPO and OpenAI.Baselines.PPO training using Simple Humanid. ML-Agents.PPO learning excelrates at 2m steps where as OpenAI.Baselines.PPO excelertes after 6m steps. [OpenAI.Baselines.PPO paper](https://arxiv.org/pdf/1707.06347.pdf)
 
 
 ---
@@ -47,8 +45,9 @@ Comparison of learning momemtum between ML-Agents.PPO and OpenAI.Baselines.PPO t
 
 ---
 
-## Humanoid
+## Included Environments
 
+### Humanoid
 
 | **DeepMindHumanoid** | 
 | --- | 
@@ -79,9 +78,7 @@ Comparison of learning momemtum between ML-Agents.PPO and OpenAI.Baselines.PPO t
     * Visual Observations: None.
 * Reset Parameters: None.
 
-
-
-## Hopper
+### Hopper
 
 | **DeepMindHopper** | 
 | --- | 
@@ -109,7 +106,7 @@ Comparison of learning momemtum between ML-Agents.PPO and OpenAI.Baselines.PPO t
 * Reset Parameters: None.
 
 
-## Walker
+### Walker
 
 | **DeepMindWalker** | 
 | --- | 
@@ -132,7 +129,7 @@ Comparison of learning momemtum between ML-Agents.PPO and OpenAI.Baselines.PPO t
     * Visual Observations: None.
 * Reset Parameters: None.
 
-## Ant
+### Ant
 
 | **OpenAIAnt** |
 | --- | 
@@ -153,14 +150,6 @@ Comparison of learning momemtum between ML-Agents.PPO and OpenAI.Baselines.PPO t
     * Vector Action space: (Continuous) Size of 8 corresponding to target rotations applicable to the joints. 
     * Visual Observations: None.
 * Reset Parameters: None.
-
----
-## Getting Started
-
-### Install 
- * Install [Unity ML-Agents 0.5](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Installation.md)
- * Add MarathonEnvs to MLAgentsSDK\Assets\
- * Example project: [Mastering Dynamic Environments](https://github.com/Sohojoe/ActiveRagdollAssaultCourse)
 
 ---
 
@@ -207,10 +196,11 @@ Comparison of learning momemtum between ML-Agents.PPO and OpenAI.Baselines.PPO t
 ### References:
 * [OpenAI.Gym Mujoco](https://github.com/openai/gym/tree/master/gym/envs/mujoco) implementation. Good reference for enviroment setup, reward functions and termination functions.
 * [OpenAI.Roboschool](https://github.com/openai/roboschool) - Alternative OpenAI mujoco implementation with more advanced enviroments. Alternative reference for reward functions and termination functions.
+* [DeepMind Control Suite](https://github.com/deepmind/dm_control) - Set of continuous control tasks.
 * DeepMind paper [Emergence of Locomotion Behaviours in Rich Environments](https://arxiv.org/pdf/1707.02286) and [video](https://youtu.be/hx_bgoTF7bs)- see page 13 b.2 for detail of reward functions
-* [MuJoCo](http://www.mujoco.org) homepage
-* A good primer on the differences between physics engines is ['Physics simulation engines have traditional made tradeoffs between performance’](https://homes.cs.washington.edu/~todorov/papers/ErezICRA15.pdf) and it’s accompanying [video](https://homes.cs.washington.edu/~todorov/media/ErezICRA15.mp4)
-* [MuJoCo Unity Plugin](http://www.mujoco.org/book/unity.html) MuJoCo's Unity plugin which uses socket to comunicate between MuJoCo (for running the physics simulation and control) and Unity (for rendering)
+* [MuJoCo](http://www.mujoco.org) homepage.
+* A good primer on the differences between physics engines is ['Physics simulation engines have traditional made tradeoffs between performance’](https://homes.cs.washington.edu/~todorov/papers/ErezICRA15.pdf) and it’s accompanying [video](https://homes.cs.washington.edu/~todorov/media/ErezICRA15.mp4).
+* [MuJoCo Unity Plugin](http://www.mujoco.org/book/unity.html) MuJoCo's Unity plugin which uses socket to comunicate between MuJoCo (for running the physics simulation and control) and Unity (for rendering).
 
 
 
