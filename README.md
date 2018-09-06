@@ -9,6 +9,8 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 * Video Game researchers interested in apply bleeding edge robotics research into the domain of locomotion and AI for video games.
 * Traditional academic researchers looking to leverage the strengths of Unity and ML-Agents along with the body of existing research and benchmarks provided by projects such as the [DeepMind Control Suite](https://github.com/deepmind/dm_control), or [OpenAI Mujoco](http://gym.openai.com/envs/#mujoco) environments.
 
+*Note: This project is the result of a contribution from [Joe Booth (@Sohojo)](https://github.com/Sohojoe), a member of the Unity community who currently maintains the repository. As such, the contents of this repository are not officially supported by Unity Technologies.* 
+
 ---
 ## Getting Started
 
