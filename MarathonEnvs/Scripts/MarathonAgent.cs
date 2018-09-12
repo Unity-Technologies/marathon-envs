@@ -439,6 +439,8 @@ namespace MLAgents
                 case "right_ankle_geom": // oai_ant
                 case "third_ankle_geom": // oai_ant
                 case "fourth_ankle_geom": // oai_ant
+                case "right_foot": // dm_walker
+                case "left_foot": // dm_walker
                     FootHitTerrain = true;
                     break;
                 default:
