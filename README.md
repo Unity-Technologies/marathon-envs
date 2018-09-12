@@ -22,6 +22,7 @@ A set of high-dimensional continuous control environments for use with Unity ML-
  * Clone [ml-agents repository](https://github.com/Unity-Technologies/ml-agents).
  * Install [ML-Agents Toolkit](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Installation.md).
  * Add `MarathonEnvs` sub-folder from this repository to `MLAgentsSDK\Assets\` in cloned ml-agents repository.
+ * Add `config\marathon_envs_config.yaml` from this reprository to `config\` in cloned ml-agents repository.
 
 ---
 ## Publications & Usage 
@@ -173,6 +174,8 @@ An early version of this work was presented March 19th, 2018 at the AI Summit - 
     * DeepMindHopper - Folder for reproducing DeepMindHopper 
     * OpenAIAnt - Folder for reproducing OpenAIAnt 
     * etc
+* config
+  * marathon_envs_config.yaml - trainer-config file. The hyperparameters used when training from python.
 
 ### Tuning params / Magic numbers
 * xxNamexx\Prefab\xxNamexx -> MarathonSpawner.Force2D = set to True when implementing a 2d model (hopper, walker)
