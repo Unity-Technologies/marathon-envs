@@ -197,7 +197,7 @@ An early version of this work was presented March 19th, 2018 at the AI Summit - 
 
 ### References:
 * [OpenAI.Gym Mujoco](https://github.com/openai/gym/tree/master/gym/envs/mujoco) implementation. Good reference for enviroment setup, reward functions and termination functions.
-* [OpenAI.Roboschool](https://github.com/openai/roboschool) - Alternative OpenAI mujoco implementation with more advanced enviroments. Alternative reference for reward functions and termination functions.
+* [OpenAI.Roboschool](https://github.com/openai/roboschool) - Alternative OpenAI implementation based on [Bullet Physics](http://pybullet.org) with more advanced enviroments. Alternative reference for reward functions and termination functions.
 * [DeepMind Control Suite](https://github.com/deepmind/dm_control) - Set of continuous control tasks.
 * DeepMind paper [Emergence of Locomotion Behaviours in Rich Environments](https://arxiv.org/pdf/1707.02286) and [video](https://youtu.be/hx_bgoTF7bs)- see page 13 b.2 for detail of reward functions
 * [MuJoCo](http://www.mujoco.org) homepage.
