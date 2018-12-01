@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -188,7 +188,7 @@ namespace MLAgents
                         case "timestep":
                             if (UseXmlTimestep)
                             {
-                                var timestep = float.Parse(attribute.Value);
+                                var timestep = (float)Convert.ToDouble(attribute.Value, System.Globalization.CultureInfo.InvariantCulture);
                                 Time.fixedDeltaTime = timestep;
                             }
                             else
@@ -412,11 +412,11 @@ namespace MLAgents
                 case "capsule":
                     if (element.Attribute("size")?.Value?.Split()?.Length > 1)
                     {
-                        size = float.Parse(element.Attribute("size")?.Value.Split()[0]);
-                        size2 = float.Parse(element.Attribute("size")?.Value.Split()[1]);
+                        size = (float)Convert.ToDouble(element.Attribute("size")?.Value.Split()[0], System.Globalization.CultureInfo.InvariantCulture);
+                        size2 = (float)Convert.ToDouble(element.Attribute("size")?.Value.Split()[1], System.Globalization.CultureInfo.InvariantCulture);
                     }
                     else
-                        size = float.Parse(element.Attribute("size")?.Value);
+                        size = (float)Convert.ToDouble(element.Attribute("size")?.Value, System.Globalization.CultureInfo.InvariantCulture);
 
                     var fromto = element.Attribute("fromto")?.Value;
                     if (fromto == null)
@@ -460,7 +460,7 @@ namespace MLAgents
 
                     break;
                 case "sphere":
-                    size = float.Parse(element.Attribute("size")?.Value);
+                    size = (float)Convert.ToDouble(element.Attribute("size")?.Value, System.Globalization.CultureInfo.InvariantCulture);
                     var pos = element.Attribute("pos")?.Value ?? "0 0 0";
                     DebugPrint($"ParseGeom: Creating type:{type} pos:{pos} size:{size}");
                     geom.Geom = parent.CreateAtPoint(MarathonHelper.ParsePosition(pos), size, _useWorldSpace);
@@ -574,11 +574,11 @@ namespace MLAgents
                         float? rollingFriction = null;
                         var frictionSplit = attribute.Value.Split(' ');
                         if (frictionSplit?.Length >= 3)
-                            rollingFriction = float.Parse(frictionSplit[2]);
+                            rollingFriction = (float)Convert.ToDouble(frictionSplit[2], System.Globalization.CultureInfo.InvariantCulture);
                         if (frictionSplit?.Length >= 2)
-                            torsionalFriction = float.Parse(frictionSplit[1]);
+                            torsionalFriction = (float)Convert.ToDouble(frictionSplit[1], System.Globalization.CultureInfo.InvariantCulture);
                         if (frictionSplit?.Length >= 1)
-                            slidingFriction = float.Parse(frictionSplit[0]);
+                            slidingFriction = (float)Convert.ToDouble(frictionSplit[0], System.Globalization.CultureInfo.InvariantCulture);
                         var physicMaterial = geom.GetComponent<Collider>()?.material;
                         physicMaterial.staticFriction = slidingFriction.Value;
                         if (rollingFriction.HasValue)
@@ -596,13 +596,13 @@ namespace MLAgents
                         // At runtime only the body inertial properties affect the simulation;
                         // the geom mass and inertia are not even saved in mjModel.
                         // DebugPrint($"{name} {attribute.Name.LocalName}={attribute.Value}");
-                        geom.GetComponent<Rigidbody>().mass = float.Parse(attribute.Value);
+                        geom.GetComponent<Rigidbody>().mass = (float)Convert.ToDouble(attribute.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
                     case "density": //  "1000"
                         // Material density used to compute the geom mass and inertia. The computation is based on the
                         // geom shape and the assumption of uniform density. The internal default of 1000 is the density
                         // of water in SI units. This attribute is used only when the mass attribute above is unspecified.
-                        var density = float.Parse(attribute.Value);
+                        var density = (float)Convert.ToDouble(attribute.Value, System.Globalization.CultureInfo.InvariantCulture);
                         var rb = geom.GetComponent<Rigidbody>();
                         rb.SetDensity(density);
                         rb.mass = rb
@@ -915,11 +915,11 @@ namespace MLAgents
                         DebugPrint($"{name} {attribute.Name.LocalName}={attribute.Value}");
                         break;
                     case "damping":
-                        spring.damper = float.Parse(attribute.Value);
+                        spring.damper = (float)Convert.ToDouble(attribute.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
                     case "limited":
                         if (hingeJoint != null)
-                            hingeJoint.useLimits = bool.Parse(attribute.Value);
+                            hingeJoint.useLimits = Convert.ToBoolean(attribute.Value, System.Globalization.CultureInfo.InvariantCulture);
                         break;
                     case "axis":
                         var axis = MarathonHelper.ParseAxis(attribute.Value);
@@ -1148,7 +1148,7 @@ namespace MLAgents
                     case "joint":
                         break;
                     case "ctrllimited":
-                        var ctrlLimited = bool.Parse(attribute.Value);
+                        var ctrlLimited = Convert.ToBoolean(attribute.Value, System.Globalization.CultureInfo.InvariantCulture);
                         mujocoJoint.CtrlLimited = ctrlLimited;
                         break;
                     case "ctrlrange":
@@ -1156,7 +1156,7 @@ namespace MLAgents
                         mujocoJoint.CtrlRange = ctrlRange;
                         break;
                     case "gear":
-                        var gear = float.Parse(attribute.Value);
+                        var gear = (float)Convert.ToDouble(attribute.Value, System.Globalization.CultureInfo.InvariantCulture);
                         gear *= MotorScale;
                         //var gear = 200;
                         mujocoJoint.Gear = gear;
