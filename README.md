@@ -14,6 +14,14 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 ---
 ## Getting Started
 
+### * * * New Turotial: [Getting Started With MarathonEnvs](https://towardsdatascience.com/gettingstartedwithmarathonenvs-v0-5-0a-c1054a0b540c) * * *
+The tutorial covers:
+* How to setup your Development Environment (Unity, MarthonEnvs + ML-Agents + TensorflowSharp)
+* How to run each agent with their pre-trained models.
+* How to retrain the hopper agent and follow training in Tensorboard.
+* How to modify the hopper reward function and train it to jump.
+* See tutorial [here](https://towardsdatascience.com/gettingstartedwithmarathonenvs-v0-5-0a-c1054a0b540c)
+
 ### Requirements
  * Unity 2018.2 (Download [here](https://unity3d.com/get-unity/download)).
  * ML-Agents Toolkit v0.5 (Learn more [here](https://github.com/Unity-Technologies/ml-agents)).
@@ -30,9 +38,10 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 An early version of this work was presented March 19th, 2018 at the AI Summit - Game Developer Conference 2018 - http://schedule.gdconf.com/session/beyond-bots-making-machine-learning-accessible-and-useful/856147
 
 ### Active Research using ML-Agents + MarathonEnvs
- * [Mastering Dynamic Environments](https://github.com/Sohojoe/ActiveRagdollAssaultCourse)
- * [Controllers](https://github.com/Sohojoe/ActiveRagdollControllers)
- * [Style Transfer](https://github.com/Sohojoe/ActiveRagdollStyleTransfer)
+ * [ActiveRagdollAssaultCourse](https://github.com/Sohojoe/ActiveRagdollAssaultCourse) - Mastering Dynamic Environments
+ * [ActiveRagdollControllers](https://github.com/Sohojoe/ActiveRagdollControllers) - Implementing a Player Controller
+ * [ActiveRagdollStyleTransfer](https://github.com/Sohojoe/ActiveRagdollStyleTransfer) - Learning From Motioncapture Data
+ * [MarathonEnvsBaselines](https://github.com/Sohojoe/MarathonEnvsBaselines) - Experimental implementation with OpenAI.Baselines and Stable.Baselines
 
 
 ---
