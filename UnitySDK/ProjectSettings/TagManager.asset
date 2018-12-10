@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - agent
+  - iWall
+  - banana
+  - wall
+  - badBanana
+  - pit
+  - frozenAgent
+  - ball
+  - redGoal
+  - blueGoal
+  - blueAgent
+  - redAgent
+  - redBlock
+  - goal
+  - ground
+  - orangeBlock
+  - block
+  - orangeGoal
+  - switchOff
+  - pyramid
+  - switchOn
+  - stone
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - invisible
+  - ball
+  - goalieWall
+  - goalie
+  - strikerWall
+  - striker
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
