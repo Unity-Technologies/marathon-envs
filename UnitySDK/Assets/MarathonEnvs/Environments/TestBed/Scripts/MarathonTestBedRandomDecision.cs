@@ -3,9 +3,9 @@ using System.Linq;
 using MLAgents;
 using UnityEngine;
 
-public class MarathonTestBedDecision : MonoBehaviour, Decision
+public class MarathonTestBedRandomDecision : Decision
 {
-    Brain _brain;
+    // Brain _brain;
 
     [Tooltip("Action applied to each motor")]
     /**< \brief Edit to manually test each motor (+1/-1)*/
@@ -13,7 +13,7 @@ public class MarathonTestBedDecision : MonoBehaviour, Decision
 
     [Tooltip("Apply a random number to each action each framestep")]
     /**< \brief Apply a random number to each action each framestep*/
-    public bool ApplyRandomActions;
+    public bool ApplyRandomActions = true;
 
 
     // [Tooltip("Lock the top most element")]
@@ -21,13 +21,20 @@ public class MarathonTestBedDecision : MonoBehaviour, Decision
     // public bool FreezeTop = false;
     // bool _lastFreezeTop;
 
-    public float[] Decide(
+    public override float[] Decide(
         List<float> vectorObs,
         List<Texture2D> visualObs,
         float reward,
         bool done,
         List<float> memory)
     {
+        // lazy init
+        if (Actions == null)
+        {
+            // _brain = GetComponent<Brain>();
+            // Actions = Enumerable.Repeat(0f, _brain.brainParameters.vectorActionSize[0]).ToArray();
+            Actions = Enumerable.Repeat(0f, 100).ToArray();
+        }
         if (ApplyRandomActions)
         {
             for (int i = 0; i < Actions.Length; i++)
@@ -37,18 +44,12 @@ public class MarathonTestBedDecision : MonoBehaviour, Decision
         return Actions;
     }
 
-    void Start()
-    {
-        _brain = GetComponent<Brain>();
-        Actions = Enumerable.Repeat(0f, _brain.brainParameters.vectorActionSize[0]).ToArray();
-    }
-
-    public List<float> MakeMemory(
-        List<float> vectorObs,
-        List<Texture2D> visualObs,
-        float reward,
-        bool done,
-        List<float> memory)
+    public override List<float> MakeMemory(
+            List<float> vectorObs,
+            List<Texture2D> visualObs,
+            float reward,
+            bool done,
+            List<float> memory)
     {
         return new List<float>();
     }

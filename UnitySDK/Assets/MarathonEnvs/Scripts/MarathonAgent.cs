@@ -366,6 +366,8 @@ namespace MLAgents
             double effort = 0;
             for (int i = 0; i < Actions.Count; i++)
             {
+                if (i >= MarathonJoints.Count)
+                    continue; // handle case when to many actions
                 var name = MarathonJoints[i].JointName;
                 if (ignorJoints != null && ignorJoints.Contains(name))
                     continue;
@@ -381,6 +383,8 @@ namespace MLAgents
             int atLimitCount = 0;
             for (int i = 0; i < Actions.Count; i++)
             {
+                if (i >= MarathonJoints.Count)
+                    continue; // handle case when to many actions
                 var name = MarathonJoints[i].JointName;
                 if (ignorJoints != null && ignorJoints.Contains(name))
                     continue;
