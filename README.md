@@ -1,7 +1,6 @@
 # Marathon Environments
 A set of high-dimensional continuous control environments for use with Unity ML-Agents Toolkit.
 
-
 ![MarathonEnvs](images/MarathonEnvsBanner.gif)
 
 **MarathonEnvs** enables the reproduction of these benchmarks within Unity ml-agents using Unity’s native physics simulator, PhysX. MarathonEnvs maybe useful for:
@@ -24,13 +23,15 @@ The tutorial covers:
 
 ### Requirements
  * Unity 2018.2 (Download [here](https://unity3d.com/get-unity/download)).
- * ML-Agents Toolkit v0.5 (Learn more [here](https://github.com/Unity-Technologies/ml-agents)).
+ * IMPORTANT for Unity 2018.3 compatability see [this issue](https://github.com/Unity-Technologies/marathon-envs/issues/17)
 
-### Installation
- * Clone [ml-agents repository](https://github.com/Unity-Technologies/ml-agents).
- * Install [ML-Agents Toolkit](https://github.com/Unity-Technologies/ml-agents/blob/master/docs/Installation.md).
- * Add `MarathonEnvs` sub-folder from this repository to `MLAgentsSDK\Assets\` in cloned ml-agents repository.
- * Add `config\marathon_envs_config.yaml` from this reprository to `config\` in cloned ml-agents repository.
+### Project Organization
+ * Marathon Enviroments Specific folders & files:
+   * `MLAgentsSDK\Assets\MarathonEnvs` - The core project directory
+   * `config\marathon_envs_config.yaml` - Config file for use when training with ml-agents
+   * `README.md` - Read me for marathon-envs
+ * Marathon Enviroments now incluses ML-Agents Toolkit v0.6 (Learn more [here](https://github.com/Unity-Technologies/ml-agents)). All other files and folders are for ML-Agents. We do not include the ML-Agents example and documentation to keep the repro size down.
+ 
 
 ---
 ## Publications & Usage 
@@ -49,10 +50,11 @@ An early version of this work was presented March 19th, 2018 at the AI Summit - 
  
 **Support:** Post an issue if you are having problems or need help getting a xml working.
 
-**Contributing:** Ml-Agents 0.5 now supports the Gym interface. It would be of value to the community to reproduce more benchmarcks and create a set of sample code for various algorthems. This would be a great way for someone looking to gain some experiance with Re-enforcement Learing. I would gladdly support and / or partner. Please post an issue if you are interesgted. Here are some ideas:
+**Contributing:** Ml-Agents 0.6 supports the Gym interface. It would be of value to the community to reproduce more benchmarcks and create a set of sample code for various algorthems. This would be a great way for someone looking to gain some experiance with Re-enforcement Learing. I would gladdly support and / or partner. Please post an issue if you are interesgted. Here are some ideas:
  * [Hindsight Experience Replay (HER)](https://github.com/openai/baselines/tree/master/baselines/her)
  * [Model-Agnostic Meta-Learning (MAML)](https://github.com/cbfinn/maml_rl) 
  * Any of A2C, ACER, ACKTR, DDPG, DQN, GAIL, PPO2, TRPO from [OpenAI.Baselines](https://github.com/openai/baselines)
+ * See [MarathonEnvsBaselines](https://github.com/Sohojoe/MarathonEnvsBaselines) - for an experimental implementation with OpenAI.Baselines and Stable.Baselines
 
 
 ---
