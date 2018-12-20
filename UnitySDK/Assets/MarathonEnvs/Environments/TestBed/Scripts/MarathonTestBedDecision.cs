@@ -3,17 +3,11 @@ using System.Linq;
 using MLAgents;
 using UnityEngine;
 
-public class MarathonTestBedRandomDecision : Decision
+public class MarathonTestBedDecision : Decision
 {
     // Brain _brain;
 
-    [Tooltip("Action applied to each motor")]
-    /**< \brief Edit to manually test each motor (+1/-1)*/
-    public float[] Actions;
-
-    [Tooltip("Apply a random number to each action each framestep")]
-    /**< \brief Apply a random number to each action each framestep*/
-    public bool ApplyRandomActions = true;
+    MarathonTestBedController _controller;
 
 
     // [Tooltip("Lock the top most element")]
@@ -29,19 +23,20 @@ public class MarathonTestBedRandomDecision : Decision
         List<float> memory)
     {
         // lazy init
-        if (Actions == null)
+        if (_controller == null)
         {
+            _controller = FindObjectOfType<MarathonTestBedController>();
             // _brain = GetComponent<Brain>();
             // Actions = Enumerable.Repeat(0f, _brain.brainParameters.vectorActionSize[0]).ToArray();
-            Actions = Enumerable.Repeat(0f, 100).ToArray();
+            // Actions = Enumerable.Repeat(0f, 100).ToArray();
         }
-        if (ApplyRandomActions)
+        if (_controller.ApplyRandomActions)
         {
-            for (int i = 0; i < Actions.Length; i++)
-                Actions[i] = Random.value * 2 - 1;
+            for (int i = 0; i < _controller.Actions.Length; i++)
+                _controller.Actions[i] = Random.value * 2 - 1;
         }
 
-        return Actions;
+        return _controller.Actions;
     }
 
     public override List<float> MakeMemory(
