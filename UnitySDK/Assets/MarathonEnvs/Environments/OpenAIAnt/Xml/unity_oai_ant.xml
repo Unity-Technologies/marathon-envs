@@ -6,7 +6,7 @@
   </custom>
   <default>
     <joint armature="1" damping="1" limited="true"/>
-    <geom conaffinity="0" condim="3" density="5.0" friction="1 0.5 0.5" margin="0.01" rgba="0.8 0.6 0.4 1"/>
+    <geom conaffinity="0" condim="3" friction="1 0.5 0.5" margin="0.01" rgba="0.8 0.6 0.4 1"/>
   </default>
   <asset>
     <texture builtin="gradient" height="100" rgb1="1 1 1" rgb2="0 0 0" type="skybox" width="100"/>
