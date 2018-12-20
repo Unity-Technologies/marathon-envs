@@ -75,93 +75,95 @@ public class DeepMindHumanoidAgent : MarathonAgent
 
     float StepRewardDeepMindHumanoid101()
     {
-        float velocity = GetVelocity();
-        float heightPenality = GetHeightPenality(1.2f);
-        float uprightBonus =
+        _velocity = GetVelocity();
+        _heightPenality = GetHeightPenality(1.2f);
+        _uprightBonus =
             (GetUprightBonus("shoulders") / 6)
             + (GetUprightBonus("waist") / 6)
             + (GetUprightBonus("pelvis") / 6);
-        float forwardBonus =
+        _forwardBonus =
             (GetForwardBonus("shoulders") / 4)
             + (GetForwardBonus("waist") / 6)
             + (GetForwardBonus("pelvis") / 6);
 
         float leftThighPenality = Mathf.Abs(GetLeftBonus("left_thigh"));
         float rightThighPenality = Mathf.Abs(GetRightBonus("right_thigh"));
-        float limbPenalty = leftThighPenality + rightThighPenality;
-        limbPenalty = Mathf.Min(0.5f, limbPenalty);
-        float phaseBonus = GetPhaseBonus();
-        var jointsAtLimitPenality = GetJointsAtLimitPenality() * 4;
+        _limbPenalty = leftThighPenality + rightThighPenality;
+        _limbPenalty = Mathf.Min(0.5f, _limbPenalty);
+        _finalPhaseBonus = GetPhaseBonus();
+        _jointsAtLimitPenality = GetJointsAtLimitPenality() * 4;
         float effort = GetEffort(new string[] {"right_hip_y", "right_knee", "left_hip_y", "left_knee"});
-        var effortPenality = 0.05f * (float) effort;
-        var reward = velocity
-                     + uprightBonus
-                     + forwardBonus
-                     + phaseBonus
-                     - heightPenality
-                     - limbPenalty
-                     - jointsAtLimitPenality
-                     - effortPenality;
+        _effortPenality = 0.05f * (float) effort;
+        _velocity /= 10f;
+        _finalPhaseBonus *= 10f;
+        _reward = _velocity
+                     + _uprightBonus
+                     + _forwardBonus
+                     + _finalPhaseBonus
+                     - _heightPenality
+                     - _limbPenalty
+                     - _jointsAtLimitPenality
+                     - _effortPenality;
         if (ShowMonitor)
         {
             var hist = new[]
             {
-                reward, velocity,
-                uprightBonus,
-                forwardBonus,
-                phaseBonus,
-                -heightPenality,
-                -limbPenalty,
-                -jointsAtLimitPenality,
-                -effortPenality
+                _reward, _velocity,
+                _uprightBonus,
+                _forwardBonus,
+                _phaseBonus,
+                -_heightPenality,
+                -_limbPenalty,
+                -_jointsAtLimitPenality,
+                -_effortPenality
             }.ToList();
             Monitor.Log("rewardHist", hist.ToArray());
         }
 
-        return reward;
+        return _reward;
     }
 
     float StepRewardOaiHumanoidRunOnSpot161()
     {
         float heightPenality = GetHeightPenality(1.2f);
-        float uprightBonus =
+        _uprightBonus =
             (GetUprightBonus("shoulders") / 6)
             + (GetUprightBonus("waist") / 6)
             + (GetUprightBonus("pelvis") / 6);
-        float forwardBonus =
+        _forwardBonus =
             (GetForwardBonus("shoulders") / 2)
             + (GetForwardBonus("waist") / 6)
             + (GetForwardBonus("pelvis") / 6);
 
         float leftThighPenality = Mathf.Abs(GetLeftBonus("left_thigh"));
         float rightThighPenality = Mathf.Abs(GetRightBonus("right_thigh"));
-        float limbPenalty = leftThighPenality + rightThighPenality;
-        limbPenalty = Mathf.Min(0.5f, limbPenalty);
-        float phaseBonus = GetPhaseBonus() * 5;
-        var jointsAtLimitPenality = GetJointsAtLimitPenality() * 4;
+        _limbPenalty = leftThighPenality + rightThighPenality;
+        _limbPenalty = Mathf.Min(0.5f, _limbPenalty);
+        _finalPhaseBonus = GetPhaseBonus() * 5;
+        _jointsAtLimitPenality = GetJointsAtLimitPenality() * 4;
         float effort = GetEffort(new string[] {"right_hip_y", "right_knee", "left_hip_y", "left_knee"});
-        var effortPenality = 0.5f * (float) effort;
+        _effortPenality = 0.5f * (float) effort;
         var reward = 0
-                     + uprightBonus
-                     + forwardBonus
-                     + phaseBonus
-                     - heightPenality
-                     - limbPenalty
-                     - jointsAtLimitPenality
-                     - effortPenality;
+                     + _uprightBonus
+                     + _forwardBonus
+                     + _finalPhaseBonus
+                     - _heightPenality
+                     - _limbPenalty
+                     - _jointsAtLimitPenality
+                     - _effortPenality;
         if (ShowMonitor)
         {
             var hist = new[]
             {
                 reward,
                 // velocity, 
-                uprightBonus,
-                forwardBonus,
-                phaseBonus,
-                -heightPenality,
-                -limbPenalty,
-                -jointsAtLimitPenality,
-                -effortPenality
+                _uprightBonus,
+                _forwardBonus,
+                _finalPhaseBonus,
+                -_heightPenality,
+                -_limbPenalty,
+                -_jointsAtLimitPenality,
+                -_effortPenality
             }.ToList();
             Monitor.Log("rewardHist", hist.ToArray());
         }
@@ -183,8 +185,18 @@ public class DeepMindHumanoidAgent : MarathonAgent
     // implement phase bonus (reward for left then right)
     List<bool> _lastSenorState;
 
-    float _phaseBonus;
-    // int _phase;
+    public float _phaseBonus;
+    public int _phase;
+    public float _reward;
+    public float _velocity;
+    public float _uprightBonus;
+    public float _forwardBonus;
+    public float _finalPhaseBonus;
+    public float _heightPenality;
+    public float _limbPenalty;
+    public float _jointsAtLimitPenality;
+    public float _effortPenality;
+
 
     public float LeftMin;
     public float LeftMax;
@@ -195,7 +207,7 @@ public class DeepMindHumanoidAgent : MarathonAgent
     void PhaseBonusInitalize()
     {
         _lastSenorState = Enumerable.Repeat<bool>(false, NumSensors).ToList();
-        // _phase = 0;
+        _phase = 0;
         _phaseBonus = 0f;
         PhaseResetLeft();
         PhaseResetRight();
@@ -262,12 +274,15 @@ public class DeepMindHumanoidAgent : MarathonAgent
         bool noPhaseChange = true;
         bool isLeftFootDown = SensorIsInTouch[0] > 0f || SensorIsInTouch[1] > 0f;
         bool isRightFootDown = SensorIsInTouch[2] > 0f || SensorIsInTouch[3] > 0f;
-        noPhaseChange = noPhaseChange && isLeftFootDown == _lastSenorState[0];
-        noPhaseChange = noPhaseChange && isRightFootDown == _lastSenorState[1];
+        bool wasLeftFootDown = _lastSenorState[0];
+        bool wasRightFootDown = _lastSenorState[1];
+        noPhaseChange = noPhaseChange && isLeftFootDown == wasLeftFootDown;
+        noPhaseChange = noPhaseChange && isRightFootDown == wasRightFootDown;
         _lastSenorState[0] = isLeftFootDown;
         _lastSenorState[1] = isRightFootDown;
         if (isLeftFootDown && isRightFootDown)
         {
+            _phase = 0;
             _phaseBonus = 0f;
             PhaseResetLeft();
             PhaseResetRight();
@@ -288,14 +303,26 @@ public class DeepMindHumanoidAgent : MarathonAgent
         _phaseBonus = 0;
         if (isLeftFootDown)
         {
-            _phaseBonus = CalcPhaseBonus(LeftMin, LeftMax);
-            _phaseBonus += 0.1f;
+            if (_phase == 1) {
+                _phaseBonus = 0f;
+            }
+            else {
+                _phaseBonus = CalcPhaseBonus(LeftMin, LeftMax);
+                _phaseBonus += 0.1f;
+            }
+            _phase = 1;
             PhaseResetLeft();
         }
         else if (isRightFootDown)
         {
-            _phaseBonus = CalcPhaseBonus(RightMin, RightMax);
-            _phaseBonus += 0.1f;
+            if (_phase == 2) {
+                _phaseBonus = 0f;
+            }
+            else {
+                _phaseBonus = CalcPhaseBonus(RightMin, RightMax);
+                _phaseBonus += 0.1f;
+            }
+            _phase = 2;
             PhaseResetRight();
         }
 

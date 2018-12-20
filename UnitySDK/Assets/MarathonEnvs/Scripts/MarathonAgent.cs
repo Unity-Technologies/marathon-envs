@@ -469,13 +469,19 @@ namespace MLAgents
             if (!target.HasValue) // handle random
                 target = UnityEngine.Random.value * 2 - 1;
             var t = configurableJoint.targetAngularVelocity;
-            t.x = target.Value * mJoint.MaximumForce;
+            var power = target.Value;
+            power = Mathf.Pow(power,2);
+            power = Mathf.Sign(target.Value) * Mathf.Abs(power);
+            // t.x = target.Value * mJoint.MaximumForce;
+            t.x = power * mJoint.MaximumForce;
             configurableJoint.targetAngularVelocity = t;
             var angX = configurableJoint.angularXDrive;
             angX.positionSpring = 1f;
             var scale = mJoint.MaximumForce * Mathf.Pow(Mathf.Abs(target.Value), 3);
+            // scale = 2f;
             angX.positionDamper = Mathf.Max(1f, scale);
-            angX.maximumForce = Mathf.Max(1f, mJoint.MaximumForce);
+            // angX.maximumForce = Mathf.Max(1f, mJoint.MaximumForce);
+            angX.maximumForce = 1f;
             configurableJoint.angularXDrive = angX;
         }
 
