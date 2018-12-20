@@ -4,7 +4,8 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -12,9 +13,9 @@ MonoBehaviour:
   m_Name: TestBedHuristicBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 53
+    vectorObservationSize: 88
     numStackedVectorObservations: 1
-    vectorActionSize: 08000000
+    vectorActionSize: 15000000
     cameraResolutions: []
     vectorActionDescriptions:
     - 
@@ -25,7 +26,20 @@ MonoBehaviour:
     - 
     - 
     - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
+    - 
     vectorActionSpaceType: 1
   decision: {fileID: 0}
-  decisionScript: {fileID: 0}
-  c_decision: 
+  decisionScript: {fileID: 11500000, guid: fae7c31d3f13347d1bc0aab79eb5bf1f, type: 3}
+  c_decision: MarathonTestBedRandomDecision
