@@ -163,8 +163,8 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  ApplyRandomActions: 1
-  FreezeHead: 0
+  ApplyRandomActions: 0
+  FreezeHead: 1
   FreezeHips: 1
 --- !u!4 &342605651
 Transform:

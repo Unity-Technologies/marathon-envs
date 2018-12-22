@@ -94,8 +94,6 @@ public class DeepMindHumanoidAgent : MarathonAgent
         _jointsAtLimitPenality = GetJointsAtLimitPenality() * 4;
         float effort = GetEffort(new string[] {"right_hip_y", "right_knee", "left_hip_y", "left_knee"});
         _effortPenality = 0.05f * (float) effort;
-        _velocity /= 10f;
-        _finalPhaseBonus *= 10f;
         _reward = _velocity
                      + _uprightBonus
                      + _forwardBonus
@@ -121,54 +119,6 @@ public class DeepMindHumanoidAgent : MarathonAgent
         }
 
         return _reward;
-    }
-
-    float StepRewardOaiHumanoidRunOnSpot161()
-    {
-        float heightPenality = GetHeightPenality(1.2f);
-        _uprightBonus =
-            (GetUprightBonus("shoulders") / 6)
-            + (GetUprightBonus("waist") / 6)
-            + (GetUprightBonus("pelvis") / 6);
-        _forwardBonus =
-            (GetForwardBonus("shoulders") / 2)
-            + (GetForwardBonus("waist") / 6)
-            + (GetForwardBonus("pelvis") / 6);
-
-        float leftThighPenality = Mathf.Abs(GetLeftBonus("left_thigh"));
-        float rightThighPenality = Mathf.Abs(GetRightBonus("right_thigh"));
-        _limbPenalty = leftThighPenality + rightThighPenality;
-        _limbPenalty = Mathf.Min(0.5f, _limbPenalty);
-        _finalPhaseBonus = GetPhaseBonus() * 5;
-        _jointsAtLimitPenality = GetJointsAtLimitPenality() * 4;
-        float effort = GetEffort(new string[] {"right_hip_y", "right_knee", "left_hip_y", "left_knee"});
-        _effortPenality = 0.5f * (float) effort;
-        var reward = 0
-                     + _uprightBonus
-                     + _forwardBonus
-                     + _finalPhaseBonus
-                     - _heightPenality
-                     - _limbPenalty
-                     - _jointsAtLimitPenality
-                     - _effortPenality;
-        if (ShowMonitor)
-        {
-            var hist = new[]
-            {
-                reward,
-                // velocity, 
-                _uprightBonus,
-                _forwardBonus,
-                _finalPhaseBonus,
-                -_heightPenality,
-                -_limbPenalty,
-                -_jointsAtLimitPenality,
-                -_effortPenality
-            }.ToList();
-            Monitor.Log("rewardHist", hist.ToArray());
-        }
-
-        return reward;
     }
 
     bool TerminateHumanoid()
