@@ -22,8 +22,7 @@ The tutorial covers:
 * See tutorial [here](https://towardsdatascience.com/gettingstartedwithmarathonenvs-v0-5-0a-c1054a0b540c)
 
 ### Requirements
- * Unity 2018.2 (Download [here](https://unity3d.com/get-unity/download)).
- * IMPORTANT for Unity 2018.3 compatability see [this issue](https://github.com/Unity-Technologies/marathon-envs/issues/17)
+ * Unity 2018.3 (Download [here](https://unity3d.com/get-unity/download)).
 
 ### Project Organization
  * Marathon Enviroments Specific folders & files:
