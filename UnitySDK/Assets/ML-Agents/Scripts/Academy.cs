@@ -45,7 +45,6 @@ namespace MLAgents
 
         [Tooltip("Frames per second (FPS) engine attempts to maintain.")]
         public int targetFrameRate;
-
         /// Initializes a new instance of the 
         /// <see cref="EnvironmentConfiguration"/> class.
         /// <param name="width">Width of environment window (pixels).</param>
@@ -94,7 +93,7 @@ namespace MLAgents
     {
         [SerializeField] 
         public BroadcastHub broadcastHub = new BroadcastHub();
-        
+        public AgentSpawner agentSpawner = new AgentSpawner();
         private const string kApiVersion = "API-6";
 
         // Fields provided in the Inspector
@@ -183,6 +182,8 @@ namespace MLAgents
         /// The path to where the log should be written.
         string logPath;
 
+        /// The parameters passed from python
+        CommunicatorObjects.UnityRLInitializationInput pythonParameters;
 
         // Flag used to keep track of the first time the Academy is reset.
         bool firstAcademyReset;
@@ -254,13 +255,20 @@ namespace MLAgents
             InitializeAcademy();
             Communicator communicator = null;
 
-            var exposedBrains = broadcastHub.broadcastingBrains.Where(x => x != null).ToList();;
-            var controlledBrains = broadcastHub.broadcastingBrains.Where(
+            var spawnAgentPrefab = agentSpawner.GetAgentPrefabFor(GetAgentId());
+            var spawnAgentPrefabBrain = spawnAgentPrefab?.brain;
+            var spawnerEnabled = spawnAgentPrefabBrain!=null;
+            var hubBrains = broadcastHub.broadcastingBrains.Where(x => x != null).ToList();;
+            var hubControlledBrains = broadcastHub.broadcastingBrains.Where(
                 x => x != null && x is LearningBrain && broadcastHub.IsControlled(x));
-            foreach (LearningBrain brain in controlledBrains)
-            {
-                brain.SetToControlledExternally();
-            }
+
+            IEnumerable<Brain> exposedBrains = 
+                spawnerEnabled ? new []{spawnAgentPrefabBrain}.ToList() : hubBrains;
+            IEnumerable<Brain> controlledBrains = hubControlledBrains;
+            if (spawnerEnabled)
+                controlledBrains = agentSpawner.trainingMode 
+                    ? new []{spawnAgentPrefabBrain}.ToList() 
+                    : new List<Brain>();
             
             // Try to launch the communicator by usig the arguments passed at launch
             try
@@ -286,6 +294,10 @@ namespace MLAgents
                             port = 5005
                         });
                 }
+            }
+            foreach (LearningBrain brain in controlledBrains)
+            {
+                brain.SetToControlledExternally();
             }
 
             brainBatcher = new Batcher(communicator);
@@ -318,7 +330,7 @@ namespace MLAgents
                     );
                 }
 
-                var pythonParameters = brainBatcher.SendAcademyParameters(academyParameters);
+                pythonParameters = brainBatcher.SendAcademyParameters(academyParameters);
                 Random.InitState(pythonParameters.Seed);
                 Application.logMessageReceived += HandleLog;
                 logPath = Path.GetFullPath(".") + "/UnitySDK.log";
@@ -344,6 +356,9 @@ namespace MLAgents
             // the developer in the Editor.
             SetIsInference(!brainBatcher.GetIsTraining());
             ConfigureEnvironment();
+            
+            if (spawnerEnabled)
+                agentSpawner.SpawnAgents(this.gameObject, GetNumAgents() ,spawnAgentPrefab);
         }
 
         private void UpdateResetParameters()
@@ -384,6 +399,27 @@ namespace MLAgents
                 Monitor.SetActive(false);
             }
         }
+
+        /// <summary>
+        /// Return the number of agents to spawn.
+        /// </summary>
+        public int GetNumAgents()
+        {
+            if (pythonParameters != null && pythonParameters.NumAgents != 0)
+                return pythonParameters.NumAgents;
+            return isInference ? agentSpawner.inferenceNumAgentsDefault : agentSpawner.trainingNumAgentsDefault;
+        }
+
+        /// <summary>
+        /// Return the agentId to spawn.
+        /// </summary>
+        public string GetAgentId()
+        {
+            if (pythonParameters != null && !string.IsNullOrWhiteSpace(pythonParameters?.AgentId))
+                return pythonParameters.AgentId;
+            return agentSpawner.agentIdDefault;
+        }
+
 
         /// <summary>
         /// Helper method for initializing the environment based on the provided

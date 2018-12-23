@@ -6,4 +6,6 @@ package communicator_objects;
 
 message UnityRLInitializationInput {
     int32 seed = 1;
+    int32 num_agents = 2;
+    string agent_id = 3;
 }

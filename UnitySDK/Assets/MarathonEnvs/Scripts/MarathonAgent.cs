@@ -150,6 +150,12 @@ namespace MLAgents
                 UpdateQ();
                 return;
             }
+            // HACK first spawned marathon agent should grab the camera
+            var agentWithCamera = FindObjectsOfType<MarathonAgent>().FirstOrDefault(x=>x.CameraTarget != null);
+            if (agentWithCamera == null) {
+                CameraTarget = FindObjectOfType<SmoothFollow>()?.gameObject;
+                ShowMonitor = true;                
+            }
 
             MarathonJoints = null;
             MarathonSensors = null;

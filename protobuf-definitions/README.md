@@ -13,7 +13,7 @@ Contains relevant definitions needed to generate probobuf files used in [ML-Agen
 
 `pip install grpcio-tools`
 
-`nuget install Grpc.Tools` into known directory.
+`nuget install Grpc.Tools -Version 1.11.1` into known directory.
 
 ### Installing Protobuf Compiler
 

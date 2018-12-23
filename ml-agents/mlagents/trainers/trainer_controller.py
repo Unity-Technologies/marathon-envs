@@ -26,7 +26,8 @@ class TrainerController(object):
     def __init__(self, env_path, run_id, save_freq, curriculum_folder,
                  fast_simulation, load, train, worker_id, keep_checkpoints,
                  lesson, seed, docker_target_name,
-                 trainer_config_path, no_graphics):
+                 trainer_config_path, no_graphics,
+                 num_agents, agent_id):
         """
         :param env_path: Location to the environment executable to be loaded.
         :param run_id: The sub-directory name for model and summary statistics
@@ -47,6 +48,10 @@ class TrainerController(object):
                configuration file.
         :param no_graphics: Whether to run the Unity simulator in no-graphics
                             mode.
+        :param num_agents: The number of agests to request the Unity enviroment
+                to generate
+        :param agent_id: The name of the agent to request the Unity enviroment
+                to instantiate 
         """
         if env_path is not None:
             # Strip out executable extensions if passed
@@ -103,13 +108,17 @@ class TrainerController(object):
         self.keep_checkpoints = keep_checkpoints
         self.trainers = {}
         self.seed = seed
+        self._num_agents = num_agents
+        self._agent_id = agent_id
         np.random.seed(self.seed)
         tf.set_random_seed(self.seed)
         self.env = UnityEnvironment(file_name=env_path,
                                     worker_id=self.worker_id,
                                     seed=self.seed,
                                     docker_training=self.docker_training,
-                                    no_graphics=no_graphics)
+                                    no_graphics=no_graphics,
+                                    num_agents=self._num_agents,
+                                    agent_id=self._agent_id)
         if env_path is None:
             self.env_name = 'editor_' + self.env.academy_name
         else:
@@ -284,6 +293,19 @@ class TrainerController(object):
 
         tf.reset_default_graph()
 
+        print('******** --- ********')
+        print(trainer_config)
+        # HACK - reduce the number of steps by agents
+        for brain, config in trainer_config.items():
+            print(brain)
+            print('max_steps:', config['max_steps'])
+            print('env.number_agents:', self.env.number_agents)
+            print('_num_agents:', self._num_agents)
+            config['max_steps'] \
+                = str(int(float(config['max_steps']))/self._num_agents)
+                # = str(int(float(config['max_steps']))/self.env.number_agents)
+            print('max_steps:', config['max_steps'])
+
         # Prevent a single session from taking all GPU memory.
         self._initialize_trainers(trainer_config)
         for _, t in self.trainers.items():
@@ -294,6 +316,13 @@ class TrainerController(object):
             for brain_name, trainer in self.trainers.items():
                 trainer.write_tensorboard_text('Hyperparameters',
                                                trainer.parameters)
+                # # HACK - reduce the number of steps by agents
+                # for k, t in self.trainers.items():
+                #     print(self.env._n_agents.keys())
+                #     print('env.number_agents:', self.env.number_agents)
+                #     trainer.trainer_parameters['max_steps'] \
+                #         = str(int(float(trainer.trainer_parameters['max_steps']))/self.env.number_agents)
+                #     print('max_steps:', trainer.trainer_parameters['max_steps'])
         try:
             while any([t.get_step <= t.get_max_steps \
                        for k, t in self.trainers.items()]) \

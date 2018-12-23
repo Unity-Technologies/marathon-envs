@@ -247,6 +247,11 @@ namespace MLAgents
         /// </summary>
         [HideInInspector] public AgentParameters agentParameters;
 
+        [Tooltip("When spawning this agent, how much world space should each instance occupy. Offset to max")]
+        [HideInInspector] public Vector3 agentBoundsMaxOffset;
+        [Tooltip("When spawning this agent, how much world space should each instance occupy. Offset to min")]
+        [HideInInspector] public Vector3 agentBoundsMinOffset;
+
         /// Current Agent information (message sent to Brain).
         AgentInfo info;
 

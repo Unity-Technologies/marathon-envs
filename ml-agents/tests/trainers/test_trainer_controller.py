@@ -140,7 +140,8 @@ def test_initialization(mock_communicator, mock_launcher):
     mock_communicator.return_value = MockCommunicator(
         discrete_action=True, visual_inputs=1)
     tc = TrainerController(' ', ' ', 1, None, True, True, False, 1,
-                           1, 1, 1, '', "tests/test_mlagents.trainers.py", False)
+                           1, 1, 1, '', "tests/test_mlagents.trainers.py", False,
+                           0, '')
     assert (tc.env.brain_names[0] == 'RealFakeBrain')
 
 
@@ -155,7 +156,7 @@ def test_load_config(mock_communicator, mock_launcher, dummy_config):
                 discrete_action=True, visual_inputs=1)
             mock_load.return_value = dummy_config
             tc = TrainerController(' ', ' ', 1, None, True, True, False, 1,
-                                   1, 1, 1, '', '', False)
+                                   1, 1, 1, '', '', False, 0, '')
             config = tc._load_config()
             assert (len(config) == 1)
             assert (config['default']['trainer'] == "ppo")
@@ -172,7 +173,7 @@ def test_initialize_trainers(mock_communicator, mock_launcher, dummy_config,
                 discrete_action=True, visual_inputs=1)
             tc = TrainerController(' ', ' ', 1, None, True, False, False, 1, 1,
                                    1, 1, '', "tests/test_mlagents.trainers.py",
-                                   False)
+                                   False, 0, '')
 
             # Test for PPO trainer
             mock_load.return_value = dummy_config
@@ -209,7 +210,7 @@ def test_initialize_offline_trainers(mock_communicator, mock_launcher, dummy_con
                 brain_name="Ball3DBrain", vec_obs_size=8)
             tc = TrainerController(' ', ' ', 1, None, True, False, False, 1, 1,
                                    1, 1, '', "tests/test_mlagents.trainers.py",
-                                   False)
+                                   False, 0, '')
 
             # Test for Offline Behavior Cloning Trainer
             mock_load.return_value = dummy_offline_bc_config
