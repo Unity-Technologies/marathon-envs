@@ -85,6 +85,17 @@ MonoBehaviour:
   JointRotations: []
   MarathonJoints: []
   MarathonSensors: []
+  _phaseBonus: 0
+  _phase: 0
+  _reward: 0
+  _velocity: 0
+  _uprightBonus: 0
+  _forwardBonus: 0
+  _finalPhaseBonus: 0
+  _heightPenality: 0
+  _limbPenalty: 0
+  _jointsAtLimitPenality: 0
+  _effortPenality: 0
   LeftMin: 0
   LeftMax: 0
   RightMin: 0

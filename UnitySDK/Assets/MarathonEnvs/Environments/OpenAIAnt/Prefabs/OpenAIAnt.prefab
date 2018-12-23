@@ -51,8 +51,8 @@ MonoBehaviour:
   DebugOutput: 0
   Force2D: 0
   OnGenerateApplyRandom: 0.005
-  DefaultDensity: 1000
-  MotorScale: 1.13
+  DefaultDensity: 100
+  MotorScale: 1
 --- !u!114 &114612892920136778
 MonoBehaviour:
   m_ObjectHideFlags: 0
