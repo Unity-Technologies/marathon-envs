@@ -178,6 +178,14 @@ namespace MLAgents
         /// is turned off).
         /// </summary>
         public int numberOfActionsBetweenDecisions;
+
+        /// <summary>
+        /// If numberOfActionsBetweenDecisions > 1, setting this to true will 
+        /// only send Actions on decisions steps. This is useful when running 
+        /// physics at high frequencies on continious control agents. (used 
+        /// when On Demand Decisions is turned off).
+        /// </summary>
+        public bool skipActionsWithDecisions;
     }
 
 
@@ -1039,12 +1047,18 @@ namespace MLAgents
                 Mathf.Max(agentParameters.numberOfActionsBetweenDecisions, 1);
             if (!agentParameters.onDemandDecision)
             {
-                RequestAction();
+                bool skipDecision = false;
+                bool skipAction = false;
                 if (academyStepCounter %
-                    agentParameters.numberOfActionsBetweenDecisions == 0)
+                    agentParameters.numberOfActionsBetweenDecisions != 0)
                 {
-                    RequestDecision();
+                    skipDecision = true;
+                    skipAction = agentParameters.skipActionsWithDecisions;
                 }
+                if (!skipAction)
+                    RequestAction();
+                if (!skipDecision)
+                    RequestDecision();
             }
         }
 
