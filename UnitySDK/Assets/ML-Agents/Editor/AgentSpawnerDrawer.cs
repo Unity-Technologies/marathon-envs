@@ -158,7 +158,7 @@ namespace MLAgents
             {
                 addButtonRect.width -= 50;
                 var buttonContent = new GUIContent(
-                    "Add Brain to Broadcast Hub", "Add a new Brain to the Broadcast Hub");
+                    "Add Agent to Agent Spawner", "Add a new AgentId and Agent Prefab to the Agent Spawner");
                 if (GUI.Button(addButtonRect, buttonContent, EditorStyles.miniButton))
                 {
                     MarkSceneAsDirty();
