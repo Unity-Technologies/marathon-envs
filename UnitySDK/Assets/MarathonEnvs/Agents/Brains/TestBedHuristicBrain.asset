@@ -42,4 +42,4 @@ MonoBehaviour:
     vectorActionSpaceType: 1
   decision: {fileID: 0}
   decisionScript: {fileID: 11500000, guid: fae7c31d3f13347d1bc0aab79eb5bf1f, type: 3}
-  c_decision: MarathonTestBedRandomDecision
+  c_decision: MarathonTestBedDecision
