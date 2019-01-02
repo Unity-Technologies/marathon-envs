@@ -348,6 +348,7 @@ namespace MLAgents
             var maxMetersPerSecond = (agentBoundsMaxOffset - agentBoundsMinOffset) 
                 / agentParameters.maxStep
                 / Time.fixedDeltaTime;
+            maxMetersPerSecond.y = 53; // override with terminal velocity
             float x = metersPerSecond.x / maxMetersPerSecond.x;
             float y = metersPerSecond.y / maxMetersPerSecond.y;
             float z = metersPerSecond.z / maxMetersPerSecond.z;
