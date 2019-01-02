@@ -7,6 +7,9 @@ using MLAgents;
 
 public class DeepMindHopperAgent : MarathonAgent
 {
+
+    public List<float> RewardHackingVector;
+
     public override void AgentReset()
     {
         base.AgentReset();
@@ -35,7 +38,8 @@ public class DeepMindHopperAgent : MarathonAgent
         }
 
         var pelvis = BodyParts["pelvis"];
-        AddVectorObs(pelvis.velocity);
+        Vector3 normalizedVelocity = GetNormalizedVelocity(pelvis.velocity);
+        AddVectorObs(normalizedVelocity);
         AddVectorObs(pelvis.transform.forward); // gyroscope 
         AddVectorObs(pelvis.transform.up);
 
@@ -43,7 +47,8 @@ public class DeepMindHopperAgent : MarathonAgent
         JointRotations.ForEach(x => AddVectorObs(x));
         AddVectorObs(JointVelocity);
         var foot = BodyParts["foot"];
-        AddVectorObs(foot.transform.position.y);
+        Vector3 normalizedFootPosition = GetNormalizedPosition(foot.transform.position);
+        AddVectorObs(normalizedFootPosition.y);
     }
 
     float GetRewardOnEpisodeComplete()
@@ -51,8 +56,53 @@ public class DeepMindHopperAgent : MarathonAgent
         return FocalPoint.transform.position.x;
     }
 
+    void UpdateRewardHackingVector()
+    {
+        // float uprightBonus = GetForwardBonus("pelvis");
+        float uprightBonus = GetDirectionBonus("pelvis", Vector3.forward, 1f);
+        float velocity = Mathf.Clamp(GetNormalizedVelocity("pelvis").x, 0f, 1f);
+        float position = Mathf.Clamp(GetNormalizedPosition("pelvis").x, 0f, 1f);
+        float effort = 1f - GetEffortNormalized();
+
+        if (RewardHackingVector == null)
+            RewardHackingVector = Enumerable.Range(0, 6).Select(x => 0f).ToList();
+        RewardHackingVector[0] = velocity;
+        RewardHackingVector[1] = position;
+        RewardHackingVector[2] = effort;
+        RewardHackingVector[3] = uprightBonus;
+    }
+
     float StepRewardHopper101()
     {
+        UpdateRewardHackingVector();
+        float uprightBonus = GetDirectionBonus("pelvis", Vector3.forward, 1f);
+        float velocity = Mathf.Clamp(GetNormalizedVelocity("pelvis").x, 0f, 1f);
+        float position = Mathf.Clamp(GetNormalizedPosition("pelvis").x, 0f, 1f);
+        float effort = 1f - GetEffortNormalized();
+
+        // uprightBonus *= 0.15f;
+        // velocity *= 0.7f;
+        // position *= 0.0f;
+        // effort *= 0.15f;
+        uprightBonus *= 0f;
+        velocity *= .7f;
+        position *= 0.0f;
+        effort *= 0.3f;
+
+        var reward = velocity
+                     + uprightBonus
+                     + effort;
+        if (ShowMonitor)
+        {
+            var hist = new[] {reward, velocity, uprightBonus, effort}.ToList();
+            Monitor.Log("rewardHist", hist.ToArray());
+        }
+
+        return reward;
+    }
+    float OldStepRewardHopper101()
+    {
+        UpdateRewardHackingVector();
         float uprightBonus = GetForwardBonus("pelvis");
         float velocity = GetVelocity("pelvis");
         float effort = GetEffort();

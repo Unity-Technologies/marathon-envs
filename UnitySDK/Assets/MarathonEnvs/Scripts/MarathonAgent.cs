@@ -106,6 +106,10 @@ namespace MLAgents
         /**< \brief Sensors created by MarathonSpawner*/
         public List<MarathonSensor> MarathonSensors;
 
+        public List<float> Observations;
+        public int ObservationNormalizedErrors;
+        public int MaxObservationNormalizedErrors;
+
         //
         // local variables
         internal int NumSensors;
@@ -118,11 +122,15 @@ namespace MLAgents
         List<float> qvel;
         List<float> recentVelocity;
 
+        List <float> mphBuffer;
+
 
         public override void AgentReset()
         {
             if (marathonSpawner == null)
                 marathonSpawner = GetComponent<MarathonSpawner>();
+
+            mphBuffer = new List<float>();
 
             Transform[] allChildren = GetComponentsInChildren<Transform>();
             if (_hasValidModel)
@@ -211,6 +219,22 @@ namespace MLAgents
         {
             UpdateQ();
             ObservationsFunction();
+
+            var info = GetInfo();
+            if (Observations?.Count != info.vectorObservation.Count)
+                Observations = Enumerable.Range(0, info.vectorObservation.Count).Select(x => 0f).ToList();
+            ObservationNormalizedErrors = 0;
+            for (int i = 0; i < Observations.Count; i++)
+            {
+                Observations[i] = info.vectorObservation[i];
+                var x = Mathf.Abs(Observations[i]);
+                var e = Mathf.Epsilon;
+                bool is1 = Mathf.Approximately(x, 1f);
+                if ((x > 1f + e) && !is1)
+                    ObservationNormalizedErrors++;
+            }
+            if (ObservationNormalizedErrors > MaxObservationNormalizedErrors)
+                MaxObservationNormalizedErrors = ObservationNormalizedErrors;
         }
 
         public override void AgentAction(float[] vectorAction, string textAction)
@@ -283,24 +307,78 @@ namespace MLAgents
             return recentVelocity.Average();
         }
 
+        Vector3 GetRawVelocity(string bodyPart = null)
+        {
+            Vector3 rawVelocity;
+            if (!string.IsNullOrWhiteSpace(bodyPart))
+                rawVelocity = BodyParts[bodyPart].velocity;
+            else
+                rawVelocity = FocalRidgedBody.velocity;
+            return rawVelocity;
+        }
+
         internal float GetVelocity(string bodyPart = null)
         {
-            var dt = Time.fixedDeltaTime;
-            float rawVelocity = 0f;
-            if (!string.IsNullOrWhiteSpace(bodyPart))
-                rawVelocity = BodyParts[bodyPart].velocity.x;
-            else
-                rawVelocity = FocalRidgedBody.velocity.x;
+            float rawVelocity = GetRawVelocity().x;
 
             var maxSpeed = 4f; // meters per second
             var velocity = rawVelocity / maxSpeed;
+            var mph = rawVelocity * 2.236936f;
+            mphBuffer.Add(mph);
+            if (mphBuffer.Count > 100)
+                mphBuffer.RemoveAt(0);
+            var aveMph = mphBuffer.Average();
             if (ShowMonitor)
             {
                 Monitor.Log("MaxDistance", FocalPointMaxDistanceTraveled.ToString());
-                Monitor.Log("MPH: ", (rawVelocity * 2.236936f).ToString());
+                Monitor.Log("MPH: ", (aveMph).ToString());
             }
 
             return velocity;
+        }
+
+        internal Vector3 GetNormalizedVelocity(string bodyPart = null)
+        {
+            var metersPerSecond = GetRawVelocity(bodyPart);
+            var normalizedVelocity = GetNormalizedVelocity(metersPerSecond);
+            return normalizedVelocity;
+        }
+        internal Vector3 GetNormalizedVelocity(Vector3 metersPerSecond)
+        {
+            var maxMetersPerSecond = (agentBoundsMaxOffset - agentBoundsMinOffset) 
+                / agentParameters.maxStep
+                / Time.fixedDeltaTime;
+            float x = metersPerSecond.x / maxMetersPerSecond.x;
+            float y = metersPerSecond.y / maxMetersPerSecond.y;
+            float z = metersPerSecond.z / maxMetersPerSecond.z;
+            // clamp result
+            x = Mathf.Clamp(x, -1f, 1f);
+            y = Mathf.Clamp(y, -1f, 1f);
+            z = Mathf.Clamp(z, -1f, 1f);
+            Vector3 normalizedVelocity = new Vector3(x,y,z);
+            return normalizedVelocity;
+        }
+
+
+        internal Vector3 GetNormalizedPosition(string bodyPart = null)
+        {
+            Vector3 pos = BodyParts[bodyPart].position;
+            Vector3 normalizedPos = GetNormalizedPosition(BodyParts[bodyPart].position);
+            return normalizedPos;
+        }
+
+        internal Vector3 GetNormalizedPosition(Vector3 pos)
+        {
+            var maxPos = (agentBoundsMaxOffset - agentBoundsMinOffset);
+            float x = pos.x / maxPos.x;
+            float y = pos.y / maxPos.y;
+            float z = pos.z / maxPos.z;
+            // clamp result
+            x = Mathf.Clamp(x, -1f, 1f);
+            y = Mathf.Clamp(y, -1f, 1f);
+            z = Mathf.Clamp(z, -1f, 1f);
+            Vector3 normalizedPos = new Vector3(x,y,z);
+            return normalizedPos;
         }
 
         internal float GetUprightBonus()
@@ -383,6 +461,26 @@ namespace MLAgents
 
             return (float) effort;
         }
+
+        internal float GetEffortNormalized(string[] ignorJoints = null)
+        {
+            double effort = 0;
+            double joints = 0;
+            for (int i = 0; i < Actions.Count; i++)
+            {
+                if (i >= MarathonJoints.Count)
+                    continue; // handle case when to many actions
+                var name = MarathonJoints[i].JointName;
+                if (ignorJoints != null && ignorJoints.Contains(name))
+                    continue;
+                var jointEffort = Mathf.Pow(Mathf.Abs(Actions[i]), 2);
+                effort += jointEffort;
+                joints++;
+            }
+
+            return (float) (effort / joints);
+        }
+
 
         internal float GetJointsAtLimitPenality(string[] ignorJoints = null)
         {
@@ -589,7 +687,10 @@ namespace MLAgents
                 qglobpos[3 + i] = globPos;
                 var vel = (qpos[3 + i] - lastPos) / (dt);
                 qvel[3 + i] = vel;
-                JointVelocity[i] = vel;
+                // JointVelocity[i] = vel;
+                var metersPerSecond = new Vector3(vel,0f,0f);
+                Vector3 normalizedVelocity = GetNormalizedVelocity(metersPerSecond);
+                JointVelocity[i] = normalizedVelocity.x;
             }
 
             for (int i = 0; i < _baseTargetPairs.Count; i++)

@@ -268,8 +268,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   broadcastHub:
-    broadcastingBrains: []
-    _brainsToControl: []
+    broadcastingBrains:
+    - {fileID: 11400000, guid: 6ecfdf95a9eee4a2580de3d7224c2cdb, type: 2}
+    _brainsToControl:
+    - {fileID: 11400000, guid: 6ecfdf95a9eee4a2580de3d7224c2cdb, type: 2}
   agentSpawner:
     spawnableAgents:
     - agentId: Hopper-v0
@@ -284,7 +286,7 @@ MonoBehaviour:
     - agentId: Humanoid-v0
       agentPrefab: {fileID: 114027728797193598, guid: ea2996ac9c4d10b43852d03dc7f23bcb,
         type: 3}
-    agentIdDefault: Humanoid-v0
+    agentIdDefault: Hopper-v0
     trainingNumAgentsDefault: 16
     inferenceNumAgentsDefault: 16
     worldBoundsMinOffset: {x: -250, y: 0, z: -250}

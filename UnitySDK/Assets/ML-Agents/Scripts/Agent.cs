@@ -901,6 +901,12 @@ namespace MLAgents
             return action.value;
         }
 
+        protected AgentInfo GetInfo()
+        {
+            return info;
+        }
+
+
         /// <summary>
         /// Scales continous action from [-1, 1] to arbitrary range.
         /// </summary>
