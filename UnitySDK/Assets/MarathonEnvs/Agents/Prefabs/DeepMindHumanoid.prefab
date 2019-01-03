@@ -72,7 +72,7 @@ MonoBehaviour:
     resetOnDone: 1
     onDemandDecision: 0
     numberOfActionsBetweenDecisions: 5
-    skipActionsWithDecisions: 0
+    skipActionsWithDecisions: 1
   agentBoundsMaxOffset: {x: 250, y: 2, z: 0.5}
   agentBoundsMinOffset: {x: 0, y: 0, z: -0.5}
   CameraTarget: {fileID: 0}
@@ -88,6 +88,9 @@ MonoBehaviour:
   JointRotations: []
   MarathonJoints: []
   MarathonSensors: []
+  Observations: []
+  ObservationNormalizedErrors: 0
+  MaxObservationNormalizedErrors: 0
   _phaseBonus: 0
   _phase: 0
   _reward: 0

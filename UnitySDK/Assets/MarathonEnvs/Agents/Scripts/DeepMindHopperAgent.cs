@@ -65,7 +65,7 @@ public class DeepMindHopperAgent : MarathonAgent
         float position = Mathf.Clamp(GetNormalizedPosition("pelvis").x, 0f, 1f);
         float effort = 1f - GetEffortNormalized();
 
-        if (RewardHackingVector == null)
+        if (RewardHackingVector?.Count == 0)
             RewardHackingVector = Enumerable.Range(0, 6).Select(x => 0f).ToList();
         RewardHackingVector[0] = velocity;
         RewardHackingVector[1] = position;
