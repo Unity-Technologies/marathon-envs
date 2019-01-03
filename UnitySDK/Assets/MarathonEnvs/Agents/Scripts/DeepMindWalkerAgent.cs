@@ -36,7 +36,8 @@ public class DeepMindWalkerAgent : MarathonAgent
         }
 
         var pelvis = BodyParts["pelvis"];
-        AddVectorObs(pelvis.velocity);
+        Vector3 normalizedVelocity = GetNormalizedVelocity(pelvis.velocity);
+        AddVectorObs(normalizedVelocity);
         AddVectorObs(pelvis.transform.forward); // gyroscope 
         AddVectorObs(pelvis.transform.up);
 
@@ -47,19 +48,25 @@ public class DeepMindWalkerAgent : MarathonAgent
 
     float StepRewardWalker106()
     {
-        float heightPenality = GetHeightPenality(1.1f);
-        float uprightBonus = GetForwardBonus("pelvis");
-        float velocity = GetVelocity();
-        float effort = GetEffort();
-        var effortPenality = 1e-1f * (float) effort;
+        float heightPenality = 1f-GetHeightPenality(1.1f);
+        heightPenality = Mathf.Clamp(heightPenality, 0f, 1f);
+        float uprightBonus = GetDirectionBonus("pelvis", Vector3.forward, 1f);
+        uprightBonus = Mathf.Clamp(uprightBonus, 0f, 1f);
+        float velocity = Mathf.Clamp(GetNormalizedVelocity("pelvis").x, 0f, 1f);
+        float effort = 1f - GetEffortNormalized();
+
+        heightPenality *= 0.05f;
+        uprightBonus *= 0.05f;
+        velocity *= 0.7f;
+        effort *= 0.2f;
 
         var reward = velocity
                      + uprightBonus
-                     - heightPenality
-                     - effortPenality;
+                     + heightPenality
+                     + effort;
         if (ShowMonitor)
         {
-            var hist = new[] {reward, velocity, uprightBonus, -heightPenality, -effortPenality}.ToList();
+            var hist = new[] {reward, velocity, uprightBonus, heightPenality, effort}.ToList();
             Monitor.Log("rewardHist", hist.ToArray());
         }
 

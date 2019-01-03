@@ -60,6 +60,7 @@ public class DeepMindHopperAgent : MarathonAgent
     {
         // float uprightBonus = GetForwardBonus("pelvis");
         float uprightBonus = GetDirectionBonus("pelvis", Vector3.forward, 1f);
+        uprightBonus = Mathf.Clamp(uprightBonus, 0f, 1f);
         float velocity = Mathf.Clamp(GetNormalizedVelocity("pelvis").x, 0f, 1f);
         float position = Mathf.Clamp(GetNormalizedPosition("pelvis").x, 0f, 1f);
         float effort = 1f - GetEffortNormalized();
@@ -76,18 +77,17 @@ public class DeepMindHopperAgent : MarathonAgent
     {
         UpdateRewardHackingVector();
         float uprightBonus = GetDirectionBonus("pelvis", Vector3.forward, 1f);
+        uprightBonus = Mathf.Clamp(uprightBonus, 0f, 1f);
         float velocity = Mathf.Clamp(GetNormalizedVelocity("pelvis").x, 0f, 1f);
-        float position = Mathf.Clamp(GetNormalizedPosition("pelvis").x, 0f, 1f);
+        // float position = Mathf.Clamp(GetNormalizedPosition("pelvis").x, 0f, 1f);
         float effort = 1f - GetEffortNormalized();
 
-        // uprightBonus *= 0.15f;
-        // velocity *= 0.7f;
-        // position *= 0.0f;
-        // effort *= 0.15f;
-        uprightBonus *= 0f;
-        velocity *= .7f;
-        position *= 0.0f;
-        effort *= 0.3f;
+        uprightBonus *= 0.05f;
+        velocity *= 0.7f;
+        effort *= 0.25f;
+        // uprightBonus *= 0f;
+        // velocity *= .7f;
+        // effort *= 0.3f;
 
         var reward = velocity
                      + uprightBonus
