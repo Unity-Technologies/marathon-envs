@@ -41,7 +41,7 @@ DeepMindHumanoidBrain:
 DeepMindHopperBrain:
     num_epoch: 10 
     time_horizon: 500 
-    # summary_freq: 100000
+    summary_freq: 100000
     use_recurrent: false
     normalize: false 
     num_layers: 2
@@ -57,7 +57,7 @@ DeepMindHopperBrain:
 DeepMindWalkerBrain:
     num_epoch: 10 
     time_horizon: 500 
-    # summary_freq: 100000
+    summary_freq: 100000
     use_recurrent: false
     normalize: false 
     num_layers: 2
