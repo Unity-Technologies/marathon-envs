@@ -99,14 +99,18 @@ class PPOTrainer(Trainer):
         """
         return self._reward_buffer
 
-    def increment_step_and_update_last_reward(self):
+    def increment_step_and_update_last_reward(self, num_steps=1):
         """
         Increment the step count of the trainer and Updates the last reward
         """
         if len(self.stats['Environment/Cumulative Reward']) > 0:
             mean_reward = np.mean(self.stats['Environment/Cumulative Reward'])
             self.policy.update_reward(mean_reward)
-        self.policy.increment_step()
+        if num_steps is 1:
+            self.policy.increment_step()
+        else:
+            for _ in range(num_steps):
+                self.policy.increment_step()
         self.step = self.policy.get_current_step()
 
     def take_action(self, all_brain_info: AllBrainInfo):
