@@ -72,6 +72,7 @@ MonoBehaviour:
     resetOnDone: 1
     onDemandDecision: 0
     numberOfActionsBetweenDecisions: 5
+    skipActionsWithDecisions: 1
   agentBoundsMaxOffset: {x: 200, y: 2, z: 1}
   agentBoundsMinOffset: {x: 0, y: 0, z: -1}
   CameraTarget: {fileID: 0}

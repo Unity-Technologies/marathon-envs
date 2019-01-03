@@ -20,6 +20,8 @@ namespace MLAgents
             SerializedProperty brain = serializedAgent.FindProperty("brain");
             SerializedProperty actionsPerDecision = serializedAgent.FindProperty(
                 "agentParameters.numberOfActionsBetweenDecisions");
+            SerializedProperty skipActionsWithDecisions = serializedAgent.FindProperty(
+                "agentParameters.skipActionsWithDecisions");
             SerializedProperty maxSteps = serializedAgent.FindProperty(
                 "agentParameters.maxStep");
             SerializedProperty isResetOnDone = serializedAgent.FindProperty(
@@ -79,6 +81,13 @@ namespace MLAgents
                         "The agent will automatically request a decision every X" +
                         " steps and perform an action at every step."));
                 actionsPerDecision.intValue = Mathf.Max(1, actionsPerDecision.intValue);
+
+                if (actionsPerDecision.intValue > 1) 
+                {
+                    EditorGUI.indentLevel++;
+                    EditorGUILayout.PropertyField(skipActionsWithDecisions);
+                    EditorGUI.indentLevel--;
+                }
             }
             EditorGUILayout.PropertyField(agentBoundsMinOffset);
             EditorGUILayout.PropertyField(agentBoundsMaxOffset);

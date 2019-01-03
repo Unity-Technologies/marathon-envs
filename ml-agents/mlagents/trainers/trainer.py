@@ -35,6 +35,7 @@ class Trainer(object):
         self.stats = {}
         self.summary_writer = None
         self.policy = None
+        self._last_write_step = -self.trainer_parameters['summary_freq']
 
     def __str__(self):
         return '''{} Trainer'''.format(self.__class__)
@@ -84,7 +85,7 @@ class Trainer(object):
         """
         raise UnityTrainerException("The get_last_reward property was not implemented.")
 
-    def increment_step_and_update_last_reward(self):
+    def increment_step_and_update_last_reward(self, num_steps=1):
         """
         Increment the step count of the trainer and updates the last reward
         """
@@ -157,18 +158,19 @@ class Trainer(object):
         :param lesson_num: Current lesson number in curriculum.
         :param global_step: The number of steps the simulation has been going for
         """
-        if global_step % self.trainer_parameters['summary_freq'] == 0 and global_step != 0:
-            is_training = "Training." if self.is_training and self.get_step <= self.get_max_steps else "Not Training."
+        if global_step >= self._last_write_step + self.trainer_parameters['summary_freq']:
+        # if global_step > 1 and global_step >= self._last_write_step + self.trainer_parameters['summary_freq']:
+            is_training = "Training." if self.is_training and global_step <= self.get_max_steps else "Not Training."
             if len(self.stats['Environment/Cumulative Reward']) > 0:
                 mean_reward = np.mean(self.stats['Environment/Cumulative Reward'])
                 logger.info(" {}: {}: Step: {}. Mean Reward: {:0.3f}. Std of Reward: {:0.3f}. {}"
                             .format(self.run_id, self.brain_name,
-                                    min(self.get_step, self.get_max_steps),
+                                    min(global_step, self.get_max_steps),
                                     mean_reward, np.std(self.stats['Environment/Cumulative Reward']),
                                     is_training))
             else:
                 logger.info(" {}: {}: Step: {}. No episode was completed since last summary. {}"
-                            .format(self.run_id, self.brain_name, self.get_step, is_training))
+                            .format(self.run_id, self.brain_name, global_step, is_training))
             summary = tf.Summary()
             for key in self.stats:
                 if len(self.stats[key]) > 0:
@@ -176,8 +178,9 @@ class Trainer(object):
                     summary.value.add(tag='{}'.format(key), simple_value=stat_mean)
                     self.stats[key] = []
             summary.value.add(tag='Environment/Lesson', simple_value=lesson_num)
-            self.summary_writer.add_summary(summary, self.get_step)
+            self.summary_writer.add_summary(summary, global_step)
             self.summary_writer.flush()
+            self._last_write_step = self._last_write_step + self.trainer_parameters['summary_freq']
 
     def write_tensorboard_text(self, key, input_dict):
         """

@@ -68,11 +68,12 @@ MonoBehaviour:
   brain: {fileID: 11400000, guid: 6ecfdf95a9eee4a2580de3d7224c2cdb, type: 2}
   agentParameters:
     agentCameras: []
-    maxStep: 4000
+    maxStep: 5000
     resetOnDone: 1
     onDemandDecision: 0
-    numberOfActionsBetweenDecisions: 4
-  agentBoundsMaxOffset: {x: 200, y: 5, z: 0.5}
+    numberOfActionsBetweenDecisions: 5
+    skipActionsWithDecisions: 1
+  agentBoundsMaxOffset: {x: 200, y: 2, z: 0.5}
   agentBoundsMinOffset: {x: 0, y: 0, z: -0.5}
   CameraTarget: {fileID: 0}
   ShowMonitor: 0
@@ -87,11 +88,3 @@ MonoBehaviour:
   JointRotations: []
   MarathonJoints: []
   MarathonSensors: []
-  Observations: []
-  ObservationNormalizedErrors: 0
-  MaxObservationNormalizedErrors: 0
-  RewardHackingVector:
-  - 0
-  - 0
-  - 0
-  - 0

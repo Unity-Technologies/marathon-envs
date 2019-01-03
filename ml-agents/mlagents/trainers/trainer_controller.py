@@ -293,36 +293,18 @@ class TrainerController(object):
 
         tf.reset_default_graph()
 
-        print('******** --- ********')
-        print(trainer_config)
-        # HACK - reduce the number of steps by agents
-        for brain, config in trainer_config.items():
-            print(brain)
-            print('max_steps:', config['max_steps'])
-            print('env.number_agents:', self.env.number_agents)
-            print('_num_agents:', self._num_agents)
-            config['max_steps'] \
-                = str(int(float(config['max_steps']))/self._num_agents)
-                # = str(int(float(config['max_steps']))/self.env.number_agents)
-            print('max_steps:', config['max_steps'])
-
         # Prevent a single session from taking all GPU memory.
         self._initialize_trainers(trainer_config)
         for _, t in self.trainers.items():
             self.logger.info(t)
         global_step = 0  # This is only for saving the model
+        policy_steps = 0
+        last_save_step = 0
         curr_info = self._reset_env()
         if self.train_model:
             for brain_name, trainer in self.trainers.items():
                 trainer.write_tensorboard_text('Hyperparameters',
                                                trainer.parameters)
-                # # HACK - reduce the number of steps by agents
-                # for k, t in self.trainers.items():
-                #     print(self.env._n_agents.keys())
-                #     print('env.number_agents:', self.env.number_agents)
-                #     trainer.trainer_parameters['max_steps'] \
-                #         = str(int(float(trainer.trainer_parameters['max_steps']))/self.env.number_agents)
-                #     print('max_steps:', trainer.trainer_parameters['max_steps'])
         try:
             while any([t.get_step <= t.get_max_steps \
                        for k, t in self.trainers.items()]) \
@@ -379,6 +361,7 @@ class TrainerController(object):
                             and trainer.get_step <= trainer.get_max_steps:
                         # Perform gradient descent with experience buffer
                         trainer.update_policy()
+                        policy_steps += 1
                     # Write training statistics to Tensorboard.
                     if self.meta_curriculum is not None:
                         trainer.write_summary(
@@ -390,16 +373,30 @@ class TrainerController(object):
                         trainer.write_summary(global_step)
                     if self.train_model \
                             and trainer.get_step <= trainer.get_max_steps:
-                        trainer.increment_step_and_update_last_reward()
-                global_step += 1
-                if global_step % self.save_freq == 0 and global_step != 0 \
-                        and self.train_model:
+                        step_size = self._num_agents if self._num_agents > 0 else 1
+                        trainer.increment_step_and_update_last_reward(step_size)
+                if self._num_agents is 0:
+                    global_step += 1
+                else:
+                    global_step += self._num_agents
+                if global_step >= last_save_step + self.save_freq and self.train_model:
                     # Save Tensorflow model
                     self._save_model(steps=global_step)
+                    last_save_step = global_step
                 curr_info = new_info
             # Final save Tensorflow model
             if global_step != 0 and self.train_model:
                 self._save_model(steps=global_step)
+            # Write training statistics to Tensorboard.
+            for brain_name, trainer in self.trainers.items():
+                if self.meta_curriculum is not None:
+                    trainer.write_summary(
+                        global_step,
+                        lesson_num=self.meta_curriculum
+                            .brains_to_curriculums[brain_name]
+                            .lesson_num)
+                else:
+                    trainer.write_summary(global_step)
         except KeyboardInterrupt:
             print('--------------------------Now saving model--------------'
                   '-----------')
