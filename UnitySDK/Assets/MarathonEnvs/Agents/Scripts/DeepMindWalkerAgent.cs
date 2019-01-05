@@ -67,7 +67,7 @@ public class DeepMindWalkerAgent : MarathonAgent
         if (ShowMonitor)
         {
             var hist = new[] {reward, velocity, uprightBonus, heightPenality, effort}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray());
+            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.INDEPENDENT);
         }
 
         return reward;

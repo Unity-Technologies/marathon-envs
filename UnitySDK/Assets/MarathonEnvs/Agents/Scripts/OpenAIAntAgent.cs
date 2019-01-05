@@ -67,7 +67,7 @@ public class OpenAIAntAgent : MarathonAgent
         if (ShowMonitor)
         {
             var hist = new[] {reward, velocity}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray());
+            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.INDEPENDENT);
         }
 
         return reward;

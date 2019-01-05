@@ -94,29 +94,8 @@ public class DeepMindHopperAgent : MarathonAgent
                      + effort;
         if (ShowMonitor)
         {
-            var hist = new[] {reward, velocity, uprightBonus, effort}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray());
-        }
-
-        return reward;
-    }
-    float OldStepRewardHopper101()
-    {
-        UpdateRewardHackingVector();
-        float uprightBonus = GetForwardBonus("pelvis");
-        float velocity = GetVelocity("pelvis");
-        float effort = GetEffort();
-        var effortPenality = 3e-1f * (float) effort;
-        var jointsAtLimitPenality = GetJointsAtLimitPenality() * 4;
-
-        var reward = velocity
-                     + uprightBonus
-                     - effortPenality
-                     - jointsAtLimitPenality;
-        if (ShowMonitor)
-        {
-            var hist = new[] {reward, velocity, uprightBonus, -effortPenality, -jointsAtLimitPenality}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray());
+            var hist = new[] {reward, velocity, uprightBonus, effort};
+            Monitor.Log("rewardHist", hist, displayType: Monitor.DisplayType.INDEPENDENT);
         }
 
         return reward;

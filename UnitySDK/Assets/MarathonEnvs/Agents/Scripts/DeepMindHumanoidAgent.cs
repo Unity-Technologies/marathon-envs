@@ -142,7 +142,7 @@ public class DeepMindHumanoidAgent : MarathonAgent
                 _limbBonus,
                 _effort
             }.ToList();
-            Monitor.Log("rewardHist", hist.ToArray());
+            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.INDEPENDENT);
         }
 
         return _reward;
