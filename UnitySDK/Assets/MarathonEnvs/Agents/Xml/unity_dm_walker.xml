@@ -3,7 +3,8 @@
   <include file="./common/skybox.xml"/>
   <include file="./common/materials.xml"/>
 
-  <option timestep="0.0025"/>
+  <option timestep=".005"/>
+
 
   <statistic extent="2" center="0 0 1"/>
 
