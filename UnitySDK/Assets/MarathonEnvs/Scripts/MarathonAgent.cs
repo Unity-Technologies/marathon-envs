@@ -348,7 +348,7 @@ namespace MLAgents
             var maxMetersPerSecond = (agentBoundsMaxOffset - agentBoundsMinOffset) 
                 / agentParameters.maxStep
                 / Time.fixedDeltaTime;
-            maxMetersPerSecond.y = 53; // override with terminal velocity
+            maxMetersPerSecond.y = 53; // override with
             float x = metersPerSecond.x / maxMetersPerSecond.x;
             float y = metersPerSecond.y / maxMetersPerSecond.y;
             float z = metersPerSecond.z / maxMetersPerSecond.z;
@@ -389,12 +389,12 @@ namespace MLAgents
             return uprightBonus;
         }
 
-        internal float GetUprightBonus(string bodyPart)
+        internal float GetUprightBonus(string bodyPart, float maxBonus = 0.5f)
         {
             var toFocalAngle = BodyPartsToFocalRoation[bodyPart] * -BodyParts[bodyPart].transform.forward;
             var angleFromUp = Vector3.Angle(toFocalAngle, Vector3.up);
             var qpos2 = (angleFromUp % 180) / 180;
-            var uprightBonus = 0.5f * (2 - (Mathf.Abs(qpos2) * 2) - 1);
+            var uprightBonus = maxBonus * (2 - (Mathf.Abs(qpos2) * 2) - 1);
             return uprightBonus;
         }
 
@@ -420,21 +420,21 @@ namespace MLAgents
                 $"{bodyPart}: l: {angleFromLeft}, r: {angleFromRight}, f: {angleFromForward}, b: {angleFromBack}, u: {angleFromUp}, d: {angleFromDown}");
         }
 
-        internal float GetLeftBonus(string bodyPart)
+        internal float GetLeftBonus(string bodyPart, float maxBonus = 0.5f)
         {
-            var bonus = GetDirectionBonus(bodyPart, Vector3.left);
+            var bonus = GetDirectionBonus(bodyPart, Vector3.left, maxBonus);
             return bonus;
         }
 
-        internal float GetRightBonus(string bodyPart)
+        internal float GetRightBonus(string bodyPart, float maxBonus = 0.5f)
         {
-            var bonus = GetDirectionBonus(bodyPart, Vector3.right);
+            var bonus = GetDirectionBonus(bodyPart, Vector3.right, maxBonus);
             return bonus;
         }
 
-        internal float GetForwardBonus(string bodyPart)
+        internal float GetForwardBonus(string bodyPart, float maxBonus = 0.5f)
         {
-            var bonus = GetDirectionBonus(bodyPart, Vector3.forward);
+            var bonus = GetDirectionBonus(bodyPart, Vector3.forward, maxBonus);
             return bonus;
         }
 

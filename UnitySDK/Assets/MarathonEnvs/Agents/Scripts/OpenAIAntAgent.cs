@@ -34,13 +34,17 @@ public class OpenAIAntAgent : MarathonAgent
         }
 
         var pelvis = BodyParts["pelvis"];
-        AddVectorObs(pelvis.velocity);
+        Vector3 normalizedVelocity = GetNormalizedVelocity(pelvis.velocity);
+        AddVectorObs(normalizedVelocity);
         AddVectorObs(pelvis.transform.forward); // gyroscope 
         AddVectorObs(pelvis.transform.up);
 
         AddVectorObs(SensorIsInTouch);
         JointRotations.ForEach(x => AddVectorObs(x));
         AddVectorObs(JointVelocity);
+        Vector3 normalizedFootPosition = GetNormalizedPosition(pelvis.transform.position);
+        AddVectorObs(normalizedFootPosition.y);
+
     }
 
     bool TerminateAnt()
@@ -52,17 +56,17 @@ public class OpenAIAntAgent : MarathonAgent
 
     float StepRewardAnt101()
     {
-        float velocity = GetVelocity();
-        float effort = GetEffort();
-        var effortPenality = 0.5f * (float) effort;
-        var jointsAtLimitPenality = GetJointsAtLimitPenality() * 4;
+        float velocity = Mathf.Clamp(GetNormalizedVelocity("pelvis").x, 0f, 1f);
+        float effort = 1f - GetEffortNormalized();
+
+        velocity *= 0.7f;
+        effort *= 0.3f;
 
         var reward = velocity
-                     - jointsAtLimitPenality
-                     - effortPenality;
+                     + effort;
         if (ShowMonitor)
         {
-            var hist = new[] {reward, velocity, -jointsAtLimitPenality, -effortPenality}.ToList();
+            var hist = new[] {reward, velocity}.ToList();
             Monitor.Log("rewardHist", hist.ToArray());
         }
 

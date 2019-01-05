@@ -51,7 +51,7 @@ MonoBehaviour:
   DebugOutput: 0
   Force2D: 0
   OnGenerateApplyRandom: 0.005
-  DefaultDensity: 100
+  DefaultDensity: 300
   MotorScale: 1
 --- !u!114 &114612892920136778
 MonoBehaviour:
@@ -88,3 +88,6 @@ MonoBehaviour:
   JointRotations: []
   MarathonJoints: []
   MarathonSensors: []
+  Observations: []
+  ObservationNormalizedErrors: 0
+  MaxObservationNormalizedErrors: 0

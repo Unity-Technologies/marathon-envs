@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: OpenAIAntBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 53
+    vectorObservationSize: 54
     numStackedVectorObservations: 1
     vectorActionSize: 08000000
     cameraResolutions: []
@@ -27,4 +27,4 @@ MonoBehaviour:
     - 
     - 
     vectorActionSpaceType: 1
-  model: {fileID: 4900000, guid: 4a7f20b5b252d7d47a4eac39c1fc716b, type: 3}
+  model: {fileID: 4900000, guid: 2488a761ef9e5b545a76e0bc3a574fd6, type: 3}

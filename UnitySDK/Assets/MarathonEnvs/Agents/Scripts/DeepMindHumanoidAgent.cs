@@ -26,6 +26,11 @@ public class DeepMindHumanoidAgent : MarathonAgent
         BodyParts["right_thigh"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "right_thigh");
         BodyParts["left_uarm"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "left_upper_arm");
         BodyParts["right_uarm"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "right_upper_arm");
+        BodyParts["left_foot_left"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "left_left_foot");
+        BodyParts["left_foot_right"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "right_left_foot");
+        BodyParts["right_foot_left"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "right_right_foot");
+        BodyParts["right_foot_right"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "left_right_foot");
+
 
         base.SetupBodyParts();
 
@@ -47,7 +52,8 @@ public class DeepMindHumanoidAgent : MarathonAgent
         var pelvis = BodyParts["pelvis"];
         var shoulders = BodyParts["shoulders"];
 
-        AddVectorObs(pelvis.velocity);
+        Vector3 normalizedVelocity = GetNormalizedVelocity(pelvis.velocity);
+        AddVectorObs(normalizedVelocity);
         AddVectorObs(pelvis.transform.forward); // gyroscope 
         AddVectorObs(pelvis.transform.up);
 
@@ -57,6 +63,13 @@ public class DeepMindHumanoidAgent : MarathonAgent
         AddVectorObs(SensorIsInTouch);
         JointRotations.ForEach(x => AddVectorObs(x));
         AddVectorObs(JointVelocity);
+        AddVectorObs(new []{
+            GetNormalizedPosition(BodyParts["left_foot_left"].transform.position).y,
+            GetNormalizedPosition(BodyParts["left_foot_right"].transform.position).y,
+            GetNormalizedPosition(BodyParts["right_foot_left"].transform.position).y,
+            GetNormalizedPosition(BodyParts["right_foot_right"].transform.position).y,
+            });
+
     }
 
 
@@ -75,33 +88,48 @@ public class DeepMindHumanoidAgent : MarathonAgent
 
     float StepRewardDeepMindHumanoid101()
     {
-        _velocity = GetVelocity();
-        _heightPenality = GetHeightPenality(1.2f);
+        _velocity = Mathf.Clamp(GetNormalizedVelocity("pelvis").x, 0f, 1f);
+        _heightBonus = 1f-GetHeightPenality(1.2f);
         _uprightBonus =
-            (GetUprightBonus("shoulders") / 6)
-            + (GetUprightBonus("waist") / 6)
-            + (GetUprightBonus("pelvis") / 6);
+            (GetUprightBonus("shoulders", 1f / 3))
+            + (GetUprightBonus("waist", 1f / 3))
+            + (GetUprightBonus("pelvis", 1f / 3));
         _forwardBonus =
-            (GetForwardBonus("shoulders") / 4)
-            + (GetForwardBonus("waist") / 6)
-            + (GetForwardBonus("pelvis") / 6);
+            (GetForwardBonus("shoulders", 1f / 3))
+            + (GetForwardBonus("waist", 1f / 3))
+            + (GetForwardBonus("pelvis", 1f / 3));
 
-        float leftThighPenality = Mathf.Abs(GetLeftBonus("left_thigh"));
-        float rightThighPenality = Mathf.Abs(GetRightBonus("right_thigh"));
-        _limbPenalty = leftThighPenality + rightThighPenality;
-        _limbPenalty = Mathf.Min(0.5f, _limbPenalty);
+        float leftThighPenality = Mathf.Abs(GetLeftBonus("left_thigh", .5f));
+        float rightThighPenality = Mathf.Abs(GetRightBonus("right_thigh", .5f));
+        _limbBonus = 1f-(leftThighPenality + rightThighPenality);
         _finalPhaseBonus = GetPhaseBonus();
-        _jointsAtLimitPenality = GetJointsAtLimitPenality() * 4;
-        float effort = GetEffort(new string[] {"right_hip_y", "right_knee", "left_hip_y", "left_knee"});
-        _effortPenality = 0.05f * (float) effort;
-        _reward = _velocity
-                     + _uprightBonus
-                     + _forwardBonus
-                     + _finalPhaseBonus
-                     - _heightPenality
-                     - _limbPenalty
-                     - _jointsAtLimitPenality
-                     - _effortPenality;
+        // _jointsAtLimitPenality = GetJointsAtLimitPenality() * 4;
+        _effort = 1f - GetEffortNormalized(new string[] {"right_hip_y", "right_knee", "left_hip_y", "left_knee"});
+        
+        _velocity = Mathf.Clamp(_velocity, 0f, 1f);
+        _uprightBonus = Mathf.Clamp(_uprightBonus, 0f, 1f);
+        _forwardBonus = Mathf.Clamp(_forwardBonus, 0f, 1f);
+        _finalPhaseBonus = Mathf.Clamp(_finalPhaseBonus, 0f, 1f);
+        _heightBonus = Mathf.Clamp(_heightBonus, 0f, 1f);
+        _limbBonus = Mathf.Clamp(_limbBonus, 0f, 1f);
+        _effort = Mathf.Clamp(_effort, 0f, 1f);
+
+        _reward =       (_velocity * .9f)
+                     +  (_uprightBonus * 0.02f)
+                     +  (_forwardBonus * 0.02f)
+                     +  (_finalPhaseBonus * 0.02f)
+                     +  (_heightBonus * 0.02f)
+                     +  (_limbBonus * 0f)
+                     +  (_effort * 0.02f);
+
+        // _reward =       (_velocity * 0.7f)
+        //              +  (_uprightBonus * 0.02f)
+        //              +  (_forwardBonus * 0.02f)
+        //              +  (_finalPhaseBonus * 0.02f)
+        //              +  (_heightBonus * 0.02f)
+        //              +  (_limbBonus * 0.02f)
+        //              +  (_effort * 0.2f);
+
         if (ShowMonitor)
         {
             var hist = new[]
@@ -110,10 +138,9 @@ public class DeepMindHumanoidAgent : MarathonAgent
                 _uprightBonus,
                 _forwardBonus,
                 _phaseBonus,
-                -_heightPenality,
-                -_limbPenalty,
-                -_jointsAtLimitPenality,
-                -_effortPenality
+                _heightBonus,
+                _limbBonus,
+                _effort
             }.ToList();
             Monitor.Log("rewardHist", hist.ToArray());
         }
@@ -142,10 +169,9 @@ public class DeepMindHumanoidAgent : MarathonAgent
     public float _uprightBonus;
     public float _forwardBonus;
     public float _finalPhaseBonus;
-    public float _heightPenality;
-    public float _limbPenalty;
-    public float _jointsAtLimitPenality;
-    public float _effortPenality;
+    public float _heightBonus;
+    public float _limbBonus;
+    public float _effort;
 
 
     public float LeftMin;
