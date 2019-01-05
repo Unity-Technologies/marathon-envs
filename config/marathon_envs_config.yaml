@@ -55,7 +55,7 @@ DeepMindHumanoidBrain:
 
 DeepMindHopperBrain:
     num_epoch: 10 
-    time_horizon: 500 
+    time_horizon: 100 
     summary_freq: 100000
     use_recurrent: false
     normalize: false 
@@ -69,7 +69,7 @@ DeepMindHopperBrain:
 
 DeepMindWalkerBrain:
     num_epoch: 10 
-    time_horizon: 500 
+    time_horizon: 100 
     summary_freq: 100000
     use_recurrent: false
     normalize: false 
@@ -83,7 +83,7 @@ DeepMindWalkerBrain:
 
 OpenAIAntBrain:
     num_epoch: 10 
-    time_horizon: 500 
+    time_horizon: 100 
     summary_freq: 100000
     use_recurrent: false
     normalize: false 
