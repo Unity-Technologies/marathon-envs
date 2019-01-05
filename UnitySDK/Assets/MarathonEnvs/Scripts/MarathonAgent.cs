@@ -122,7 +122,7 @@ namespace MLAgents
         List<float> qvel;
         List<float> recentVelocity;
 
-        List <float> mphBuffer;
+        List <Vector3> mphBuffer;
 
 
         public override void AgentReset()
@@ -130,7 +130,7 @@ namespace MLAgents
             if (marathonSpawner == null)
                 marathonSpawner = GetComponent<MarathonSpawner>();
 
-            mphBuffer = new List<float>();
+            mphBuffer = new List<Vector3>();
 
             Transform[] allChildren = GetComponentsInChildren<Transform>();
             if (_hasValidModel)
@@ -323,17 +323,6 @@ namespace MLAgents
 
             var maxSpeed = 4f; // meters per second
             var velocity = rawVelocity / maxSpeed;
-            var mph = rawVelocity * 2.236936f;
-            mphBuffer.Add(mph);
-            if (mphBuffer.Count > 100)
-                mphBuffer.RemoveAt(0);
-            var aveMph = mphBuffer.Average();
-            if (ShowMonitor)
-            {
-                Monitor.Log("MaxDistance", FocalPointMaxDistanceTraveled.ToString());
-                Monitor.Log("MPH: ", (aveMph).ToString());
-            }
-
             return velocity;
         }
 
@@ -341,6 +330,20 @@ namespace MLAgents
         {
             var metersPerSecond = GetRawVelocity(bodyPart);
             var normalizedVelocity = GetNormalizedVelocity(metersPerSecond);
+            Vector3 mph = metersPerSecond * 2.236936f;
+            mphBuffer.Add(mph);
+            if (mphBuffer.Count > 100)
+                mphBuffer.RemoveAt(0);
+            var aveMph = new Vector3(
+                mphBuffer.Select(x=>x.x).Average(),
+                mphBuffer.Select(x=>x.y).Average(),
+                mphBuffer.Select(x=>x.z).Average()
+            );
+            if (ShowMonitor)
+            {
+                Monitor.Log("MaxDistance", FocalPointMaxDistanceTraveled.ToString());
+                Monitor.Log("MPH: ", (aveMph).ToString());
+            }            
             return normalizedVelocity;
         }
         internal Vector3 GetNormalizedVelocity(Vector3 metersPerSecond)
