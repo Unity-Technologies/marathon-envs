@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.49641287, b: 0.5748173, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -285,7 +285,7 @@ MonoBehaviour:
     - agentId: Humanoid-v0
       agentPrefab: {fileID: 114027728797193598, guid: ea2996ac9c4d10b43852d03dc7f23bcb,
         type: 3}
-    agentIdDefault: Humanoid-v0
+    agentIdDefault: Hopper-v0
     trainingNumAgentsDefault: 16
     inferenceNumAgentsDefault: 16
     worldBoundsMinOffset: {x: -250, y: 0, z: -250}
@@ -334,6 +334,7 @@ GameObject:
   - component: {fileID: 1715640922}
   - component: {fileID: 1715640921}
   - component: {fileID: 1715640926}
+  - component: {fileID: 1715640927}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -439,3 +440,15 @@ MonoBehaviour:
   clampToFloor: 0
   heightDamping: 5
   rotationDamping: 0
+--- !u!114 &1715640927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1715640920}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a9e2fdc315194dc282838c50530361d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
