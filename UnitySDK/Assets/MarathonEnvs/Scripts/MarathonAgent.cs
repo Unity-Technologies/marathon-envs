@@ -153,7 +153,7 @@ namespace MLAgents
                     }
                 }
 
-                marathonSpawner.ApplyRandom();
+                marathonSpawner?.ApplyRandom();
                 SetupMarathon();
                 UpdateQ();
                 return;
@@ -176,7 +176,7 @@ namespace MLAgents
 
             Resources.UnloadUnusedAssets();
 
-            marathonSpawner.SpawnFromXml();
+            marathonSpawner?.SpawnFromXml();
             allChildren = GetComponentsInChildren<Transform>();
             transformsPosition = new Dictionary<GameObject, Vector3>();
             transformsRotation = new Dictionary<GameObject, Quaternion>();
@@ -186,7 +186,7 @@ namespace MLAgents
                 transformsRotation[child.gameObject] = child.rotation;
             }
 
-            marathonSpawner.ApplyRandom();
+            marathonSpawner?.ApplyRandom();
             SetupMarathon();
             UpdateQ();
             _hasValidModel = true;
@@ -195,7 +195,8 @@ namespace MLAgents
 
         void SetupMarathon()
         {
-            NumSensors = MarathonSensors.Count;
+            // NumSensors = MarathonSensors.Count;
+            NumSensors = 0;
         }
 
         internal void SetupBodyParts()

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DeepMindHumanoidBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 92
+    vectorObservationSize: 255
     numStackedVectorObservations: 1
     vectorActionSize: 15000000
     cameraResolutions: []
