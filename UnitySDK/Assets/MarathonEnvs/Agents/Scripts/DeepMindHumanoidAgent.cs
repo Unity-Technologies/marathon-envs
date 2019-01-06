@@ -114,21 +114,25 @@ public class DeepMindHumanoidAgent : MarathonAgent
         _limbBonus = Mathf.Clamp(_limbBonus, 0f, 1f);
         _effort = Mathf.Clamp(_effort, 0f, 1f);
 
-        _reward =       (_velocity * .9f)
-                     +  (_uprightBonus * 0.02f)
-                     +  (_forwardBonus * 0.02f)
-                     +  (_finalPhaseBonus * 0.02f)
-                     +  (_heightBonus * 0.02f)
-                     +  (_limbBonus * 0f)
-                     +  (_effort * 0.02f);
+        var velocity = _velocity * 0.4f;
+        var effort = _effort;
+        if (velocity >= .4f)
+            effort *= 0.4f;
+        else
+            effort *= velocity;
+        var uprightBonus = _uprightBonus * 0.02f;
+        var forwardBonus = _forwardBonus * 0.02f;
+        var finalPhaseBonus = _finalPhaseBonus * 0.02f;
+        var heightBonus = _heightBonus * 0.02f;
+        var limbBonus = _limbBonus * 0.02f;
 
-        // _reward =       (_velocity * 0.7f)
-        //              +  (_uprightBonus * 0.02f)
-        //              +  (_forwardBonus * 0.02f)
-        //              +  (_finalPhaseBonus * 0.02f)
-        //              +  (_heightBonus * 0.02f)
-        //              +  (_limbBonus * 0.02f)
-        //              +  (_effort * 0.2f);
+        _reward =   velocity 
+                    + uprightBonus
+                    + forwardBonus
+                    + finalPhaseBonus
+                    + heightBonus
+                    + limbBonus
+                    + effort;
 
         if (ShowMonitor)
         {

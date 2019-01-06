@@ -21,6 +21,8 @@ public class DeepMindWalkerAgent : MarathonAgent
         BodyParts["pelvis"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "torso");
         BodyParts["left_thigh"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "left_thigh");
         BodyParts["right_thigh"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "right_thigh");
+        BodyParts["right_foot"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "right_foot");
+        BodyParts["left_foot"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "left_foot");
         SetupBodyParts();
     }
 
@@ -44,6 +46,10 @@ public class DeepMindWalkerAgent : MarathonAgent
         AddVectorObs(SensorIsInTouch);
         JointRotations.ForEach(x => AddVectorObs(x));
         AddVectorObs(JointVelocity);
+        AddVectorObs(new []{
+            GetNormalizedPosition(BodyParts["left_foot"].transform.position).y,
+            GetNormalizedPosition(BodyParts["right_foot"].transform.position).y
+        });
     }
 
     float StepRewardWalker106()
@@ -55,20 +61,24 @@ public class DeepMindWalkerAgent : MarathonAgent
         float velocity = Mathf.Clamp(GetNormalizedVelocity("pelvis").x, 0f, 1f);
         float effort = 1f - GetEffortNormalized();
 
+        if (ShowMonitor)
+        {
+            var hist = new[] {velocity, uprightBonus, heightPenality, effort}.ToList();
+            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.INDEPENDENT);
+        }
+
         heightPenality *= 0.05f;
         uprightBonus *= 0.05f;
-        velocity *= 0.7f;
-        effort *= 0.2f;
+        velocity *= 0.4f;
+        if (velocity >= .4f)
+            effort *= 0.4f;
+        else
+            effort *= velocity;
 
         var reward = velocity
                      + uprightBonus
                      + heightPenality
                      + effort;
-        if (ShowMonitor)
-        {
-            var hist = new[] {reward, velocity, uprightBonus, heightPenality, effort}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.INDEPENDENT);
-        }
 
         return reward;
     }

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DeepMindWalkerBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 41
+    vectorObservationSize: 43
     numStackedVectorObservations: 1
     vectorActionSize: 06000000
     cameraResolutions: []

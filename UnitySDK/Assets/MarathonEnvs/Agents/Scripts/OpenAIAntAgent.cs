@@ -60,7 +60,11 @@ public class OpenAIAntAgent : MarathonAgent
         float effort = 1f - GetEffortNormalized();
 
         velocity *= 0.7f;
-        effort *= 0.3f;
+        if (velocity >= .3f)
+            effort *= 0.3f;
+        else
+            effort *= velocity;
+
 
         var reward = velocity
                      + effort;

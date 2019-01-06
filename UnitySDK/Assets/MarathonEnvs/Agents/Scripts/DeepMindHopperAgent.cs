@@ -84,10 +84,10 @@ public class DeepMindHopperAgent : MarathonAgent
 
         uprightBonus *= 0.05f;
         velocity *= 0.7f;
-        effort *= 0.25f;
-        // uprightBonus *= 0f;
-        // velocity *= .7f;
-        // effort *= 0.3f;
+        if (velocity >= .25f)
+            effort *= 0.25f;
+        else
+            effort *= velocity;
 
         var reward = velocity
                      + uprightBonus
