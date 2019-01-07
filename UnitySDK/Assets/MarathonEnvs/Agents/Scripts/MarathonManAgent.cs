@@ -269,6 +269,10 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 			else
 	             _scoreHistogramData.SetItem(column, AverageReward);
         }
+		// HACK first spawned agent should grab the camera
+		var smoothFollow = FindObjectOfType<SmoothFollow>();
+		if (smoothFollow != null && smoothFollow.target == null)
+			smoothFollow.target = _master.CameraTarget;
 	}
 	public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
 	{

@@ -2177,7 +2177,7 @@ MonoBehaviour:
   UseRandomIndexForTraining: 1
   UseRandomIndexForInference: 1
   CameraFollowMe: 0
-  CameraTarget: {fileID: 0}
+  CameraTarget: {fileID: 8719972220993353125}
   IsInferenceMode: 0
 --- !u!1 &8722159205191571325
 GameObject:

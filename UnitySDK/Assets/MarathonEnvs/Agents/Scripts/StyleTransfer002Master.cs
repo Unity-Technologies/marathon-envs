@@ -78,11 +78,11 @@ public class StyleTransfer002Master : MonoBehaviour {
 
 	// Use this for initialization
 	void Awake () {
-		foreach (var rb in GetComponentsInChildren<Rigidbody>())
-		{
-			if (rb.useGravity == false)
-				rb.solverVelocityIterations = 255;
-		}
+		// foreach (var rb in GetComponentsInChildren<Rigidbody>())
+		// {
+		// 	if (rb.useGravity == false)
+		// 		rb.solverVelocityIterations = 255;
+		// }
 	}
 
 	void FixedUpdate()
