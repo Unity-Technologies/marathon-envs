@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: TestBedHuristicBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 255
+    vectorObservationSize: 248
     numStackedVectorObservations: 1
     vectorActionSize: 15000000
     cameraResolutions: []

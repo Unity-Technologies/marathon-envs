@@ -290,8 +290,8 @@ MonoBehaviour:
   - 0
   - 0
   ApplyRandomActions: 0
-  FreezeHead: 1
-  FreezeHips: 1
+  FreezeHead: 0
+  FreezeHips: 0
 --- !u!4 &1467993923
 Transform:
   m_ObjectHideFlags: 0

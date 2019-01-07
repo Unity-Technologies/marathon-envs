@@ -18,6 +18,10 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 
 	public bool ShowMonitor = false;
 
+	public List<float> Observations;
+	public int ObservationNormalizedErrors;
+	public int MaxObservationNormalizedErrors;
+
 	static int _startCount;
 	static ScoreHistogramData _scoreHistogramData;
 	int _totalAnimFrames;
@@ -42,9 +46,10 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 
 	override public void CollectObservations()
 	{
-		AddVectorObs(_master.ObsPhase);
+		// AddVectorObs(_master.ObsPhase);
 		foreach (var bodyPart in _master.BodyParts)
 		{
+			bodyPart.UpdateObservations();
 			AddVectorObs(bodyPart.ObsLocalPosition);
 			AddVectorObs(bodyPart.ObsRotation);
 			AddVectorObs(bodyPart.ObsRotationVelocity);
@@ -52,6 +57,7 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 		}
 		foreach (var muscle in _master.Muscles)
 		{
+			muscle.UpdateObservations();
 			if (muscle.ConfigurableJoint.angularXMotion != ConfigurableJointMotion.Locked)
 				AddVectorObs(muscle.TargetNormalizedRotationX);
 			if (muscle.ConfigurableJoint.angularYMotion != ConfigurableJointMotion.Locked)
@@ -60,9 +66,26 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 				AddVectorObs(muscle.TargetNormalizedRotationZ);
 		}
 
-		AddVectorObs(_master.ObsCenterOfMass);
-		AddVectorObs(_master.ObsVelocity);
-		AddVectorObs(SensorIsInTouch);	
+		// AddVectorObs(_master.ObsCenterOfMass);
+		// AddVectorObs(_master.ObsVelocity);
+		AddVectorObs(SensorIsInTouch);
+
+		var info = GetInfo();
+		if (Observations?.Count != info.vectorObservation.Count)
+			Observations = Enumerable.Range(0, info.vectorObservation.Count).Select(x => 0f).ToList();
+		ObservationNormalizedErrors = 0;
+		for (int i = 0; i < Observations.Count; i++)
+		{
+			Observations[i] = info.vectorObservation[i];
+			var x = Mathf.Abs(Observations[i]);
+			var e = Mathf.Epsilon;
+			bool is1 = Mathf.Approximately(x, 1f);
+			if ((x > 1f + e) && !is1)
+				ObservationNormalizedErrors++;
+		}
+		if (ObservationNormalizedErrors > MaxObservationNormalizedErrors)
+			MaxObservationNormalizedErrors = ObservationNormalizedErrors;
+
 	}
 
 	public override void AgentAction(float[] vectorAction, string textAction)
@@ -312,25 +335,25 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 
 
 	public void OnSensorCollisionEnter(Collider sensorCollider, GameObject other) {
-			if (string.Compare(other.name, "Terrain", true) !=0)
-                return;
-            var sensor = _sensors
-                .FirstOrDefault(x=>x == sensorCollider.gameObject);
-            if (sensor != null) {
-                var idx = _sensors.IndexOf(sensor);
-                SensorIsInTouch[idx] = 1f;
-            }
+		if (string.Compare(other.name, "Terrain", true) !=0)
+			return;
+		var sensor = _sensors
+			.FirstOrDefault(x=>x == sensorCollider.gameObject);
+		if (sensor != null) {
+			var idx = _sensors.IndexOf(sensor);
+			SensorIsInTouch[idx] = 1f;
 		}
-        public void OnSensorCollisionExit(Collider sensorCollider, GameObject other)
-        {
-            if (string.Compare(other.gameObject.name, "Terrain", true) !=0)
-                return;
-            var sensor = _sensors
-                .FirstOrDefault(x=>x == sensorCollider.gameObject);
-            if (sensor != null) {
-                var idx = _sensors.IndexOf(sensor);
-                SensorIsInTouch[idx] = 0f;
-            }
-        }  
+	}
+	public void OnSensorCollisionExit(Collider sensorCollider, GameObject other)
+	{
+		if (string.Compare(other.gameObject.name, "Terrain", true) !=0)
+			return;
+		var sensor = _sensors
+			.FirstOrDefault(x=>x == sensorCollider.gameObject);
+		if (sensor != null) {
+			var idx = _sensors.IndexOf(sensor);
+			SensorIsInTouch[idx] = 0f;
+		}
+	}  
 
 }
