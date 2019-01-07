@@ -27,16 +27,23 @@ public class MarathonTestBedController : MonoBehaviour
     void FreezeBodyParts()
     {
 
-        var marathonAgents = FindObjectsOfType<MarathonAgent>();
+        var marathonAgents = FindObjectsOfType<Agent>();
         foreach (var agent in marathonAgents)
         {
             Rigidbody head = null;
             Rigidbody butt = null;
+            Rigidbody[] children = null;
             switch (agent.name)
             {
+                case "MarathonMan":
+                    _hasFrozen = true;
+                    children = agent.GetComponentsInChildren<Rigidbody>();
+                    head = children.FirstOrDefault(x=>x.name=="torso");
+                    butt = children.FirstOrDefault(x=>x.name=="butt");
+                    break;
                 case "humanoid":
                     _hasFrozen = true;
-                    var children = agent.GetComponentsInChildren<Rigidbody>();
+                    children = agent.GetComponentsInChildren<Rigidbody>();
                     head = children.FirstOrDefault(x=>x.name=="head");
                     butt = children.FirstOrDefault(x=>x.name=="butt");
                     break;
