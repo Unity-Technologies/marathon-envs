@@ -2014,7 +2014,6 @@ GameObject:
   - component: {fileID: 8719875636317608491}
   - component: {fileID: 8690789666678175709}
   - component: {fileID: 6637013144633364566}
-  - component: {fileID: 6600372709342886043}
   m_Layer: 0
   m_Name: MarathonMan
   m_TagString: Untagged
@@ -2126,59 +2125,20 @@ MonoBehaviour:
     skipActionsWithDecisions: 1
   agentBoundsMaxOffset: {x: 250, y: 2, z: 0.5}
   agentBoundsMinOffset: {x: 0, y: 0, z: -0.5}
+  FixedDeltaTime: 0.005
+  CameraTarget: {fileID: 8719972220993353125}
   FrameReward: 0
   AverageReward: 0
   Rewards: []
   SensorIsInTouch: []
-  ShowMonitor: 0
---- !u!114 &6600372709342886043
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8722076229893094739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbee4689469f148ca897ef6aabbab08d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  FixedDeltaTime: 0.005
-  visualizeAnimator: 1
   Muscles: []
   BodyParts: []
-  ObsPhase: 0
-  ObsCenterOfMass: {x: 0, y: 0, z: 0}
-  ObsVelocity: {x: 0, y: 0, z: 0}
-  EndEffectorDistance: 0
-  FeetRotationDistance: 0
-  EndEffectorVelocityDistance: 0
-  RotationDistance: 0
-  VelocityDistance: 0
-  CenterOfMassDistance: 0
-  SensorDistance: 0
-  MaxEndEffectorDistance: 0
-  MaxFeetRotationDistance: 0
-  MaxEndEffectorVelocityDistance: 0
-  MaxRotationDistance: 0
-  MaxVelocityDistance: 0
-  MaxCenterOfMassDistance: 0
-  MaxSensorDistance: 0
-  IgnorRewardUntilObservation: 0
-  ErrorCutoff: 0
-  DebugShowWithOffset: 0
-  DebugMode: 0
+  ShowMonitor: 0
   DebugDisableMotor: 0
-  DebugAnimOffset: 0
-  TimeStep: 0
-  AnimationIndex: 0
-  EpisodeAnimationIndex: 0
-  StartAnimationIndex: 0
-  UseRandomIndexForTraining: 1
-  UseRandomIndexForInference: 1
-  CameraFollowMe: 0
-  CameraTarget: {fileID: 8719972220993353125}
-  IsInferenceMode: 0
+  Observations: []
+  ObservationNormalizedErrors: 0
+  MaxObservationNormalizedErrors: 0
+  DebugShowWithOffset: 0
 --- !u!1 &8722159205191571325
 GameObject:
   m_ObjectHideFlags: 0

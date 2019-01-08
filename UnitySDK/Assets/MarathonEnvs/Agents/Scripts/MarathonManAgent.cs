@@ -6,32 +6,90 @@ using System.Linq;
 
 public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 
+	public float FixedDeltaTime = 0.005f;
+	public Transform CameraTarget;
+
 	public float FrameReward;
 	public float AverageReward;
 	public List<float> Rewards;
 	public List<float> SensorIsInTouch;
-	StyleTransfer002Master _master;
-	// StyleTransfer002Animator _styleAnimator;
-	// StyleTransfer002TrainerAgent _trainerAgent;
+
+	public List<Muscle002> Muscles;
+	public List<BodyPart002> BodyParts;
 
 	List<GameObject> _sensors;
 
 	public bool ShowMonitor = false;
+	public bool DebugDisableMotor;
 
 	public List<float> Observations;
 	public int ObservationNormalizedErrors;
 	public int MaxObservationNormalizedErrors;
+	public bool DebugShowWithOffset;
 
 	static int _startCount;
-	static ScoreHistogramData _scoreHistogramData;
-	int _totalAnimFrames;
-	bool _ignorScoreForThisFrame;
+	// static ScoreHistogramData _scoreHistogramData;
 
 	// Use this for initialization
+	void FixedUpdate()
+	{
+		foreach (var muscle in Muscles)
+		{
+			var i = Muscles.IndexOf(muscle);
+			muscle.UpdateObservations();
+			if (!DebugShowWithOffset && !DebugDisableMotor)
+				muscle.UpdateMotor();
+			if (!muscle.Rigidbody.useGravity)
+				continue; // skip sub joints
+		}
+	}
 	void Start () {
-		_master = GetComponent<StyleTransfer002Master>();
-		// _styleAnimator = FindObjectOfType<StyleTransfer002Animator>();
-		// _trainerAgent = FindObjectOfType<StyleTransfer002TrainerAgent>();
+		Time.fixedDeltaTime = FixedDeltaTime;
+
+		BodyParts = new List<BodyPart002> ();
+		BodyPart002 root = null;
+		foreach (var t in GetComponentsInChildren<Transform>())
+		{
+			if (BodyHelper002.GetBodyPartGroup(t.name) == BodyHelper002.BodyPartGroup.None)
+				continue;
+			
+			var bodyPart = new BodyPart002{
+				Rigidbody = t.GetComponent<Rigidbody>(),
+				Transform = t,
+				Name = t.name,
+				Group = BodyHelper002.GetBodyPartGroup(t.name), 
+			};
+			if (bodyPart.Group == BodyHelper002.BodyPartGroup.Hips)
+				root = bodyPart;
+			bodyPart.Root = root;
+			bodyPart.Init();
+			BodyParts.Add(bodyPart);
+		}
+		var partCount = BodyParts.Count;
+
+		Muscles = new List<Muscle002> ();
+		var muscles = GetComponentsInChildren<ConfigurableJoint>();
+		ConfigurableJoint rootConfigurableJoint = null;
+		var ragDoll = GetComponent<RagDoll002>();
+		foreach (var m in muscles)
+		{
+			var maximumForce = ragDoll.MusclePowers.First(x=>x.Muscle == m.name).PowerVector;
+			// maximumForce *= 2f;
+			var muscle = new Muscle002{
+				Rigidbody = m.GetComponent<Rigidbody>(),
+				Transform = m.GetComponent<Transform>(),
+				ConfigurableJoint = m,
+				Name = m.name,
+				Group = BodyHelper002.GetMuscleGroup(m.name),
+				MaximumForce = maximumForce
+			};
+			if (muscle.Group == BodyHelper002.MuscleGroup.Hips)
+				rootConfigurableJoint = muscle.ConfigurableJoint;
+			muscle.RootConfigurableJoint = rootConfigurableJoint;
+			muscle.Init();
+
+			Muscles.Add(muscle);			
+		}
 		_startCount++;
 	}
 	
@@ -46,8 +104,8 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 
 	override public void CollectObservations()
 	{
-		// AddVectorObs(_master.ObsPhase);
-		foreach (var bodyPart in _master.BodyParts)
+		// AddVectorObs(ObsPhase);
+		foreach (var bodyPart in BodyParts)
 		{
 			bodyPart.UpdateObservations();
 			AddVectorObs(bodyPart.ObsLocalPosition);
@@ -55,7 +113,7 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 			AddVectorObs(bodyPart.ObsRotationVelocity);
 			AddVectorObs(bodyPart.ObsVelocity);
 		}
-		foreach (var muscle in _master.Muscles)
+		foreach (var muscle in Muscles)
 		{
 			muscle.UpdateObservations();
 			if (muscle.ConfigurableJoint.angularXMotion != ConfigurableJointMotion.Locked)
@@ -66,8 +124,8 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 				AddVectorObs(muscle.TargetNormalizedRotationZ);
 		}
 
-		// AddVectorObs(_master.ObsCenterOfMass);
-		// AddVectorObs(_master.ObsVelocity);
+		// AddVectorObs(ObsCenterOfMass);
+		// AddVectorObs(ObsVelocity);
 		AddVectorObs(SensorIsInTouch);
 
 		var info = GetInfo();
@@ -91,7 +149,7 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 	public override void AgentAction(float[] vectorAction, string textAction)
 	{
 		int i = 0;
-		foreach (var muscle in _master.Muscles)
+		foreach (var muscle in Muscles)
 		{
 			// if(muscle.Parent == null)
 			// 	continue;
@@ -102,133 +160,17 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 			if (muscle.ConfigurableJoint.angularZMotion != ConfigurableJointMotion.Locked)
 				muscle.TargetNormalizedRotationZ = vectorAction[i++];
 		}
-        float effort = GetEffort();
-        var effortPenality = 0.05f * (float)effort;
-		
-		// var poseReward = 1f - _master.RotationDistance;
-		// var velocityReward = 1f - Mathf.Abs(_master.VelocityDistance);
-		// var endEffectorReward = 1f - _master.EndEffectorDistance;
-		// // var feetPoseReward = 1f - _master.FeetRotationDistance;
-		// var centerMassReward = 1f - _master.CenterOfMassDistance;
-		// var sensorReward = 1f - _master.SensorDistance;
+		var reward = 0f;
 
-		var rotationDistanceScale = (float)_master.BodyParts.Count;
-		var velocityDistanceScale = 3f;
-		var endEffectorDistanceScale = 8f;
-		var centerOfMassDistancScalee = 5f;
-		var sensorDistanceScale = 1f;
-		var rotationDistance = _master.RotationDistance;
-		var velocityDistance = Mathf.Abs(_master.VelocityDistance);
-		var endEffectorDistance = _master.EndEffectorDistance;
-		var centerOfMassDistance = _master.CenterOfMassDistance;
-		var sensorDistance = _master.SensorDistance;
-		rotationDistance = Mathf.Clamp(rotationDistance, 0f, rotationDistanceScale);
-		velocityDistance = Mathf.Clamp(velocityDistance, 0f, velocityDistanceScale);
-		endEffectorDistance = Mathf.Clamp(endEffectorDistance, 0f, endEffectorDistanceScale);
-		centerOfMassDistance = Mathf.Clamp(centerOfMassDistance, 0f, centerOfMassDistancScalee);
-		sensorDistance = Mathf.Clamp(sensorDistance, 0f, sensorDistanceScale);
-
-		var rotationReward = (rotationDistanceScale - rotationDistance) / rotationDistanceScale;
-		var velocityReward = (velocityDistanceScale - velocityDistance) / velocityDistanceScale;
-		var endEffectorReward = (endEffectorDistanceScale - endEffectorDistance) / endEffectorDistanceScale;
-		var centerMassReward = (centerOfMassDistancScalee - centerOfMassDistance) / centerOfMassDistancScalee;
-		var sensorReward = (sensorDistanceScale - sensorDistance) / sensorDistanceScale;
-		rotationReward = Mathf.Pow(rotationReward, rotationDistanceScale);
-		velocityReward = Mathf.Pow(velocityReward, velocityDistanceScale);
-		endEffectorReward = Mathf.Pow(endEffectorReward, endEffectorDistanceScale);
-		centerMassReward = Mathf.Pow(centerMassReward, centerOfMassDistancScalee);
-		sensorReward = Mathf.Pow(sensorReward, sensorDistanceScale);
-
-		float rotationRewardScale = .65f*.9f;
-		float velocityRewardScale = .1f*.9f;
-		float endEffectorRewardScale = .15f*.9f;
-		float centerMassRewardScale = .1f*.9f;
-		float sensorRewardScale = .1f*.9f;
-
-		// float poseRewardScale = .65f;
-		// float velocityRewardScale = .1f;
-		// float endEffectorRewardScale = .15f;
-		// // float feetRewardScale = .15f;
-		// float centerMassRewardScale = .1f;
-		// float sensorRewardScale = .1f;
-
-		// poseReward = Mathf.Clamp(poseReward, -1f, 1f);
-		// velocityReward = Mathf.Clamp(velocityReward, -1f, 1f);
-		// endEffectorReward = Mathf.Clamp(endEffectorReward, -1f, 1f);
-		// centerMassReward = Mathf.Clamp(centerMassReward, -1f, 1f);
-		// feetPoseReward = Mathf.Clamp(feetPoseReward, -1f, 1f);
-		// sensorReward = Mathf.Clamp(sensorReward, -1f, 1f);
-        var jointsNotAtLimitReward = 1f - JointsAtLimit();
-		var jointsNotAtLimitRewardScale = .09f;
-
-
-		float distanceReward = 
-			(rotationReward * rotationRewardScale) +
-			(velocityReward * velocityRewardScale) +
-			(endEffectorReward * endEffectorRewardScale) +
-			// (feetPoseReward * feetRewardScale) +
-			(centerMassReward * centerMassRewardScale) + 
-			(sensorReward * sensorRewardScale);
-		float reward = 
-			distanceReward
-			// - effortPenality +
-			+ (jointsNotAtLimitReward * jointsNotAtLimitRewardScale);
-
-		// HACK _startCount used as Monitor does not like reset
-        if (ShowMonitor && _startCount < 2) {
-            // Monitor.Log("start frame hist", Rewards.ToArray());
-            var hist = new []{
-                reward,
-				distanceReward,
-                (jointsNotAtLimitReward * jointsNotAtLimitRewardScale), 
-                // - effortPenality, 
-				(rotationReward * rotationRewardScale),
-				(velocityReward * velocityRewardScale),
-				(endEffectorReward * endEffectorRewardScale),
-				// (feetPoseReward * feetRewardScale),
-				(centerMassReward * centerMassRewardScale),
-				(sensorReward * sensorRewardScale),
-				}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray());
-        }
-
-		if (!_master.IgnorRewardUntilObservation)
-			AddReward(reward);
-		// if (distanceReward < 0.18f && _master.IsInferenceMode == false)
-		// if (distanceReward < 0.334f && _master.IsInferenceMode == false)
-		// if (distanceReward < 0.25f && _master.IsInferenceMode == false)
-		// if (_trainerAgent.ShouldAgentTerminate(distanceReward) && _master.IsInferenceMode == false)
-			// Done();
-		// if (GetStepCount() >= 50 && _master.IsInferenceMode == false)
-		if (distanceReward < 0.334f && _master.IsInferenceMode == false)
-			Done();
-		if (!IsDone()){
-			// // if (distanceReward < _master.ErrorCutoff && !_master.DebugShowWithOffset) {
-			// if (shouldTerminate && !_master.DebugShowWithOffset) {
-			// 	AddReward(-10f);
-			// 	Done();
-			// 	// _master.StartAnimationIndex = _muscleAnimator.AnimationSteps.Count-1;
-			// 	if (_master.StartAnimationIndex < _styleAnimator.AnimationSteps.Count-1)
-			// 		_master.StartAnimationIndex++;
-			// }
-			if (_master.IsDone()){
-				// AddReward(1f*(float)this.GetStepCount());
-				// AddReward(10f);
-				Done();
-				// if (_master.StartAnimationIndex > 0 && distanceReward >= _master.ErrorCutoff)
-				// if (_master.StartAnimationIndex > 0 && !shouldTerminate)
-				if (_master.StartAnimationIndex > 0)
-				 	_master.StartAnimationIndex--;
-			}
-		}
 		FrameReward = reward;
 		var stepCount = GetStepCount() > 0 ? GetStepCount() : 1;
 		AverageReward = GetCumulativeReward() / (float) stepCount;
 	}
+
 	float GetEffort(string[] ignorJoints = null)
 	{
 		double effort = 0;
-		foreach (var muscle in _master.Muscles)
+		foreach (var muscle in Muscles)
 		{
 			if(muscle.Parent == null)
 				continue;
@@ -248,7 +190,7 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 	{
 		int atLimitCount = 0;
 		int totalJoints = 0;
-		foreach (var muscle in _master.Muscles)
+		foreach (var muscle in Muscles)
 		{
 			if(muscle.Parent == null)
 				continue;
@@ -267,35 +209,26 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 		float fractionOfJointsAtLimit = (float)atLimitCount / (float)totalJoints;
 		return fractionOfJointsAtLimit;
 	}
-	public void SetTotalAnimFrames(int totalAnimFrames)
-	{
-		_totalAnimFrames = totalAnimFrames;
-		if (_scoreHistogramData == null) {
-			var columns = _totalAnimFrames / agentParameters.numberOfActionsBetweenDecisions;
-			_scoreHistogramData = new ScoreHistogramData(columns, 30);
-		}
-			Rewards = _scoreHistogramData.GetAverages().Select(x=>(float)x).ToList();
-	}
+	// public void SetTotalAnimFrames(int totalAnimFrames)
+	// {
+	// 	_totalAnimFrames = totalAnimFrames;
+	// 	if (_scoreHistogramData == null) {
+	// 		var columns = _totalAnimFrames / agentParameters.numberOfActionsBetweenDecisions;
+	// 		_scoreHistogramData = new ScoreHistogramData(columns, 30);
+	// 	}
+	// 		Rewards = _scoreHistogramData.GetAverages().Select(x=>(float)x).ToList();
+	// }
 
 	public override void AgentReset()
 	{
-		_ignorScoreForThisFrame = true;
-		_master.ResetPhase();
 		_sensors = GetComponentsInChildren<SensorBehavior>()
 			.Select(x=>x.gameObject)
 			.ToList();
 		SensorIsInTouch = Enumerable.Range(0,_sensors.Count).Select(x=>0f).ToList();
-		if (_scoreHistogramData != null) {
-			var column = _master.StartAnimationIndex / agentParameters.numberOfActionsBetweenDecisions;
-			if (_ignorScoreForThisFrame)
-				_ignorScoreForThisFrame = false;
-			else
-	             _scoreHistogramData.SetItem(column, AverageReward);
-        }
 		// HACK first spawned agent should grab the camera
 		var smoothFollow = FindObjectOfType<SmoothFollow>();
 		if (smoothFollow != null && smoothFollow.target == null)
-			smoothFollow.target = _master.CameraTarget;
+			smoothFollow.target = CameraTarget;
 	}
 	public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
 	{
@@ -303,7 +236,7 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 			return;
 		// if (!_styleAnimator.AnimationStepsReady)
 		// 	return;
-		var bodyPart = _master.BodyParts.FirstOrDefault(x=>x.Transform.gameObject == other);
+		var bodyPart = BodyParts.FirstOrDefault(x=>x.Transform.gameObject == other);
 		if (bodyPart == null)
 			return;
 		switch (bodyPart.Group)
@@ -319,7 +252,7 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 			default:
 				// AddReward(-100f);
 				Done();
-				// if (_master.IsInferenceMode == false)
+				// if (IsInferenceMode == false)
 				// 	Done();
 				break;
 			// case BodyHelper002.BodyPartGroup.Hand:
@@ -355,5 +288,34 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 			SensorIsInTouch[idx] = 0f;
 		}
 	}  
+	Vector3 GetCenterOfMass()
+	{
+		var centerOfMass = Vector3.zero;
+		float totalMass = 0f;
+		var bodies = BodyParts
+			.Select(x=>x.Rigidbody)
+			.Where(x=>x!=null)
+			.ToList();
+		foreach (Rigidbody rb in bodies)
+		{
+			centerOfMass += rb.worldCenterOfMass * rb.mass;
+			totalMass += rb.mass;
+		}
+		centerOfMass /= totalMass;
+		centerOfMass -= transform.parent.position;
+		return centerOfMass;
+	}
 
+	float NextGaussian(float mu = 0, float sigma = 1)
+	{
+		var u1 = UnityEngine.Random.value;
+		var u2 = UnityEngine.Random.value;
+
+		var rand_std_normal = Mathf.Sqrt(-2.0f * Mathf.Log(u1)) *
+							Mathf.Sin(2.0f * Mathf.PI * u2);
+
+		var rand_normal = mu + sigma * rand_std_normal;
+
+		return rand_normal;
+	}
 }
