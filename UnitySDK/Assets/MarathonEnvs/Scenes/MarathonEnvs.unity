@@ -269,7 +269,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   broadcastHub:
     broadcastingBrains:
-    - {fileID: 11400000, guid: 6ecfdf95a9eee4a2580de3d7224c2cdb, type: 2}
+    - {fileID: 11400000, guid: 1b23b0637158f4bf1a0a53eee29cbdac, type: 2}
     _brainsToControl:
     - {fileID: 11400000, guid: 6ecfdf95a9eee4a2580de3d7224c2cdb, type: 2}
     - {fileID: 11400000, guid: bc7914b266edc45269ac68e42404a71e, type: 2}
