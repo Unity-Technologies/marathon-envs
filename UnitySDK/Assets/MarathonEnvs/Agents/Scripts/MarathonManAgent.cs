@@ -11,7 +11,6 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 
 	public float FrameReward;
 	public float AverageReward;
-	public List<float> Rewards;
 	public List<float> SensorIsInTouch;
 
 	public List<Muscle002> Muscles;
@@ -28,6 +27,7 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 	public bool DebugShowWithOffset;
 
 	static int _startCount;
+	float[] lastVectorAction;
 	// static ScoreHistogramData _scoreHistogramData;
 
 	// Use this for initialization
@@ -102,16 +102,52 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 
 	}
 
+	// override public void CollectObservations()
+	// {
+	// 	// AddVectorObs(ObsPhase);
+	// 	foreach (var bodyPart in BodyParts)
+	// 	{
+	// 		bodyPart.UpdateObservations();
+	// 		AddVectorObs(bodyPart.ObsLocalPosition);
+	// 		AddVectorObs(bodyPart.ObsRotation);
+	// 		AddVectorObs(bodyPart.ObsRotationVelocity);
+	// 		AddVectorObs(bodyPart.ObsVelocity);
+	// 	}
+	// 	foreach (var muscle in Muscles)
+	// 	{
+	// 		muscle.UpdateObservations();
+	// 		if (muscle.ConfigurableJoint.angularXMotion != ConfigurableJointMotion.Locked)
+	// 			AddVectorObs(muscle.TargetNormalizedRotationX);
+	// 		if (muscle.ConfigurableJoint.angularYMotion != ConfigurableJointMotion.Locked)
+	// 			AddVectorObs(muscle.TargetNormalizedRotationY);
+	// 		if (muscle.ConfigurableJoint.angularZMotion != ConfigurableJointMotion.Locked)
+	// 			AddVectorObs(muscle.TargetNormalizedRotationZ);
+	// 	}
+
+	// 	// AddVectorObs(ObsCenterOfMass);
+	// 	// AddVectorObs(ObsVelocity);
+	// 	AddVectorObs(SensorIsInTouch);
+	// }
 	override public void CollectObservations()
 	{
-		// AddVectorObs(ObsPhase);
+        var pelvis = BodyParts.FirstOrDefault(x=>x.Group == BodyHelper002.BodyPartGroup.Hips);
+        var shoulders = BodyParts.FirstOrDefault(x=>x.Group == BodyHelper002.BodyPartGroup.Torso);
+
+        Vector3 normalizedVelocity = this.GetNormalizedVelocity(pelvis.Rigidbody.velocity);
+        AddVectorObs(normalizedVelocity);
+        AddVectorObs(pelvis.Rigidbody.transform.forward); // gyroscope 
+        AddVectorObs(pelvis.Rigidbody.transform.up);
+
+        AddVectorObs(shoulders.Rigidbody.transform.forward); // gyroscope 
+        AddVectorObs(shoulders.Rigidbody.transform.up);
+
+        AddVectorObs(SensorIsInTouch);
 		foreach (var bodyPart in BodyParts)
 		{
 			bodyPart.UpdateObservations();
-			AddVectorObs(bodyPart.ObsLocalPosition);
 			AddVectorObs(bodyPart.ObsRotation);
 			AddVectorObs(bodyPart.ObsRotationVelocity);
-			AddVectorObs(bodyPart.ObsVelocity);
+			AddVectorObs(this.GetNormalizedVelocity(bodyPart.ObsVelocity));
 		}
 		foreach (var muscle in Muscles)
 		{
@@ -123,10 +159,11 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 			if (muscle.ConfigurableJoint.angularZMotion != ConfigurableJointMotion.Locked)
 				AddVectorObs(muscle.TargetNormalizedRotationZ);
 		}
-
-		// AddVectorObs(ObsCenterOfMass);
-		// AddVectorObs(ObsVelocity);
-		AddVectorObs(SensorIsInTouch);
+		var sensorYpositions = _sensors
+			.Select(x=> this.GetNormalizedPosition(x.transform.position))
+			.Select(x=>x.y)
+			.ToList();
+		AddVectorObs(sensorYpositions);
 
 		var info = GetInfo();
 		if (Observations?.Count != info.vectorObservation.Count)
@@ -143,24 +180,60 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 		}
 		if (ObservationNormalizedErrors > MaxObservationNormalizedErrors)
 			MaxObservationNormalizedErrors = ObservationNormalizedErrors;
-
 	}
 
 	public override void AgentAction(float[] vectorAction, string textAction)
 	{
+		if (lastVectorAction == null)
+			lastVectorAction = vectorAction.Select(x=>0f).ToArray();
+		var vectorDifferent = new List<float>();
 		int i = 0;
 		foreach (var muscle in Muscles)
 		{
 			// if(muscle.Parent == null)
 			// 	continue;
-			if (muscle.ConfigurableJoint.angularXMotion != ConfigurableJointMotion.Locked)
+			if (muscle.ConfigurableJoint.angularXMotion != ConfigurableJointMotion.Locked){
+				vectorDifferent.Add(Mathf.Abs(vectorAction[i]-lastVectorAction[i]));
 				muscle.TargetNormalizedRotationX = vectorAction[i++];
-			if (muscle.ConfigurableJoint.angularYMotion != ConfigurableJointMotion.Locked)
+			}
+			if (muscle.ConfigurableJoint.angularYMotion != ConfigurableJointMotion.Locked){
+				vectorDifferent.Add(Mathf.Abs(vectorAction[i]-lastVectorAction[i]));
 				muscle.TargetNormalizedRotationY = vectorAction[i++];
-			if (muscle.ConfigurableJoint.angularZMotion != ConfigurableJointMotion.Locked)
+			}
+			if (muscle.ConfigurableJoint.angularZMotion != ConfigurableJointMotion.Locked){
+				vectorDifferent.Add(Mathf.Abs(vectorAction[i]-lastVectorAction[i]));
 				muscle.TargetNormalizedRotationZ = vectorAction[i++];
+			}
 		}
-		var reward = 0f;
+        // float heightPenality = 1f-GetHeightPenality(1.2f);
+        // heightPenality = Mathf.Clamp(heightPenality, 0f, 1f);
+        // float uprightBonus = GetDirectionBonus("pelvis", Vector3.forward, 1f);
+        // uprightBonus = Mathf.Clamp(uprightBonus, 0f, 1f);
+        var pelvis = BodyParts.FirstOrDefault(x=>x.Group == BodyHelper002.BodyPartGroup.Hips);
+        float velocity = Mathf.Clamp(this.GetNormalizedVelocity(pelvis.Rigidbody.velocity).x, 0f, 1f);
+        // float effort = 1f - GetEffortNormalized();
+		float effort = 1f - vectorDifferent.Average();
+		effort = Mathf.Clamp(effort, 0, 1);
+		effort = Mathf.Pow(effort,2);
+
+        if (ShowMonitor)
+        {
+            // var hist = new[] {velocity, uprightBonus, heightPenality, effort}.ToList();
+            // Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.INDEPENDENT);
+        }
+
+        // heightPenality *= 0.05f;
+        // uprightBonus *= 0.05f;
+        velocity *= 0.5f;
+        if (velocity >= .5f)
+            effort *= 0.5f;
+        else
+            effort *= velocity;
+
+        var reward = velocity
+                    //  + uprightBonus
+                    //  + heightPenality
+                     + effort;		
 
 		FrameReward = reward;
 		var stepCount = GetStepCount() > 0 ? GetStepCount() : 1;
@@ -186,6 +259,39 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 		}
 		return (float)effort;
 	}	
+
+	float GetEffortNormalized(string[] ignorJoints = null)
+	{
+		double effort = 0;
+		double jointEffort = 0;
+		double joints = 0;
+		foreach (var muscle in Muscles)
+		{
+			if(muscle.Parent == null)
+				continue;
+			var name = muscle.Name;
+			if (ignorJoints != null && ignorJoints.Contains(name))
+				continue;
+			if (muscle.ConfigurableJoint.angularXMotion != ConfigurableJointMotion.Locked) {
+				jointEffort = Mathf.Pow(Mathf.Abs(muscle.TargetNormalizedRotationX),2);
+				effort += jointEffort;
+				joints++;
+			}
+			if (muscle.ConfigurableJoint.angularYMotion != ConfigurableJointMotion.Locked) {
+				jointEffort = Mathf.Pow(Mathf.Abs(muscle.TargetNormalizedRotationY),2);
+				effort += jointEffort;
+				joints++;
+			}
+			if (muscle.ConfigurableJoint.angularZMotion != ConfigurableJointMotion.Locked) {
+				jointEffort = Mathf.Pow(Mathf.Abs(muscle.TargetNormalizedRotationZ),2);
+				effort += jointEffort;
+				joints++;
+			}
+		}
+
+		return (float) (effort / joints);
+	}
+
 	float JointsAtLimit(string[] ignorJoints = null)
 	{
 		int atLimitCount = 0;
@@ -229,6 +335,7 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 		var smoothFollow = FindObjectOfType<SmoothFollow>();
 		if (smoothFollow != null && smoothFollow.target == null)
 			smoothFollow.target = CameraTarget;
+		lastVectorAction = null;
 	}
 	public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
 	{

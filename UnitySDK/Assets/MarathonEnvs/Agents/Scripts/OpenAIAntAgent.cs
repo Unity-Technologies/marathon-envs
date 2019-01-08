@@ -34,7 +34,7 @@ public class OpenAIAntAgent : MarathonAgent
         }
 
         var pelvis = BodyParts["pelvis"];
-        Vector3 normalizedVelocity = GetNormalizedVelocity(pelvis.velocity);
+        Vector3 normalizedVelocity = this.GetNormalizedVelocity(pelvis.velocity);
         AddVectorObs(normalizedVelocity);
         AddVectorObs(pelvis.transform.forward); // gyroscope 
         AddVectorObs(pelvis.transform.up);
@@ -42,7 +42,7 @@ public class OpenAIAntAgent : MarathonAgent
         AddVectorObs(SensorIsInTouch);
         JointRotations.ForEach(x => AddVectorObs(x));
         AddVectorObs(JointVelocity);
-        Vector3 normalizedFootPosition = GetNormalizedPosition(pelvis.transform.position);
+        Vector3 normalizedFootPosition = this.GetNormalizedPosition(pelvis.transform.position);
         AddVectorObs(normalizedFootPosition.y);
 
     }

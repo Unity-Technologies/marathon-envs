@@ -52,7 +52,7 @@ public class DeepMindHumanoidAgent : MarathonAgent
         var pelvis = BodyParts["pelvis"];
         var shoulders = BodyParts["shoulders"];
 
-        Vector3 normalizedVelocity = GetNormalizedVelocity(pelvis.velocity);
+        Vector3 normalizedVelocity = this.GetNormalizedVelocity(pelvis.velocity);
         AddVectorObs(normalizedVelocity);
         AddVectorObs(pelvis.transform.forward); // gyroscope 
         AddVectorObs(pelvis.transform.up);
@@ -64,10 +64,10 @@ public class DeepMindHumanoidAgent : MarathonAgent
         JointRotations.ForEach(x => AddVectorObs(x));
         AddVectorObs(JointVelocity);
         AddVectorObs(new []{
-            GetNormalizedPosition(BodyParts["left_foot_left"].transform.position).y,
-            GetNormalizedPosition(BodyParts["left_foot_right"].transform.position).y,
-            GetNormalizedPosition(BodyParts["right_foot_left"].transform.position).y,
-            GetNormalizedPosition(BodyParts["right_foot_right"].transform.position).y,
+            this.GetNormalizedPosition(BodyParts["left_foot_left"].transform.position).y,
+            this.GetNormalizedPosition(BodyParts["left_foot_right"].transform.position).y,
+            this.GetNormalizedPosition(BodyParts["right_foot_left"].transform.position).y,
+            this.GetNormalizedPosition(BodyParts["right_foot_right"].transform.position).y,
             });
 
     }

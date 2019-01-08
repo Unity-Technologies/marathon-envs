@@ -330,7 +330,7 @@ namespace MLAgents
         internal Vector3 GetNormalizedVelocity(string bodyPart = null)
         {
             var metersPerSecond = GetRawVelocity(bodyPart);
-            var normalizedVelocity = GetNormalizedVelocity(metersPerSecond);
+            var normalizedVelocity = this.GetNormalizedVelocity(metersPerSecond);
             Vector3 mph = metersPerSecond * 2.236936f;
             mphBuffer.Add(mph);
             if (mphBuffer.Count > 100)
@@ -347,42 +347,11 @@ namespace MLAgents
             }            
             return normalizedVelocity;
         }
-        internal Vector3 GetNormalizedVelocity(Vector3 metersPerSecond)
-        {
-            var maxMetersPerSecond = (agentBoundsMaxOffset - agentBoundsMinOffset) 
-                / agentParameters.maxStep
-                / Time.fixedDeltaTime;
-            maxMetersPerSecond.y = 53; // override with
-            float x = metersPerSecond.x / maxMetersPerSecond.x;
-            float y = metersPerSecond.y / maxMetersPerSecond.y;
-            float z = metersPerSecond.z / maxMetersPerSecond.z;
-            // clamp result
-            x = Mathf.Clamp(x, -1f, 1f);
-            y = Mathf.Clamp(y, -1f, 1f);
-            z = Mathf.Clamp(z, -1f, 1f);
-            Vector3 normalizedVelocity = new Vector3(x,y,z);
-            return normalizedVelocity;
-        }
-
 
         internal Vector3 GetNormalizedPosition(string bodyPart = null)
         {
             Vector3 pos = BodyParts[bodyPart].position;
-            Vector3 normalizedPos = GetNormalizedPosition(BodyParts[bodyPart].position);
-            return normalizedPos;
-        }
-
-        internal Vector3 GetNormalizedPosition(Vector3 pos)
-        {
-            var maxPos = (agentBoundsMaxOffset - agentBoundsMinOffset);
-            float x = pos.x / maxPos.x;
-            float y = pos.y / maxPos.y;
-            float z = pos.z / maxPos.z;
-            // clamp result
-            x = Mathf.Clamp(x, -1f, 1f);
-            y = Mathf.Clamp(y, -1f, 1f);
-            z = Mathf.Clamp(z, -1f, 1f);
-            Vector3 normalizedPos = new Vector3(x,y,z);
+            Vector3 normalizedPos = this.GetNormalizedPosition(BodyParts[bodyPart].position);
             return normalizedPos;
         }
 
@@ -694,7 +663,7 @@ namespace MLAgents
                 qvel[3 + i] = vel;
                 // JointVelocity[i] = vel;
                 var metersPerSecond = new Vector3(vel,0f,0f);
-                Vector3 normalizedVelocity = GetNormalizedVelocity(metersPerSecond);
+                Vector3 normalizedVelocity = this.GetNormalizedVelocity(metersPerSecond);
                 JointVelocity[i] = normalizedVelocity.x;
             }
 
