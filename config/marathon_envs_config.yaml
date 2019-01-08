@@ -35,6 +35,20 @@ DeepMindHumanoidBrain:
     beta: .003
     max_steps: 10.e6
 
+MarathonManBrain:
+    num_epoch: 10 
+    time_horizon: 100 
+    summary_freq: 250000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 64
+    buffer_size: 10240
+    beta: .003
+    max_steps: 10.e6    
+
 DeepMindHopperBrain:
     num_epoch: 10 
     time_horizon: 100 
