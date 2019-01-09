@@ -249,7 +249,7 @@ GameObject:
   - component: {fileID: 1467993923}
   - component: {fileID: 1467993922}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Debug
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -343,6 +343,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: bc7914b266edc45269ac68e42404a71e, type: 2}
     - {fileID: 11400000, guid: f33be7dbe16cf47a39bc400c65845bec, type: 2}
     - {fileID: 11400000, guid: 1b23b0637158f4bf1a0a53eee29cbdac, type: 2}
+    - {fileID: 11400000, guid: 14ef212b228874b5ea289d5facb060d7, type: 2}
   agentSpawner:
     spawnableAgents:
     - agentId: Hopper-v0
@@ -362,7 +363,7 @@ MonoBehaviour:
         type: 3}
     agentIdDefault: MarathonMan-v0
     trainingNumAgentsDefault: 16
-    inferenceNumAgentsDefault: 1
+    inferenceNumAgentsDefault: 16
     worldBoundsMinOffset: {x: -250, y: 0, z: -250}
     worldBoundsMaxOffset: {x: 250, y: 2, z: 250}
     trainingMode: 0

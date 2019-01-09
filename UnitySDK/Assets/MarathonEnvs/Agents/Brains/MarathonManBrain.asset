@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MarathonManBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 92
+    vectorObservationSize: 218
     numStackedVectorObservations: 1
     vectorActionSize: 15000000
     cameraResolutions: []
@@ -40,4 +40,4 @@ MonoBehaviour:
     - 
     - 
     vectorActionSpaceType: 1
-  model: {fileID: 4900000, guid: 6679828af05851140b47512333985f03, type: 3}
+  model: {fileID: 4900000, guid: fd7452c5d69096b4fb66244aaa618a4f, type: 3}

@@ -30,19 +30,23 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 	float[] lastVectorAction;
 	// static ScoreHistogramData _scoreHistogramData;
 
+	Dictionary<GameObject, Vector3> transformsPosition;
+	Dictionary<GameObject, Quaternion> transformsRotation;
+
+	// void FixedUpdate()
+	// {
+	// 	foreach (var muscle in Muscles)
+	// 	{
+	// 	// 	var i = Muscles.IndexOf(muscle);
+	// 	// 	muscle.UpdateObservations();
+	// 	// 	if (!DebugShowWithOffset && !DebugDisableMotor)
+	// 	// 		muscle.UpdateMotor();
+	// 	// 	if (!muscle.Rigidbody.useGravity)
+	// 	// 		continue; // skip sub joints
+	// 	// }
+	// }
+
 	// Use this for initialization
-	void FixedUpdate()
-	{
-		foreach (var muscle in Muscles)
-		{
-			var i = Muscles.IndexOf(muscle);
-			muscle.UpdateObservations();
-			if (!DebugShowWithOffset && !DebugDisableMotor)
-				muscle.UpdateMotor();
-			if (!muscle.Rigidbody.useGravity)
-				continue; // skip sub joints
-		}
-	}
 	void Start () {
 		Time.fixedDeltaTime = FixedDeltaTime;
 
@@ -99,7 +103,35 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 
 	override public void InitializeAgent()
 	{
+	}
+	void HandleModelReset()
+	{
+		Transform[] allChildren = GetComponentsInChildren<Transform>();
+		if (transformsPosition != null)
+		{
+			foreach (var child in allChildren)
+			{
+				child.position = transformsPosition[child.gameObject];
+				child.rotation = transformsRotation[child.gameObject];
+				var childRb = child.GetComponent<Rigidbody>();
+				if (childRb != null)
+				{
+					childRb.angularVelocity = Vector3.zero;
+					childRb.velocity = Vector3.zero;
+				}
+			}
 
+		}
+		else
+		{
+			transformsPosition = new Dictionary<GameObject, Vector3>();
+			transformsRotation = new Dictionary<GameObject, Quaternion>();
+			foreach (Transform child in allChildren)
+			{
+				transformsPosition[child.gameObject] = child.position;
+				transformsRotation[child.gameObject] = child.rotation;
+			}
+		}
 	}
 
 	// override public void CollectObservations()
@@ -204,6 +236,8 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 				vectorDifferent.Add(Mathf.Abs(vectorAction[i]-lastVectorAction[i]));
 				muscle.TargetNormalizedRotationZ = vectorAction[i++];
 			}
+			if (!DebugShowWithOffset && !DebugDisableMotor)
+				muscle.UpdateMotor();
 		}
         // float heightPenality = 1f-GetHeightPenality(1.2f);
         // heightPenality = Mathf.Clamp(heightPenality, 0f, 1f);
@@ -236,7 +270,10 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
                      + effort;		
 
 		FrameReward = reward;
+		AddReward(reward);
 		var stepCount = GetStepCount() > 0 ? GetStepCount() : 1;
+		if (agentParameters.skipActionsWithDecisions && agentParameters.numberOfActionsBetweenDecisions > 1)
+			stepCount /= agentParameters.numberOfActionsBetweenDecisions;
 		AverageReward = GetCumulativeReward() / (float) stepCount;
 	}
 
@@ -327,6 +364,7 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 
 	public override void AgentReset()
 	{
+		HandleModelReset();
 		_sensors = GetComponentsInChildren<SensorBehavior>()
 			.Select(x=>x.gameObject)
 			.ToList();
@@ -350,11 +388,11 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 		{
 			case BodyHelper002.BodyPartGroup.None:
 			case BodyHelper002.BodyPartGroup.Foot:
-			case BodyHelper002.BodyPartGroup.LegUpper:
+			// case BodyHelper002.BodyPartGroup.LegUpper:
 			case BodyHelper002.BodyPartGroup.LegLower:
 			case BodyHelper002.BodyPartGroup.Hand:
-			case BodyHelper002.BodyPartGroup.ArmLower:
-			case BodyHelper002.BodyPartGroup.ArmUpper:
+			// case BodyHelper002.BodyPartGroup.ArmLower:
+			// case BodyHelper002.BodyPartGroup.ArmUpper:
 				break;
 			default:
 				// AddReward(-100f);
