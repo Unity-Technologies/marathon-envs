@@ -124,6 +124,8 @@ namespace MLAgents
 
         List <Vector3> mphBuffer;
 
+        float[] lastVectorAction;
+        float[] vectorDifference;
 
         public override void AgentReset()
         {
@@ -195,8 +197,7 @@ namespace MLAgents
 
         void SetupMarathon()
         {
-            // NumSensors = MarathonSensors.Count;
-            NumSensors = 0;
+            NumSensors = MarathonSensors.Count;
         }
 
         internal void SetupBodyParts()
@@ -240,6 +241,11 @@ namespace MLAgents
 
         public override void AgentAction(float[] vectorAction, string textAction)
         {
+            if (lastVectorAction == null){
+                lastVectorAction = vectorAction.Select(x=>0f).ToArray();
+                vectorDifference = vectorAction.Select(x=>0f).ToArray();
+            }
+            
             Actions = vectorAction
                 .Select(x => x)
                 .ToList();
@@ -247,6 +253,7 @@ namespace MLAgents
             {
                 var inp = (float) Actions[i];
                 ApplyAction(MarathonJoints[i], inp);
+				vectorDifference[i] = vectorAction[i]-lastVectorAction[i];
             }
 
             UpdateQ();
@@ -453,6 +460,13 @@ namespace MLAgents
             }
 
             return (float) (effort / joints);
+        }
+        internal float GetActionDifferenceNormalized()
+        {
+            float actionDifference = vectorDifference.Average();
+		    actionDifference = Mathf.Clamp(actionDifference, 0, 1);
+		    actionDifference = Mathf.Pow(actionDifference,2);
+            return actionDifference;
         }
 
 

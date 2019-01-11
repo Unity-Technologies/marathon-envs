@@ -23,7 +23,7 @@ default:
 
 DeepMindHumanoidBrain:
     num_epoch: 10 
-    time_horizon: 100 
+    time_horizon: 1000
     summary_freq: 250000
     use_recurrent: false
     normalize: false 

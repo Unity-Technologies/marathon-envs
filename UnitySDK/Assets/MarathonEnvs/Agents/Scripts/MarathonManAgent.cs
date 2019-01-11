@@ -28,10 +28,12 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 
 	static int _startCount;
 	float[] lastVectorAction;
+	float[] vectorDifference;
 	// static ScoreHistogramData _scoreHistogramData;
 
 	Dictionary<GameObject, Vector3> transformsPosition;
 	Dictionary<GameObject, Quaternion> transformsRotation;
+	Vector3 startPosition;
 
 	// void FixedUpdate()
 	// {
@@ -124,6 +126,7 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 		}
 		else
 		{
+			startPosition = this.transform.position;
 			transformsPosition = new Dictionary<GameObject, Vector3>();
 			transformsRotation = new Dictionary<GameObject, Quaternion>();
 			foreach (Transform child in allChildren)
@@ -192,7 +195,7 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 				AddVectorObs(muscle.TargetNormalizedRotationZ);
 		}
 		var sensorYpositions = _sensors
-			.Select(x=> this.GetNormalizedPosition(x.transform.position))
+			.Select(x=> this.GetNormalizedPosition(x.transform.position - startPosition))
 			.Select(x=>x.y)
 			.ToList();
 		AddVectorObs(sensorYpositions);
@@ -216,24 +219,25 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 
 	public override void AgentAction(float[] vectorAction, string textAction)
 	{
-		if (lastVectorAction == null)
+		if (lastVectorAction == null){
 			lastVectorAction = vectorAction.Select(x=>0f).ToArray();
-		var vectorDifferent = new List<float>();
+			vectorDifference = vectorAction.Select(x=>0f).ToArray();
+		}
 		int i = 0;
 		foreach (var muscle in Muscles)
 		{
 			// if(muscle.Parent == null)
 			// 	continue;
 			if (muscle.ConfigurableJoint.angularXMotion != ConfigurableJointMotion.Locked){
-				vectorDifferent.Add(Mathf.Abs(vectorAction[i]-lastVectorAction[i]));
+				vectorDifference[i] = Mathf.Abs(vectorAction[i]-lastVectorAction[i]);
 				muscle.TargetNormalizedRotationX = vectorAction[i++];
 			}
 			if (muscle.ConfigurableJoint.angularYMotion != ConfigurableJointMotion.Locked){
-				vectorDifferent.Add(Mathf.Abs(vectorAction[i]-lastVectorAction[i]));
+				vectorDifference[i] = Mathf.Abs(vectorAction[i]-lastVectorAction[i]);
 				muscle.TargetNormalizedRotationY = vectorAction[i++];
 			}
 			if (muscle.ConfigurableJoint.angularZMotion != ConfigurableJointMotion.Locked){
-				vectorDifferent.Add(Mathf.Abs(vectorAction[i]-lastVectorAction[i]));
+				vectorDifference[i] = Mathf.Abs(vectorAction[i]-lastVectorAction[i]);
 				muscle.TargetNormalizedRotationZ = vectorAction[i++];
 			}
 			if (!DebugShowWithOffset && !DebugDisableMotor)
@@ -246,9 +250,9 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
         var pelvis = BodyParts.FirstOrDefault(x=>x.Group == BodyHelper002.BodyPartGroup.Hips);
         float velocity = Mathf.Clamp(this.GetNormalizedVelocity(pelvis.Rigidbody.velocity).x, 0f, 1f);
         // float effort = 1f - GetEffortNormalized();
-		float effort = 1f - vectorDifferent.Average();
-		effort = Mathf.Clamp(effort, 0, 1);
-		effort = Mathf.Pow(effort,2);
+		float actionDifference = 1f - vectorDifference.Average();
+		actionDifference = Mathf.Clamp(actionDifference, 0, 1);
+		actionDifference = Mathf.Pow(actionDifference,2);
 
         if (ShowMonitor)
         {
@@ -260,18 +264,23 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
         // uprightBonus *= 0.05f;
         velocity *= 0.5f;
         if (velocity >= .5f)
-            effort *= 0.5f;
+            actionDifference *= 0.5f;
         else
-            effort *= velocity;
+            actionDifference *= velocity;
 
         var reward = velocity
                     //  + uprightBonus
                     //  + heightPenality
-                     + effort;		
+                     + actionDifference;		
 
 		FrameReward = reward;
-		AddReward(reward);
+		// AddReward(reward);
 		var stepCount = GetStepCount() > 0 ? GetStepCount() : 1;
+		if ((stepCount >= agentParameters.maxStep)
+                && (agentParameters.maxStep > 0))
+            {
+				AddEpisodeEndReward();
+			}
 		if (agentParameters.skipActionsWithDecisions && agentParameters.numberOfActionsBetweenDecisions > 1)
 			stepCount /= agentParameters.numberOfActionsBetweenDecisions;
 		AverageReward = GetCumulativeReward() / (float) stepCount;
@@ -374,6 +383,7 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 		if (smoothFollow != null && smoothFollow.target == null)
 			smoothFollow.target = CameraTarget;
 		lastVectorAction = null;
+		vectorDifference = null;
 	}
 	public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
 	{
@@ -396,7 +406,10 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 				break;
 			default:
 				// AddReward(-100f);
-				Done();
+				if (!IsDone()){
+					AddEpisodeEndReward();
+					Done();
+				}
 				// if (IsInferenceMode == false)
 				// 	Done();
 				break;
@@ -411,6 +424,14 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 		}
 	}
 
+	void AddEpisodeEndReward()
+	{
+		var position = GetCenterOfMass();
+		position += this.transform.position;
+		var normalizedPosition = this.GetNormalizedPosition(position - startPosition);
+		AddReward(normalizedPosition.x);
+		//(-1f + normalizedPosition.x);
+	}
 
 	public void OnSensorCollisionEnter(Collider sensorCollider, GameObject other) {
 		if (string.Compare(other.name, "Terrain", true) !=0)
@@ -447,7 +468,7 @@ public class MarathonManAgent : Agent, IOnSensorCollision, IOnTerrainCollision {
 			totalMass += rb.mass;
 		}
 		centerOfMass /= totalMass;
-		centerOfMass -= transform.parent.position;
+		centerOfMass -= transform.position;
 		return centerOfMass;
 	}
 
