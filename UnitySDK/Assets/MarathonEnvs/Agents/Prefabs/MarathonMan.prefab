@@ -2014,6 +2014,7 @@ GameObject:
   - component: {fileID: 8719875636317608491}
   - component: {fileID: 8690789666678175709}
   - component: {fileID: 6637013144633364566}
+  - component: {fileID: 5859498862604059448}
   - component: {fileID: 5286234179746182682}
   - component: {fileID: 7060837598392239166}
   m_Layer: 0
@@ -2127,19 +2128,32 @@ MonoBehaviour:
     skipActionsWithDecisions: 1
   agentBoundsMaxOffset: {x: 480, y: 2, z: 0.5}
   agentBoundsMinOffset: {x: 0, y: 0, z: -0.5}
+--- !u!114 &5859498862604059448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8722076229893094739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 776799f55314f4500bc35f859c94e2fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CameraTarget: {fileID: 8719916423667245899}
   FixedDeltaTime: 0.005
-  CameraTarget: {fileID: 8719972220993353125}
-  FrameReward: 0
-  AverageReward: 0
-  SensorIsInTouch: []
-  Muscles: []
-  BodyParts: []
   ShowMonitor: 0
   DebugDisableMotor: 0
+  DebugShowWithOffset: 0
+  Muscles: []
+  BodyParts: []
+  SensorIsInTouch: []
   Observations: []
   ObservationNormalizedErrors: 0
   MaxObservationNormalizedErrors: 0
-  DebugShowWithOffset: 0
+  Sensors: []
+  FrameReward: 0
+  AverageReward: 0
 --- !u!54 &5286234179746182682
 Rigidbody:
   m_ObjectHideFlags: 0
