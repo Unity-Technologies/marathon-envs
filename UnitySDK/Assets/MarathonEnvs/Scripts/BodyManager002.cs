@@ -219,6 +219,49 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		}
 	}
 
+	public float GetHeightNormalizedReward(float maxHeight)
+	{
+		var height = GetHeight();
+		var heightPenality = maxHeight - height;
+		heightPenality = Mathf.Clamp(heightPenality, 0f, maxHeight);
+		var reward = 1f - heightPenality;
+		reward = Mathf.Clamp(reward, 0f, 1f);
+		return reward;
+	}
+	internal float GetHeight()
+	{
+		var feetYpos = BodyParts
+			.Where(x => x.Group == BodyPartGroup.Foot)
+			.Select(x => x.Transform.position.y)
+			.OrderBy(x => x)
+			.ToList();
+		float lowestFoot = 0f;
+		if (feetYpos != null && feetYpos.Count != 0)
+			lowestFoot = feetYpos[0];
+		var height = GetFirstBodyPart(BodyPartGroup.Head).Transform.position.y - lowestFoot;
+		return height;
+	}
+	public float GetDirectionNormalizedReward(BodyPartGroup bodyPartGroup, Vector3 direction)
+	{
+		BodyPart002 bodyPart = GetFirstBodyPart(bodyPartGroup);
+		float maxBonus = 1f;
+		var toFocalAngle = bodyPart.ToFocalRoation * bodyPart.Transform.right;
+		var angle = Vector3.Angle(toFocalAngle, direction);
+		var qpos2 = (angle % 180) / 180;
+		var bonus = maxBonus * (2 - (Mathf.Abs(qpos2) * 2) - 1);
+		return bonus;
+	}
+
+	public float GetUprightNormalizedReward(BodyPartGroup bodyPartGroup)
+	{
+		BodyPart002 bodyPart = GetFirstBodyPart(bodyPartGroup);
+		float maxBonus = 1f;
+		var toFocalAngle = bodyPart.ToFocalRoation * -bodyPart.Transform.forward;
+		var angleFromUp = Vector3.Angle(toFocalAngle, Vector3.up);
+		var qpos2 = (angleFromUp % 180) / 180;
+		var uprightBonus = maxBonus * (2 - (Mathf.Abs(qpos2) * 2) - 1);
+		return uprightBonus;
+	}
 	public float GetEffortNormalized(string[] ignorJoints = null)
 	{
 		double effort = 0;

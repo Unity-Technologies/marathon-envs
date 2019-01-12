@@ -40,6 +40,8 @@ public class BodyPart002
     // base = from where to measure rotation and position from
     public Quaternion BaseRotation;
     public Vector3 BasePosition;
+    //
+    public Quaternion ToFocalRoation;
 
 
     Quaternion _lastObsRotation;
@@ -102,6 +104,15 @@ public class BodyPart002
 			
 			ToJointSpaceInverse = Quaternion.Inverse(toJointSpace);
 			ToJointSpaceDefault = DefaultLocalRotation * toJointSpace;
+
+    		// set body part direction
+			Vector3 focalOffset = new Vector3(10,0,0);
+            if (Rigidbody != null){
+                var focalPoint = Rigidbody.position + focalOffset;
+                ToFocalRoation = Rigidbody.rotation;
+                ToFocalRoation.SetLookRotation(focalPoint - Rigidbody.position);
+            }
+
             _hasRanVeryFirstInit = true;
 
         }

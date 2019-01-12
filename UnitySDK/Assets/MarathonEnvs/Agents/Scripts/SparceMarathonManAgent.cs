@@ -8,6 +8,12 @@ using static BodyHelper002;
 public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 {
 	BodyManager002 _bodyManager;
+	public float _heightReward;
+	public float _torsoUprightReward;
+	public float _torsoForwardReward;
+	public float _hipsUprightReward;
+	public float _hipsForwardReward;
+
 
 	override public void CollectObservations()
 	{
@@ -36,6 +42,16 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		_bodyManager.OnAgentAction(vectorAction, textAction);
 
 		// manage reward
+        _heightReward = _bodyManager.GetHeightNormalizedReward(1.2f);
+		_torsoUprightReward = _bodyManager.GetUprightNormalizedReward(BodyPartGroup.Torso);
+		_torsoForwardReward = _bodyManager.GetDirectionNormalizedReward(BodyPartGroup.Torso, Vector3.forward);
+		_hipsUprightReward = _bodyManager.GetUprightNormalizedReward(BodyPartGroup.Hips);
+		_hipsForwardReward = _bodyManager.GetDirectionNormalizedReward(BodyPartGroup.Hips, Vector3.forward);
+		_torsoUprightReward = Mathf.Clamp(_torsoUprightReward, 0f, 1f);
+		_torsoForwardReward = Mathf.Clamp(_torsoForwardReward, 0f, 1f);
+		_hipsUprightReward = Mathf.Clamp(_hipsUprightReward, 0f, 1f);
+		_hipsForwardReward = Mathf.Clamp(_hipsForwardReward, 0f, 1f);
+
 		var stepCount = GetStepCount() > 0 ? GetStepCount() : 1;
 		if ((stepCount >= agentParameters.maxStep)
                 && (agentParameters.maxStep > 0))
