@@ -5,7 +5,7 @@ using MLAgents;
 using System.Linq;
 using static BodyHelper002;
 
-public class SparceMarathonManAgent : Agent, IOnTerrainCollision
+public class SparceMarathonManRewardHackAgent : Agent, IOnTerrainCollision
 {
 	BodyManager002 _bodyManager;
 	public float _heightReward;
@@ -13,6 +13,12 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 	public float _torsoForwardReward;
 	public float _hipsUprightReward;
 	public float _hipsForwardReward;
+    RewardHackAgent _rewardHackAgent;
+
+    void Start()
+    {
+        _rewardHackAgent = GetComponent<RewardHackAgent>();
+    }
 
 
 	override public void CollectObservations()
@@ -99,25 +105,16 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 	void AddEpisodeEndReward()
 	{
 		var normalizedPosition = _bodyManager.GetNormalizedPosition();
-        // var reward = normalizedPosition.x;
-		var endPos = normalizedPosition.x * 0.8f;
-        var reward = endPos;
-		if (endPos > 0.1f)
-			reward += _heightReward * 0.1f;
-		else
-			reward += _heightReward * endPos;
-		if (endPos > 0.02f){
-			reward += _torsoUprightReward * 0.025f;
-			reward += _torsoForwardReward * 0.025f;
-			reward += _hipsUprightReward  * 0.025f;
-			reward +=  _hipsForwardReward * 0.025f;
-		}
-		else {
-			reward += _torsoUprightReward * endPos;
-			reward += _torsoForwardReward * endPos;
-			reward += _hipsUprightReward  * endPos;
-			reward +=  _hipsForwardReward * endPos;
-		}
+        var endPos = normalizedPosition.x;
+        
+        var obs = new List<float>();
+        obs.Add(endPos);
+        obs.Add(_torsoUprightReward);
+        obs.Add(_torsoForwardReward);
+        obs.Add(_hipsUprightReward);
+        obs.Add(_hipsForwardReward);
+
+        var reward = _rewardHackAgent.ScoreObservations(obs, endPos);
 		AddReward(reward);
 		_bodyManager.SetDebugFrameReward(reward);
 	}
