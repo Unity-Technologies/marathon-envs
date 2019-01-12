@@ -71,16 +71,17 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
         // heightPenality *= 0.05f;
         // uprightBonus *= 0.05f;
 		var actionDifference = _bodyManager.GetActionDifference();
-        velocity *= 0.5f;
-        if (velocity >= .5f)
-            actionDifference *= 0.5f;
-        else
-            actionDifference *= velocity;
+        // velocity *= 0.5f;
+        // if (velocity >= .5f)
+        //     actionDifference *= 0.5f;
+        // else
+        //     actionDifference *= velocity;
 
-        var reward = velocity
-                    //  + uprightBonus
-                    //  + heightPenality
-                     + actionDifference;		
+        // var reward = velocity
+        //             //  + uprightBonus
+        //             //  + heightPenality
+        //              + actionDifference;		
+        var reward = velocity;
 		AddReward(reward);
 		_bodyManager.SetDebugFrameReward(reward);
 	}

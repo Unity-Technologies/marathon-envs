@@ -2140,7 +2140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 776799f55314f4500bc35f859c94e2fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CameraTarget: {fileID: 8719916423667245899}
+  CameraTarget: {fileID: 8719972220993353125}
   FixedDeltaTime: 0.005
   ShowMonitor: 0
   DebugDisableMotor: 0

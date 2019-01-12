@@ -316,7 +316,9 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 
     public Vector3 GetNormalizedPosition()
     {
-		var position = GetCenterOfMass();
+		// var position = GetCenterOfMass();
+        var pelvis = GetFirstBodyPart(BodyPartGroup.Hips); 
+		var position = pelvis.Transform.position;
 		var normalizedPosition = GetNormalizedPosition(position - startPosition);
         return normalizedPosition;
     }

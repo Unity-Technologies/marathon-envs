@@ -368,7 +368,7 @@ MonoBehaviour:
         type: 3}
     agentIdDefault: MarathonMan-v0
     trainingNumAgentsDefault: 16
-    inferenceNumAgentsDefault: 1
+    inferenceNumAgentsDefault: 16
     worldBoundsMinOffset: {x: -10, y: 0, z: -250}
     worldBoundsMaxOffset: {x: 490, y: 2, z: 250}
     trainingMode: 0
