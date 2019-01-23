@@ -2065,47 +2065,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MusclePowers:
   - Muscle: butt
-    Power: 40
     PowerVector: {x: 40, y: 0, z: 0}
   - Muscle: lower_waist
-    Power: 40
     PowerVector: {x: 40, y: 0, z: 40}
   - Muscle: right_thigh
-    Power: 40
     PowerVector: {x: 120, y: 40, z: 40}
   - Muscle: right_shin
-    Power: 80
     PowerVector: {x: 80, y: 0, z: 0}
   - Muscle: right_right_foot
-    Power: 20
     PowerVector: {x: 40, y: 20, z: 0}
   - Muscle: left_thigh
-    Power: 40
     PowerVector: {x: 120, y: 40, z: 40}
   - Muscle: left_shin
-    Power: 80
     PowerVector: {x: 80, y: 0, z: 0}
   - Muscle: left_left_foot
-    Power: 20
     PowerVector: {x: 40, y: 20, z: 0}
   - Muscle: right_upper_arm
-    Power: 20
     PowerVector: {x: 20, y: 20, z: 20}
   - Muscle: right_shoulder2
-    Power: 20
     PowerVector: {x: 20, y: 0, z: 0}
   - Muscle: right_larm
-    Power: 40
     PowerVector: {x: 40, y: 0, z: 0}
   - Muscle: left_upper_arm
-    Power: 20
     PowerVector: {x: 20, y: 20, z: 20}
   - Muscle: left_shoulder2
-    Power: 20
     PowerVector: {x: 20, y: 0, z: 0}
   - Muscle: left_larm
-    Power: 40
     PowerVector: {x: 40, y: 0, z: 0}
+  MotorScale: 1
 --- !u!114 &6637013144633364566
 MonoBehaviour:
   m_ObjectHideFlags: 0

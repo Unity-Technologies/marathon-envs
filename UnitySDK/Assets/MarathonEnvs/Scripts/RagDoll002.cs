@@ -9,11 +9,12 @@ public class RagDoll002 : MonoBehaviour {
     public class MusclePower
     {
         public string Muscle;
-        public float Power;
         public Vector3 PowerVector;
     }
 
     public List<MusclePower> MusclePowers;
+
+    public float MotorScale = 1f;
 
 	// Use this for initialization
 	void Start () {

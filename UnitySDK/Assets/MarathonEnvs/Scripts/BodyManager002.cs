@@ -167,7 +167,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		foreach (var m in muscles)
 		{
 			var maximumForce = ragDoll.MusclePowers.First(x=>x.Muscle == m.name).PowerVector;
-			// maximumForce *= 2f;
+			maximumForce *= ragDoll.MotorScale;
 			var muscle = new Muscle002{
 				Rigidbody = m.GetComponent<Rigidbody>(),
 				Transform = m.GetComponent<Transform>(),
