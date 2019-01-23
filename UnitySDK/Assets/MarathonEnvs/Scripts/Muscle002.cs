@@ -68,7 +68,7 @@ public class Muscle002
 		angX.maximumForce = 1f;
 		ConfigurableJoint.angularXDrive = angX;
 
-        var maxForce = Mathf.Max(MaximumForce.y + MaximumForce.z);
+        var maxForce = Mathf.Max(MaximumForce.y, MaximumForce.z);
 		var angYZ = ConfigurableJoint.angularYZDrive;
 		angYZ.positionSpring = 1f;
         var maxAbsRotXY = Mathf.Max(Mathf.Abs(TargetNormalizedRotationY) + Mathf.Abs(TargetNormalizedRotationZ));
