@@ -51,11 +51,12 @@ MarathonManBrain:
 
 SparseMarathonManBrain:
     num_epoch: 10 
-    time_horizon: 3000 
+    time_horizon: 1000 
     summary_freq: 250000
     use_recurrent: false
     normalize: false 
     num_layers: 2
+    gamma: 0.9999
     hidden_units: 64
     learning_rate: 3e-4
     batch_size: 64

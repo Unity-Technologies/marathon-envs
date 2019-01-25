@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SparseMarathonManBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 218
+    vectorObservationSize: 220
     numStackedVectorObservations: 1
     vectorActionSize: 15000000
     cameraResolutions: []
@@ -40,4 +40,4 @@ MonoBehaviour:
     - 
     - 
     vectorActionSpaceType: 1
-  model: {fileID: 4900000, guid: ca376570666724789a26ff06ef749f95, type: 3}
+  model: {fileID: 4900000, guid: 5cbb8d56c824bb74a85bcdc009533208, type: 3}

@@ -2092,7 +2092,7 @@ MonoBehaviour:
     PowerVector: {x: 20, y: 0, z: 0}
   - Muscle: left_larm
     PowerVector: {x: 40, y: 0, z: 0}
-  MotorScale: 1
+  MotorScale: 0.8
 --- !u!114 &6637013144633364566
 MonoBehaviour:
   m_ObjectHideFlags: 0

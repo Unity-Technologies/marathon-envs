@@ -13,7 +13,8 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 	public float _torsoForwardReward;
 	public float _hipsUprightReward;
 	public float _hipsForwardReward;
-
+	public float _notAtLimitBonus;
+	public float _reducedPowerBonus;
 
 	override public void CollectObservations()
 	{
@@ -34,6 +35,9 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		AddVectorObs(_bodyManager.GetSensorYPositions());
 
 		_bodyManager.OnCollectObservationsHandleDebug(GetInfo());
+
+		AddVectorObs(_notAtLimitBonus);
+		AddVectorObs(_reducedPowerBonus);
 	}
 
 	public override void AgentAction(float[] vectorAction, string textAction)
@@ -42,6 +46,12 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		_bodyManager.OnAgentAction(vectorAction, textAction);
 
 		// manage reward
+		var actionDifference = _bodyManager.GetActionDifference();
+		var actionsAbsolute = vectorAction.Select(x=>Mathf.Abs(x)).ToList();
+		var actionsAtLimit = actionsAbsolute.Select(x=> x>=1f ? 1f : 0f).ToList();
+		float actionaAtLimitCount = actionsAtLimit.Sum();
+        _notAtLimitBonus = 1f - (actionaAtLimitCount / (float) actionsAbsolute.Count);
+        _reducedPowerBonus = 1f - actionsAbsolute.Average();
         _heightReward = _bodyManager.GetHeightNormalizedReward(1.2f);
 		_torsoUprightReward = _bodyManager.GetUprightNormalizedReward(BodyPartGroup.Torso);
 		_torsoForwardReward = _bodyManager.GetDirectionNormalizedReward(BodyPartGroup.Torso, Vector3.forward);
@@ -99,25 +109,28 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 	void AddEpisodeEndReward()
 	{
 		var normalizedPosition = _bodyManager.GetNormalizedPosition();
-        // var reward = normalizedPosition.x;
-		var endPos = normalizedPosition.x * 0.8f;
-        var reward = endPos;
-		if (endPos > 0.1f)
-			reward += _heightReward * 0.1f;
-		else
-			reward += _heightReward * endPos;
-		if (endPos > 0.02f){
-			reward += _torsoUprightReward * 0.025f;
-			reward += _torsoForwardReward * 0.025f;
-			reward += _hipsUprightReward  * 0.025f;
-			reward +=  _hipsForwardReward * 0.025f;
-		}
-		else {
-			reward += _torsoUprightReward * endPos;
-			reward += _torsoForwardReward * endPos;
-			reward += _hipsUprightReward  * endPos;
-			reward +=  _hipsForwardReward * endPos;
-		}
+        var reward = normalizedPosition.x;
+
+		// var normalizedPosition = _bodyManager.GetNormalizedPosition();
+		// var endPos = normalizedPosition.x * 0.8f;
+        // var reward = endPos;
+		// if (endPos > 0.1f)
+		// 	reward += _heightReward * 0.1f;
+		// else
+		// 	reward += _heightReward * endPos;
+		// if (endPos > 0.02f){
+		// 	reward += _torsoUprightReward * 0.025f;
+		// 	reward += _torsoForwardReward * 0.025f;
+		// 	reward += _hipsUprightReward  * 0.025f;
+		// 	reward +=  _hipsForwardReward * 0.025f;
+		// }
+		// else {
+		// 	reward += _torsoUprightReward * endPos;
+		// 	reward += _torsoForwardReward * endPos;
+		// 	reward += _hipsUprightReward  * endPos;
+		// 	reward +=  _hipsForwardReward * endPos;
+		// }
+
 		AddReward(reward);
 		_bodyManager.SetDebugFrameReward(reward);
 	}
