@@ -28,6 +28,7 @@ public class MarathonTestBedController : MonoBehaviour
     {
 
         var marathonAgents = FindObjectsOfType<Agent>();
+        
         foreach (var agent in marathonAgents)
         {
             Rigidbody head = null;
@@ -40,6 +41,11 @@ public class MarathonTestBedController : MonoBehaviour
                     children = agent.GetComponentsInChildren<Rigidbody>();
                     head = children.FirstOrDefault(x=>x.name=="torso");
                     butt = children.FirstOrDefault(x=>x.name=="butt");
+                    var rb = children.FirstOrDefault(x=>x.name == "MarathonMan");
+                    if (FreezeHead || FreezeHips)
+                        rb.constraints = RigidbodyConstraints.FreezeAll;
+                    if (FreezeHead && !FreezeHips)
+                        rb.GetComponentInChildren<FixedJoint>().connectedBody = head;
                     break;
                 case "humanoid":
                     _hasFrozen = true;
@@ -52,11 +58,9 @@ public class MarathonTestBedController : MonoBehaviour
             }
             if (FreezeHead && head != null)
                 head.constraints = RigidbodyConstraints.FreezeAll;
-            if (FreezeHead && butt != null)
+            if (FreezeHips && butt != null)
                 butt.constraints = RigidbodyConstraints.FreezeAll;
-
         }
-        
     }
 
     // Update is called once per frame
