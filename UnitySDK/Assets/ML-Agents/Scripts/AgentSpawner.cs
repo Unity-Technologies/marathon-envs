@@ -14,7 +14,7 @@ namespace MLAgents
         public class SpawnableAgent
         {
             public string agentId;
-            public Agent agentPrefab;
+            public GameObject agentPrefab;
         }
         [System.Serializable]
         public class Volume
@@ -55,52 +55,55 @@ namespace MLAgents
         /// <summary>
         /// Return prefab for this AgentId else null
         /// </summary>
-        public Agent GetAgentPrefabFor(string thisAgentId)
+        public GameObject GetPrefabFor(string thisAgentId)
         {
             var entry = spawnableAgents
                 .FirstOrDefault(x=>x.agentId==thisAgentId);
             return entry?.agentPrefab; 
         }
 
-        public void SpawnAgents(GameObject parent, int numAgents, Agent agentPrefab)
+        public void SpawnAgents(GameObject parent, int numAgents, GameObject envPrefab)
         {
             Vector3 spawnStartPos = parent.transform.position;
-            numAgents = FloodVolume(numAgents, agentPrefab, spawnStartPos);
+            numAgents = FloodVolume(numAgents, envPrefab, spawnStartPos);
         }
-        int FloodVolume(int numAgents, Agent agentPrefab, Vector3 spawnStartPos)
+        int FloodVolume(int numAgents, GameObject envPrefab, Vector3 spawnStartPos)
         {
+            var agentPrefab = envPrefab.GetComponentInChildren<Agent>();
             var yStep = new Vector3(0f, agentPrefab.agentBoundsMaxOffset.y - agentPrefab.agentBoundsMinOffset.y, 0f);
-            numAgents = FloodLevel(numAgents, agentPrefab, spawnStartPos);
+            numAgents = FloodLevel(numAgents, envPrefab, spawnStartPos);
             if (numAgents > 0)
-                numAgents = FloodVolume(numAgents, agentPrefab, spawnStartPos + yStep);
+                numAgents = FloodVolume(numAgents, envPrefab, spawnStartPos + yStep);
             if (numAgents > 0)
-                numAgents = FloodVolume(numAgents, agentPrefab, spawnStartPos - yStep);
+                numAgents = FloodVolume(numAgents, envPrefab, spawnStartPos - yStep);
             return numAgents;
         }
-        int FloodLevel(int numAgents, Agent agentPrefab, Vector3 spawnStartPos)
+        int FloodLevel(int numAgents, GameObject envPrefab, Vector3 spawnStartPos)
         {
+            var agentPrefab = envPrefab.GetComponentInChildren<Agent>();
             var zStep = new Vector3(0f, 0f, agentPrefab.agentBoundsMaxOffset.z - agentPrefab.agentBoundsMinOffset.z);
             var xStep = new Vector3(agentPrefab.agentBoundsMaxOffset.x - agentPrefab.agentBoundsMinOffset.x, 0f, 0f);
-            numAgents = FloodZ(numAgents, agentPrefab, spawnStartPos, zStep);
+            numAgents = FloodZ(numAgents, envPrefab, spawnStartPos, zStep);
             if (numAgents > 0)
-                numAgents = FloodLevel(numAgents, agentPrefab, spawnStartPos + xStep);
+                numAgents = FloodLevel(numAgents, envPrefab, spawnStartPos + xStep);
             if (numAgents > 0)
-                numAgents = FloodLevel(numAgents, agentPrefab, spawnStartPos - xStep);
+                numAgents = FloodLevel(numAgents, envPrefab, spawnStartPos - xStep);
             return numAgents;
         }
 
-        int FloodZ(int numAgents, Agent agentPrefab, Vector3 spawnStartPos, Vector3 zStep)
+        int FloodZ(int numAgents, GameObject envPrefab, Vector3 spawnStartPos, Vector3 zStep)
         {
             // var zStep = new Vector3(0f, 0f, agentPrefab.agentBoundsMaxOffset.z - agentPrefab.agentBoundsMinOffset.z);
             // var xStep = new Vector3(agentPrefab.agentBoundsMaxOffset.x - agentPrefab.agentBoundsMinOffset.x, 0f, 0f);
-            numAgents = Flood(numAgents, agentPrefab, spawnStartPos, zStep);
+            numAgents = Flood(numAgents, envPrefab, spawnStartPos, zStep);
             if (numAgents > 0)
-                numAgents = Flood(numAgents, agentPrefab, spawnStartPos-zStep, -zStep);
+                numAgents = Flood(numAgents, envPrefab, spawnStartPos-zStep, -zStep);
             return numAgents;
         }
 
-        int Flood(int numAgents, Agent agentPrefab, Vector3 spawnStartPos, Vector3 step)
+        int Flood(int numAgents, GameObject envPrefab, Vector3 spawnStartPos, Vector3 step)
         {
+            var agentPrefab = envPrefab.GetComponentInChildren<Agent>();
             // Check volume
             var agentBounds = new Bounds();
             agentBounds.SetMinMax(agentPrefab.agentBoundsMinOffset + spawnStartPos, agentPrefab.agentBoundsMaxOffset + spawnStartPos);
@@ -109,10 +112,10 @@ namespace MLAgents
             worldBounds.SetMinMax(worldBoundsMinOffset, worldBoundsMaxOffset);
             if (!worldBounds.Intersects(agentBounds))
                 return numAgents;
-            var agent = Agent.Instantiate(agentPrefab, spawnStartPos, agentPrefab.gameObject.transform.rotation);
+            var agent = Agent.Instantiate(envPrefab, spawnStartPos, envPrefab.gameObject.transform.rotation);
             numAgents--;
             if (numAgents > 0)
-                numAgents = Flood(numAgents, agentPrefab, spawnStartPos + step, step);
+                numAgents = Flood(numAgents, envPrefab, spawnStartPos + step, step);
             return numAgents;
         }
 

@@ -78,6 +78,11 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 		// 				+ notAtLimitBonus
 		// 				+ reducedPowerBonus
 		// 				+ actionDifference;		
+        var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
+		if (pelvis.Transform.position.y<0){
+			Done();
+		}
+		
 
         var reward = velocity;
 

@@ -255,7 +255,8 @@ namespace MLAgents
             InitializeAcademy();
             Communicator communicator = null;
 
-            var spawnAgentPrefab = agentSpawner.GetAgentPrefabFor(GetAgentId());
+            var spawnPrefab = agentSpawner.GetPrefabFor(GetAgentId());
+            var spawnAgentPrefab = spawnPrefab.GetComponentInChildren<Agent>();
             var spawnAgentPrefabBrain = spawnAgentPrefab?.brain;
             var spawnerEnabled = spawnAgentPrefabBrain!=null;
             var hubBrains = broadcastHub.broadcastingBrains.Where(x => x != null).ToList();;
@@ -358,7 +359,7 @@ namespace MLAgents
             ConfigureEnvironment();
             
             if (spawnerEnabled)
-                agentSpawner.SpawnAgents(this.gameObject, GetNumAgents() ,spawnAgentPrefab);
+                agentSpawner.SpawnAgents(this.gameObject, GetNumAgents() ,spawnPrefab);
         }
 
         private void UpdateResetParameters()

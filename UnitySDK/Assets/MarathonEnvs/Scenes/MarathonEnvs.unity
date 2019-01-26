@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.49641287, b: 0.5748173, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -181,63 +181,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1001 &1159598488
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1934304008656724, guid: 5c84efa957b234869acd7581daeaef29, type: 3}
-      propertyPath: m_Name
-      value: Terrain
-      objectReference: {fileID: 0}
-    - target: {fileID: 4013720572572636, guid: 5c84efa957b234869acd7581daeaef29, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -250
-      objectReference: {fileID: 0}
-    - target: {fileID: 4013720572572636, guid: 5c84efa957b234869acd7581daeaef29, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4013720572572636, guid: 5c84efa957b234869acd7581daeaef29, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -250
-      objectReference: {fileID: 0}
-    - target: {fileID: 4013720572572636, guid: 5c84efa957b234869acd7581daeaef29, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4013720572572636, guid: 5c84efa957b234869acd7581daeaef29, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4013720572572636, guid: 5c84efa957b234869acd7581daeaef29, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4013720572572636, guid: 5c84efa957b234869acd7581daeaef29, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4013720572572636, guid: 5c84efa957b234869acd7581daeaef29, type: 3}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4013720572572636, guid: 5c84efa957b234869acd7581daeaef29, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4013720572572636, guid: 5c84efa957b234869acd7581daeaef29, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4013720572572636, guid: 5c84efa957b234869acd7581daeaef29, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 5c84efa957b234869acd7581daeaef29, type: 3}
 --- !u!1 &1467993921
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,7 +247,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1574236047
 GameObject:
@@ -355,24 +298,22 @@ MonoBehaviour:
   agentSpawner:
     spawnableAgents:
     - agentId: Hopper-v0
-      agentPrefab: {fileID: 114957047460082758, guid: bdcc45df97881475799c1dfff10a437e,
+      agentPrefab: {fileID: 6737101200792111825, guid: 562eb53b2c5eb47819b559b2afa6063c,
         type: 3}
     - agentId: Walker2d-v0
-      agentPrefab: {fileID: 114968519458122122, guid: 9ee161cdb876243b893d3f1a10ce8ed2,
-        type: 3}
+      agentPrefab: {fileID: 0}
     - agentId: Ant-v0
-      agentPrefab: {fileID: 114612892920136778, guid: 54ab053b5f4414ff9a8a7e81b545fe23,
-        type: 3}
+      agentPrefab: {fileID: 0}
     - agentId: Humanoid-v0
-      agentPrefab: {fileID: 114027728797193598, guid: ea2996ac9c4d10b43852d03dc7f23bcb,
+      agentPrefab: {fileID: 3037751692074211891, guid: 0cf4acf0631414b60a6743fdb80b1857,
         type: 3}
     - agentId: MarathonMan-v0
-      agentPrefab: {fileID: 6637013144633364566, guid: 27548cbf466924cd699685496025f534,
+      agentPrefab: {fileID: 1802870815327278923, guid: 7e60d2adba0a6460496d49f806ce6581,
         type: 3}
-    - agentId: SparseMarathonMan-v0
-      agentPrefab: {fileID: 4875893196157111703, guid: e1a94db6c017f48ceba332317285da93,
+    - agentId: MarathonManSparse-v0
+      agentPrefab: {fileID: 233471726635017911, guid: e5ff581d16faa48b8827455b500a4fa5,
         type: 3}
-    agentIdDefault: SparseMarathonMan-v0
+    agentIdDefault: Humanoid-v0
     trainingNumAgentsDefault: 16
     inferenceNumAgentsDefault: 16
     worldBoundsMinOffset: {x: -10, y: 0, z: -250}

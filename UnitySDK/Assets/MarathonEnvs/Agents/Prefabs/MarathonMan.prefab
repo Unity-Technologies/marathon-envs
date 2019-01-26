@@ -2113,8 +2113,8 @@ MonoBehaviour:
     onDemandDecision: 0
     numberOfActionsBetweenDecisions: 5
     skipActionsWithDecisions: 1
-  agentBoundsMaxOffset: {x: 480, y: 2, z: 0.5}
-  agentBoundsMinOffset: {x: 0, y: 0, z: -0.5}
+  agentBoundsMaxOffset: {x: 480, y: 2, z: 1}
+  agentBoundsMinOffset: {x: 0, y: 0, z: -1}
 --- !u!114 &5859498862604059448
 MonoBehaviour:
   m_ObjectHideFlags: 0

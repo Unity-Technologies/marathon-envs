@@ -190,7 +190,7 @@ namespace MLAgents
                 // This is the rectangle for the agentPrefab
                 EditorGUI.BeginChangeCheck();
                 var agentPrefab = EditorGUI.ObjectField(
-                    agentPrefabRect, spawnableAgent.agentPrefab, typeof(Agent), true) as Agent;
+                    agentPrefabRect, spawnableAgent.agentPrefab, typeof(GameObject), true) as GameObject;
                 agentPrefabRect.y += LineHeight;
                 if (EditorGUI.EndChangeCheck())
                 {
