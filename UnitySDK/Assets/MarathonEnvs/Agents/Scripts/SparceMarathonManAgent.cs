@@ -110,6 +110,9 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 	{
 		var normalizedPosition = _bodyManager.GetNormalizedPosition();
         var reward = normalizedPosition.x;
+		// calcualte average velocity over run
+		// reward *= (this.agentParameters.maxStep / this.agentParameters.numberOfActionsBetweenDecisions);
+		// reward /= this.GetStepCount();
 
 		// var normalizedPosition = _bodyManager.GetNormalizedPosition();
 		// var endPos = normalizedPosition.x * 0.8f;
