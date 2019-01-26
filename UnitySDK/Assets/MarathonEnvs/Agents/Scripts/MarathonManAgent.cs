@@ -62,26 +62,25 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 		_bodyManager.OnAgentAction(vectorAction, textAction);
 
 		// manage reward
-        // float heightPenality = 1f-GetHeightPenality(1.2f);
-        // heightPenality = Mathf.Clamp(heightPenality, 0f, 1f);
-        // float uprightBonus = GetDirectionBonus("pelvis", Vector3.forward, 1f);
-        // uprightBonus = Mathf.Clamp(uprightBonus, 0f, 1f);
         float velocity = Mathf.Clamp(_bodyManager.GetNormalizedVelocity().x, 0f, 1f);
-        // float effort = 1f - _bodyManager.GetEffortNormalized();
-        // heightPenality *= 0.05f;
-        // uprightBonus *= 0.05f;
 		var actionDifference = _bodyManager.GetActionDifference();
-        // velocity *= 0.5f;
-        // if (velocity >= .5f)
-        //     actionDifference *= 0.5f;
-        // else
-        //     actionDifference *= velocity;
+		var actionsAbsolute = vectorAction.Select(x=>Mathf.Abs(x)).ToList();
+		var actionsAtLimit = actionsAbsolute.Select(x=> x>=1f ? 1f : 0f).ToList();
+		float actionaAtLimitCount = actionsAtLimit.Sum();
+        float notAtLimitBonus = 1f - (actionaAtLimitCount / (float) actionsAbsolute.Count);
+        float reducedPowerBonus = 1f - actionsAbsolute.Average();
 
+		// velocity *= 0.85f;
+		// reducedPowerBonus *=0f;
+		// notAtLimitBonus *=.1f;
+		// actionDifference *=.05f;
         // var reward = velocity
-        //             //  + uprightBonus
-        //             //  + heightPenality
-        //              + actionDifference;		
+		// 				+ notAtLimitBonus
+		// 				+ reducedPowerBonus
+		// 				+ actionDifference;		
+
         var reward = velocity;
+
 		AddReward(reward);
 		_bodyManager.SetDebugFrameReward(reward);
 	}

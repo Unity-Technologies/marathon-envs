@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.49641287, b: 0.5748173, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -372,7 +372,7 @@ MonoBehaviour:
     - agentId: SparseMarathonMan-v0
       agentPrefab: {fileID: 4875893196157111703, guid: e1a94db6c017f48ceba332317285da93,
         type: 3}
-    agentIdDefault: MarathonMan-v0
+    agentIdDefault: SparseMarathonMan-v0
     trainingNumAgentsDefault: 16
     inferenceNumAgentsDefault: 16
     worldBoundsMinOffset: {x: -10, y: 0, z: -250}
