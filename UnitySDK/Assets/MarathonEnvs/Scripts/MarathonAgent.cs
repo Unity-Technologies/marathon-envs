@@ -616,7 +616,7 @@ namespace MLAgents
             var meshRenderer = curNode.GetComponent<MeshRenderer>();
             if (meshRenderer != null)
                 topmostNode = meshRenderer.gameObject;
-            var root = curNode.transform.root.gameObject;
+            var root = this;
             var meshRenderers = root.GetComponentsInChildren<MeshRenderer>();
             if (meshRenderers != null && meshRenderers.Length > 0)
                 topmostNode = meshRenderers[0].gameObject;

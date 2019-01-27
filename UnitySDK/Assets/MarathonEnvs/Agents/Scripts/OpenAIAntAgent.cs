@@ -49,6 +49,11 @@ public class OpenAIAntAgent : MarathonAgent
 
     bool TerminateAnt()
     {
+        var pelvis = BodyParts["pelvis"];
+		if (pelvis.transform.position.y<0){
+			return true;
+		}
+
         var angle = GetForwardBonus("pelvis");
         bool endOnAngle = (angle < .2f);
         return endOnAngle;

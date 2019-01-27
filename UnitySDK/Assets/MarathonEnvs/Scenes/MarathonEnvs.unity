@@ -301,9 +301,11 @@ MonoBehaviour:
       agentPrefab: {fileID: 6737101200792111825, guid: 562eb53b2c5eb47819b559b2afa6063c,
         type: 3}
     - agentId: Walker2d-v0
-      agentPrefab: {fileID: 0}
+      agentPrefab: {fileID: 7075913131664046299, guid: b3657881460b242f7963952291e61aec,
+        type: 3}
     - agentId: Ant-v0
-      agentPrefab: {fileID: 0}
+      agentPrefab: {fileID: 5262237177341221258, guid: c3c332aefbae14d7bb05a9a9d1e92822,
+        type: 3}
     - agentId: Humanoid-v0
       agentPrefab: {fileID: 3037751692074211891, guid: 0cf4acf0631414b60a6743fdb80b1857,
         type: 3}
@@ -313,7 +315,7 @@ MonoBehaviour:
     - agentId: MarathonManSparse-v0
       agentPrefab: {fileID: 233471726635017911, guid: e5ff581d16faa48b8827455b500a4fa5,
         type: 3}
-    agentIdDefault: Humanoid-v0
+    agentIdDefault: Ant-v0
     trainingNumAgentsDefault: 16
     inferenceNumAgentsDefault: 16
     worldBoundsMinOffset: {x: -10, y: 0, z: -250}

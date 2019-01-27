@@ -15,7 +15,7 @@ public class DeepMindHumanoidAgent : MarathonAgent
         Monitor.SetActive(true);
 
         StepRewardFunction = StepRewardDeepMindHumanoid101;
-        TerminateFunction = TerminateOnNonFootHitTerrain;
+        TerminateFunction = TerminateHumanoid;
         ObservationsFunction = ObservationsHumanoid;
 
         BodyParts["head"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "head");
@@ -152,15 +152,23 @@ public class DeepMindHumanoidAgent : MarathonAgent
         return _reward;
     }
 
+    // bool TerminateHumanoid()
+    // {
+    //     if (TerminateOnNonFootHitTerrain())
+    //         return true;
+    //     var height = GetHeightPenality(.9f);
+    //     var angle = GetForwardBonus("pelvis");
+    //     bool endOnHeight = height > 0f;
+    //     bool endOnAngle = (angle < .25f);
+    //     return endOnHeight || endOnAngle;
+    // }
     bool TerminateHumanoid()
     {
-        if (TerminateOnNonFootHitTerrain())
-            return true;
-        var height = GetHeightPenality(.9f);
-        var angle = GetForwardBonus("pelvis");
-        bool endOnHeight = height > 0f;
-        bool endOnAngle = (angle < .25f);
-        return endOnHeight || endOnAngle;
+        var pelvis = BodyParts["pelvis"];
+		if (pelvis.transform.position.y<0){
+			return true;
+		}
+        return TerminateOnNonFootHitTerrain();
     }
 
     // implement phase bonus (reward for left then right)
