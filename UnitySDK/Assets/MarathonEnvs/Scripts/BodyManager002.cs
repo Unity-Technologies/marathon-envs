@@ -39,6 +39,11 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 
     float[] lastVectorAction;
 	float[] vectorDifference;
+	List <Vector3> mphBuffer;
+
+	[Tooltip("Max distance travelled across all episodes")]
+	/**< \brief Max distance travelled across all episodes*/
+	public float MaxDistanceTraveled;
 
 	
 	// static ScoreHistogramData _scoreHistogramData;
@@ -80,10 +85,13 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		SensorIsInTouch = Enumerable.Range(0,Sensors.Count).Select(x=>0f).ToList();
 		// HACK first spawned agent should grab the camera
 		var smoothFollow = GameObject.FindObjectOfType<SmoothFollow>();
-		if (smoothFollow != null && smoothFollow.target == null)
+		if (smoothFollow != null && smoothFollow.target == null) {
 			smoothFollow.target = CameraTarget;
+			ShowMonitor = true;                
+		}
 		lastVectorAction = null;
 		vectorDifference = null;		
+		mphBuffer = new List<Vector3>();
 	}
 
 	public void OnAgentAction(float[] vectorAction, string textAction)
@@ -452,6 +460,26 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		}
 		if (ObservationNormalizedErrors > MaxObservationNormalizedErrors)
 			MaxObservationNormalizedErrors = ObservationNormalizedErrors;  
+
+        var pelvis = GetFirstBodyPart(BodyPartGroup.Hips);
+		MaxDistanceTraveled = Mathf.Max(MaxDistanceTraveled, pelvis.Transform.position.x);
+        Vector3 metersPerSecond = pelvis.Rigidbody.velocity;
+		Vector3 mph = metersPerSecond * 2.236936f;
+		mphBuffer.Add(mph);
+		if (mphBuffer.Count > 100)
+			mphBuffer.RemoveAt(0);
+		var aveMph = new Vector3(
+			mphBuffer.Select(x=>x.x).Average(),
+			mphBuffer.Select(x=>x.y).Average(),
+			mphBuffer.Select(x=>x.z).Average()
+		);
+		if (ShowMonitor)
+		{
+			Monitor.Log("MaxDistance", MaxDistanceTraveled.ToString());
+			Monitor.Log("NormalizedPos", GetNormalizedPosition().ToString());
+			Monitor.Log("MPH: ", (aveMph).ToString());
+		}            
+
     }  
 
 	float NextGaussian(float mu = 0, float sigma = 1)

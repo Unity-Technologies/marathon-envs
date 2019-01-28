@@ -2113,7 +2113,7 @@ MonoBehaviour:
     onDemandDecision: 0
     numberOfActionsBetweenDecisions: 5
     skipActionsWithDecisions: 1
-  agentBoundsMaxOffset: {x: 480, y: 2, z: 1}
+  agentBoundsMaxOffset: {x: 500, y: 2, z: 1}
   agentBoundsMinOffset: {x: 0, y: 0, z: -1}
 --- !u!114 &5859498862604059448
 MonoBehaviour:
@@ -2141,6 +2141,7 @@ MonoBehaviour:
   Sensors: []
   FrameReward: 0
   AverageReward: 0
+  MaxDistanceTraveled: 0
 --- !u!54 &5286234179746182682
 Rigidbody:
   m_ObjectHideFlags: 0
