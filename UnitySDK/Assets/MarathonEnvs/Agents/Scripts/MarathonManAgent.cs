@@ -52,6 +52,7 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 		AddVectorObs(_bodyManager.GetBodyPartsObservations());
 		AddVectorObs(_bodyManager.GetMusclesObservations());
 		AddVectorObs(_bodyManager.GetSensorYPositions());
+		AddVectorObs(_bodyManager.GetSensorZPositions());
 
 		_bodyManager.OnCollectObservationsHandleDebug(GetInfo());
 	}

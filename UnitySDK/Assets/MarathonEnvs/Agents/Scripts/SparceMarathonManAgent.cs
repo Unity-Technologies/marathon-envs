@@ -4,6 +4,54 @@ using UnityEngine;
 using MLAgents;
 using System.Linq;
 using static BodyHelper002;
+using System;
+
+public class RollingAverage
+{
+	List<double> _window;
+	int _size;
+	int _count;
+	double _sum;
+	double _sumOfSquares;
+	public double Mean;
+	public double StandardDeviation;
+
+	public RollingAverage(int size)
+	{
+		_window = new List<double>(size);
+		_size = size;
+		_count = 0;
+		_sum = 0;
+		_sumOfSquares = 0;
+	}
+	public double Normalize(double val)
+	{
+		Add(val);
+		double normalized = val;
+		if (StandardDeviation != 0) 
+			normalized = (val - Mean) / StandardDeviation;
+		return normalized;
+	}
+	void Add (double val)
+	{
+		if (_count >= _size)
+		{
+			var removedVal = _window[0];
+			_window.RemoveAt(0);
+			_count--;
+			_sum -= removedVal;
+			_sumOfSquares -= removedVal * removedVal;
+		}
+		_window.Add(val);
+		_count++;
+		_sum += val;
+		_sumOfSquares += val * val;
+		// set Mean to Sum / Count, 
+		Mean = _sum / _count;
+		// set StandardDeviation to Math.Sqrt(SumOfSquares / Count - Mean * Mean).
+		StandardDeviation = Math.Sqrt(_sumOfSquares / _count - Mean * Mean);
+	}
+}
 
 public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 {
@@ -15,6 +63,9 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 	public float _hipsForwardReward;
 	public float _notAtLimitBonus;
 	public float _reducedPowerBonus;
+	public float _episodeMaxDistance;
+
+	static RollingAverage rollingAverage;
 
 	override public void CollectObservations()
 	{
@@ -33,11 +84,11 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		AddVectorObs(_bodyManager.GetBodyPartsObservations());
 		AddVectorObs(_bodyManager.GetMusclesObservations());
 		AddVectorObs(_bodyManager.GetSensorYPositions());
-
-		_bodyManager.OnCollectObservationsHandleDebug(GetInfo());
+		AddVectorObs(_bodyManager.GetSensorZPositions());
 
 		AddVectorObs(_notAtLimitBonus);
 		AddVectorObs(_reducedPowerBonus);
+		_bodyManager.OnCollectObservationsHandleDebug(GetInfo());
 	}
 
 	public override void AgentAction(float[] vectorAction, string textAction)
@@ -82,6 +133,9 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		if (_bodyManager == null)
 			_bodyManager = GetComponent<BodyManager002>();
 		_bodyManager.OnAgentReset();
+		_episodeMaxDistance = 0f;
+		if (rollingAverage == null)
+			rollingAverage = new RollingAverage(10);
 	}
 	public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
 	{
@@ -94,8 +148,10 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 			return;
 		switch (bodyPart.Group)
 		{
-			case BodyHelper002.BodyPartGroup.None:
 			case BodyHelper002.BodyPartGroup.Foot:
+				_episodeMaxDistance = _bodyManager.GetNormalizedPosition().x;
+				break;
+			case BodyHelper002.BodyPartGroup.None:
 			// case BodyHelper002.BodyPartGroup.LegUpper:
 			case BodyHelper002.BodyPartGroup.LegLower:
 			case BodyHelper002.BodyPartGroup.Hand:
@@ -114,8 +170,9 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 
 	void AddEpisodeEndReward()
 	{
-		var normalizedPosition = _bodyManager.GetNormalizedPosition();
-        var reward = normalizedPosition.x;
+		// var normalizedPosition = _bodyManager.GetNormalizedPosition();
+        // var reward = normalizedPosition.x;
+		var reward = _episodeMaxDistance;
 		// calcualte average velocity over run
 		// reward *= (this.agentParameters.maxStep / this.agentParameters.numberOfActionsBetweenDecisions);
 		// reward /= this.GetStepCount();
@@ -140,7 +197,11 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		// 	reward +=  _hipsForwardReward * endPos;
 		// }
 
-		AddReward(reward);
-		_bodyManager.SetDebugFrameReward(reward);
+		// AddReward(reward);
+		// _bodyManager.SetDebugFrameReward(reward);
+		float normalizedReward = (float)rollingAverage.Normalize(reward);
+		// print ($"{normalizedReward} from {reward}");
+		AddReward(normalizedReward);
+		_bodyManager.SetDebugFrameReward(normalizedReward);
 	}
 }

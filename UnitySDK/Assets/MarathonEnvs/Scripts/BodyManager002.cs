@@ -427,6 +427,15 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 			.ToList();
         return sensorYpositions;
     }
+	public List<float> GetSensorZPositions()
+    {
+		var sensorYpositions = Sensors
+			.Select(x=> this.GetNormalizedPosition(x.transform.position - startPosition))
+			.Select(x=>x.z)
+			.ToList();
+        return sensorYpositions;
+    }
+
     public void OnCollectObservationsHandleDebug(AgentInfo info)
     {
 		if (Observations?.Count != info.vectorObservation.Count)
