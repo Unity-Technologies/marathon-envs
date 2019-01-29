@@ -5,15 +5,15 @@ using UnityEngine;
 namespace MLAgents
 {
     /// <summary>
-    /// AgentSpawner holds references to agentIds, prefabs, brains for spawning agents.
+    /// EnvSpawner holds references to envIds, prefabs, brains for spawning environments.
     /// </summary>
     [System.Serializable]
-    public class AgentSpawner
+    public class EnvSpawner
     {
         [System.Serializable]
-        public class SpawnableAgent
+        public class SpawnableEnvDefinition
         {
-            public string agentId;
+            public string envId;
             public GameObject envPrefab;
         }
         [System.Serializable]
@@ -24,38 +24,38 @@ namespace MLAgents
         }
 
         [SerializeField]
-        public List<SpawnableAgent> spawnableAgents = new List<SpawnableAgent>();
+        public List<SpawnableEnvDefinition> spawnableEnvDefinitions = new List<SpawnableEnvDefinition>();
 
         /// <summary>
-        /// The number of SpawnableAgents inside the AgentSpawner.
+        /// The number of SpawnableEnvs inside the EnvSpawner.
         /// </summary>
         public int Count
         {
-            get { return spawnableAgents.Count; }
+            get { return spawnableEnvDefinitions.Count; }
         }
 
-        [Tooltip("The agentId to spawn if not overriden from python")]
-        public string agentIdDefault;
-        [Tooltip("The number of agents to spawn in Training Mode if not overriden from python")]
-        public int trainingNumAgentsDefault;
-        [Tooltip("The number of agents to spawn in Inference Mode if not overriden from python")]
-        public int inferenceNumAgentsDefault;
+        [Tooltip("The envId to spawn if not overriden from python")]
+        public string envIdDefault;
+        [Tooltip("The number of environments to spawn in Training Mode if not overriden from python")]
+        public int trainingNumEnvsDefault;
+        [Tooltip("The number of environments to spawn in Inference Mode if not overriden from python")]
+        public int inferenceNumEnvsDefault;
         [Tooltip("If true, enter Training Mode, else Inference Mode")]
         public bool trainingMode;
 
 
         /// <summary>
-        /// Return prefab for this AgentId else null
+        /// Return prefab for this EnvId else null
         /// </summary>
-        public GameObject GetPrefabFor(string thisAgentId)
+        public GameObject GetPrefabFor(string thisEnvId)
         {
-            var entry = spawnableAgents
-                .FirstOrDefault(x=>x.agentId==thisAgentId);
+            var entry = spawnableEnvDefinitions
+                .FirstOrDefault(x=>x.envId==thisEnvId);
             return entry?.envPrefab; 
         }
 
         /// <summary>
-        /// Spawn a number of enviroments. The enviromentment must include SpawnableEnv
+        /// Spawn a number of environments. The enviromentment must include SpawnableEnv
         /// </summary>
         public void SpawnSpawnableEnv(GameObject parent, int numInstances, GameObject envPrefab)
         {
@@ -77,7 +77,7 @@ namespace MLAgents
         /// </summary>
         public void Clear()
         {
-            spawnableAgents.Clear();
+            spawnableEnvDefinitions.Clear();
         }
     }
 }

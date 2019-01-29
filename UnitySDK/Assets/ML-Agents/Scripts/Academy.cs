@@ -93,7 +93,7 @@ namespace MLAgents
     {
         [SerializeField] 
         public BroadcastHub broadcastHub = new BroadcastHub();
-        public AgentSpawner agentSpawner = new AgentSpawner();
+        public EnvSpawner agentSpawner = new EnvSpawner();
         private const string kApiVersion = "API-6";
 
         // Fields provided in the Inspector
@@ -408,7 +408,7 @@ namespace MLAgents
         {
             if (pythonParameters != null && pythonParameters.NumAgents != 0)
                 return pythonParameters.NumAgents;
-            return isInference ? agentSpawner.inferenceNumAgentsDefault : agentSpawner.trainingNumAgentsDefault;
+            return isInference ? agentSpawner.inferenceNumEnvsDefault : agentSpawner.trainingNumEnvsDefault;
         }
 
         /// <summary>
@@ -418,7 +418,7 @@ namespace MLAgents
         {
             if (pythonParameters != null && !string.IsNullOrWhiteSpace(pythonParameters?.AgentId))
                 return pythonParameters.AgentId;
-            return agentSpawner.agentIdDefault;
+            return agentSpawner.envIdDefault;
         }
 
 

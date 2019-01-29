@@ -296,28 +296,28 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 0}
   agentSpawner:
-    spawnableAgents:
-    - agentId: Hopper-v0
+    spawnableEnvDefinitions:
+    - envId: Hopper-v0
       envPrefab: {fileID: 6737101200792111825, guid: 562eb53b2c5eb47819b559b2afa6063c,
         type: 3}
-    - agentId: Walker2d-v0
+    - envId: Walker2d-v0
       envPrefab: {fileID: 7075913131664046299, guid: b3657881460b242f7963952291e61aec,
         type: 3}
-    - agentId: Ant-v0
+    - envId: Ant-v0
       envPrefab: {fileID: 5262237177341221258, guid: c3c332aefbae14d7bb05a9a9d1e92822,
         type: 3}
-    - agentId: Humanoid-v0
+    - envId: Humanoid-v0
       envPrefab: {fileID: 3037751692074211891, guid: 0cf4acf0631414b60a6743fdb80b1857,
         type: 3}
-    - agentId: MarathonMan-v0
+    - envId: MarathonMan-v0
       envPrefab: {fileID: 1802870815327278923, guid: 7e60d2adba0a6460496d49f806ce6581,
         type: 3}
-    - agentId: MarathonManSparse-v0
+    - envId: MarathonManSparse-v0
       envPrefab: {fileID: 233471726635017911, guid: e5ff581d16faa48b8827455b500a4fa5,
         type: 3}
-    agentIdDefault: MarathonManSparse-v0
-    trainingNumAgentsDefault: 16
-    inferenceNumAgentsDefault: 16
+    envIdDefault: MarathonMan-v0
+    trainingNumEnvsDefault: 16
+    inferenceNumEnvsDefault: 16
     trainingMode: 0
   maxSteps: 0
   trainingConfiguration:
