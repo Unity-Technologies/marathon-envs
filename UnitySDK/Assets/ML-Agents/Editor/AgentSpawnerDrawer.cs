@@ -33,8 +33,7 @@ namespace MLAgents
             LazyInitialize(property, label);
             var numLines = _agentSpawner.Count + 2 + (_agentSpawner.Count > 0 ? 1 : 0);
             float height = (numLines) * LineHeight;
-            height += 6 * LineHeight; // additional normal height properties
-            height += 2 * LineHeight * 0; // additional tripple height properties
+            height += 4 * LineHeight; // additional normal height properties
             height += ExtraSpaceBelow;
             return height;
         }
@@ -101,10 +100,6 @@ namespace MLAgents
                         case nameof(_agentSpawner.trainingNumAgentsDefault):
                         case nameof(_agentSpawner.inferenceNumAgentsDefault):
                         case nameof(_agentSpawner.trainingMode):
-                        case nameof(_agentSpawner.worldBoundsMaxOffset):
-                        case nameof(_agentSpawner.worldBoundsMinOffset):
-                        // case nameof(_agentSpawner.agentBoundsMinOffset):
-                        // case nameof(_agentSpawner.agentBoundsMaxOffset):
                             EditorGUI.PropertyField(position, subProp);
                             position.y += LineHeight;
                             break;
@@ -190,12 +185,12 @@ namespace MLAgents
                 // This is the rectangle for the agentPrefab
                 EditorGUI.BeginChangeCheck();
                 var agentPrefab = EditorGUI.ObjectField(
-                    agentPrefabRect, spawnableAgent.agentPrefab, typeof(GameObject), true) as GameObject;
+                    agentPrefabRect, spawnableAgent.envPrefab, typeof(GameObject), true) as GameObject;
                 agentPrefabRect.y += LineHeight;
                 if (EditorGUI.EndChangeCheck())
                 {
                     MarkSceneAsDirty();
-                    spawnableAgent.agentPrefab = agentPrefab;
+                    spawnableAgent.envPrefab = agentPrefab;
                     break;
                 }
             }

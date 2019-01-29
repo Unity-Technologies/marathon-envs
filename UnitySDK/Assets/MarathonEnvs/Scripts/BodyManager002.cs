@@ -34,6 +34,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 	Dictionary<GameObject, Quaternion> transformsRotation;
 
 	Agent _agent;
+	SpawnableEnv _spawnableEnv;
 
 	static int _startCount;
 
@@ -67,13 +68,13 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
     // Start is called before the first frame update
     void Start()
     {
+		_spawnableEnv = GetComponentInParent<SpawnableEnv>();        
         SetupBody();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
 
 	public void OnAgentReset()
@@ -345,23 +346,11 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		return centerOfMass;
 	}
 
-    public Vector3 GetNormalizedPosition(Vector3 pos)
-    {
-        var n = _agent.GetNormalizedPosition(pos);
-        return n;
-    }
-
-    public Vector3 GetNormalizedVelocity(Vector3 metersPerSecond)
-    {
-        var normalizedPosition = _agent.GetNormalizedVelocity(metersPerSecond);
-        return normalizedPosition;
-    }
-
     public Vector3 GetNormalizedVelocity()
     {
         var pelvis = GetFirstBodyPart(BodyPartGroup.Hips); 
         Vector3 metersPerSecond = pelvis.Rigidbody.velocity;
-        var n = _agent.GetNormalizedVelocity(metersPerSecond);
+        var n = GetNormalizedVelocity(metersPerSecond);
         return n;
     }
 
@@ -493,5 +482,37 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		var rand_normal = mu + sigma * rand_std_normal;
 
 		return rand_normal;
+	}
+	public Vector3 GetNormalizedVelocity(Vector3 metersPerSecond)
+	{
+		var maxMetersPerSecond = _spawnableEnv.bounds.size
+			/ _agent.agentParameters.maxStep
+			/ Time.fixedDeltaTime;
+		var maxXZ = Mathf.Max(maxMetersPerSecond.x, maxMetersPerSecond.z);
+		maxMetersPerSecond.x = maxXZ;
+		maxMetersPerSecond.z = maxXZ;
+		maxMetersPerSecond.y = 53; // override with
+		float x = metersPerSecond.x / maxMetersPerSecond.x;
+		float y = metersPerSecond.y / maxMetersPerSecond.y;
+		float z = metersPerSecond.z / maxMetersPerSecond.z;
+		// clamp result
+		x = Mathf.Clamp(x, -1f, 1f);
+		y = Mathf.Clamp(y, -1f, 1f);
+		z = Mathf.Clamp(z, -1f, 1f);
+		Vector3 normalizedVelocity = new Vector3(x,y,z);
+		return normalizedVelocity;
+	}
+	public Vector3 GetNormalizedPosition(Vector3 pos)
+	{
+		var maxPos = _spawnableEnv.bounds.size;
+		float x = pos.x / maxPos.x;
+		float y = pos.y / maxPos.y;
+		float z = pos.z / maxPos.z;
+		// clamp result
+		x = Mathf.Clamp(x, -1f, 1f);
+		y = Mathf.Clamp(y, -1f, 1f);
+		z = Mathf.Clamp(z, -1f, 1f);
+		Vector3 normalizedPos = new Vector3(x,y,z);
+		return normalizedPos;
 	}
 }

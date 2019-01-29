@@ -30,10 +30,6 @@ namespace MLAgents
                 "agentParameters.onDemandDecision");
             SerializedProperty cameras = serializedAgent.FindProperty(
                 "agentParameters.agentCameras");
-            SerializedProperty agentBoundsMinOffset = serializedAgent.FindProperty(
-                nameof(Agent.agentBoundsMinOffset));
-            SerializedProperty agentBoundsMaxOffset = serializedAgent.FindProperty(
-                nameof(Agent.agentBoundsMaxOffset));
 
             EditorGUILayout.PropertyField(brain);
 
@@ -89,8 +85,6 @@ namespace MLAgents
                     EditorGUI.indentLevel--;
                 }
             }
-            EditorGUILayout.PropertyField(agentBoundsMinOffset);
-            EditorGUILayout.PropertyField(agentBoundsMaxOffset);
 
             serializedAgent.ApplyModifiedProperties();
 

@@ -126,9 +126,13 @@ namespace MLAgents
 
         float[] lastVectorAction;
         float[] vectorDifference;
+    	SpawnableEnv _spawnableEnv;
+    	Vector3 startPosition;
 
         public override void AgentReset()
         {
+            if (_spawnableEnv == null)
+        		_spawnableEnv = GetComponentInParent<SpawnableEnv>();
             if (marathonSpawner == null)
                 marathonSpawner = GetComponent<MarathonSpawner>();
 
@@ -160,6 +164,7 @@ namespace MLAgents
                 UpdateQ();
                 return;
             }
+			startPosition = transform.position;
             // HACK first spawned marathon agent should grab the camera
             var agentWithCamera = FindObjectsOfType<MarathonAgent>().FirstOrDefault(x=>x.CameraTarget != null);
             if (agentWithCamera == null) {
@@ -332,6 +337,40 @@ namespace MLAgents
             var maxSpeed = 4f; // meters per second
             var velocity = rawVelocity / maxSpeed;
             return velocity;
+        }
+
+        internal Vector3 GetNormalizedVelocity(Vector3 metersPerSecond)
+        {
+            var maxMetersPerSecond = _spawnableEnv.bounds.size
+                / agentParameters.maxStep
+                / Time.fixedDeltaTime;
+            var maxXZ = Mathf.Max(maxMetersPerSecond.x, maxMetersPerSecond.z);
+            maxMetersPerSecond.x = maxXZ;
+            maxMetersPerSecond.z = maxXZ;
+            maxMetersPerSecond.y = 53; // override with
+            float x = metersPerSecond.x / maxMetersPerSecond.x;
+            float y = metersPerSecond.y / maxMetersPerSecond.y;
+            float z = metersPerSecond.z / maxMetersPerSecond.z;
+            // clamp result
+            x = Mathf.Clamp(x, -1f, 1f);
+            y = Mathf.Clamp(y, -1f, 1f);
+            z = Mathf.Clamp(z, -1f, 1f);
+            Vector3 normalizedVelocity = new Vector3(x,y,z);
+            return normalizedVelocity;
+        }
+        internal Vector3 GetNormalizedPosition(Vector3 inputPos)
+        {
+            Vector3 pos = inputPos - startPosition;
+            var maxPos = _spawnableEnv.bounds.size;
+            float x = pos.x / maxPos.x;
+            float y = pos.y / maxPos.y;
+            float z = pos.z / maxPos.z;
+            // clamp result
+            x = Mathf.Clamp(x, -1f, 1f);
+            y = Mathf.Clamp(y, -1f, 1f);
+            z = Mathf.Clamp(z, -1f, 1f);
+            Vector3 normalizedPos = new Vector3(x,y,z);
+            return normalizedPos;
         }
 
         internal Vector3 GetNormalizedVelocity(string bodyPart = null)

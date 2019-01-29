@@ -359,7 +359,7 @@ namespace MLAgents
             ConfigureEnvironment();
             
             if (spawnerEnabled)
-                agentSpawner.SpawnAgents(this.gameObject, GetNumAgents() ,spawnPrefab);
+                agentSpawner.SpawnSpawnableEnv(this.gameObject, GetNumAgents() ,spawnPrefab);
         }
 
         private void UpdateResetParameters()
