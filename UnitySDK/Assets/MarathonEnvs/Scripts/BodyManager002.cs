@@ -303,7 +303,8 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		return (float) (effort / joints);
 	}
 	public void OnSensorCollisionEnter(Collider sensorCollider, GameObject other) {
-		if (string.Compare(other.name, "Terrain", true) !=0)
+		// if (string.Compare(other.name, "Terrain", true) !=0)
+		if (other.GetComponent<Terrain>() == null)
 			return;
 		var sensor = Sensors
 			.FirstOrDefault(x=>x == sensorCollider.gameObject);
@@ -314,7 +315,8 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 	}
 	public void OnSensorCollisionExit(Collider sensorCollider, GameObject other)
 	{
-		if (string.Compare(other.gameObject.name, "Terrain", true) !=0)
+		// if (string.Compare(other.gameObject.name, "Terrain", true) !=0)
+		if (other.GetComponent<Terrain>() == null)
 			return;
 		var sensor = Sensors
 			.FirstOrDefault(x=>x == sensorCollider.gameObject);

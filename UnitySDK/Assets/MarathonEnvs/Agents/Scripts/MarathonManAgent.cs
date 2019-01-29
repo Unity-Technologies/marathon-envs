@@ -100,7 +100,8 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 	}
 	public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
 	{
-		if (string.Compare(terrain.name, "Terrain", true) != 0)
+		// if (string.Compare(terrain.name, "Terrain", true) != 0)
+		if (terrain.GetComponent<Terrain>() == null)
 			return;
 		// if (!_styleAnimator.AnimationStepsReady)
 		// 	return;

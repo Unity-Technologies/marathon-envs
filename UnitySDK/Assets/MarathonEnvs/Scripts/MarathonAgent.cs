@@ -555,7 +555,8 @@ namespace MLAgents
 
         public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
         {
-            if (string.Compare(terrain.name, "Terrain", true) != 0)
+            // if (string.Compare(terrain.name, "Terrain", true) != 0)
+    		if (terrain.GetComponent<Terrain>() == null)
                 return;
 
             switch (other.name.ToLowerInvariant().Trim())
@@ -739,7 +740,8 @@ namespace MLAgents
 
         public void SensorCollisionEnter(Collider sensorCollider, Collision other)
         {
-            if (string.Compare(other.gameObject.name, "Terrain", true) != 0)
+            // if (string.Compare(other.gameObject.name, "Terrain", true) != 0)
+    		if (other.gameObject.GetComponent<Terrain>() == null)
                 return;
             var otherGameobject = other.gameObject;
             var sensor = MarathonSensors
@@ -753,7 +755,8 @@ namespace MLAgents
 
         public void SensorCollisionExit(Collider sensorCollider, Collision other)
         {
-            if (string.Compare(other.gameObject.name, "Terrain", true) != 0)
+            // if (string.Compare(other.gameObject.name, "Terrain", true) != 0)
+    		if (other.gameObject.GetComponent<Terrain>() == null)
                 return;
             var otherGameobject = other.gameObject;
             var sensor = MarathonSensors

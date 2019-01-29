@@ -135,11 +135,12 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		_bodyManager.OnAgentReset();
 		_episodeMaxDistance = 0f;
 		if (rollingAverage == null)
-			rollingAverage = new RollingAverage(10);
+			rollingAverage = new RollingAverage(100);
 	}
 	public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
 	{
-		if (string.Compare(terrain.name, "Terrain", true) != 0)
+		// if (string.Compare(terrain.name, "Terrain", true) != 0)
+		if (terrain.GetComponent<Terrain>() == null)
 			return;
 		// if (!_styleAnimator.AnimationStepsReady)
 		// 	return;
@@ -200,6 +201,8 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		// AddReward(reward);
 		// _bodyManager.SetDebugFrameReward(reward);
 		float normalizedReward = (float)rollingAverage.Normalize(reward);
+		 normalizedReward += (float)rollingAverage.Mean;
+
 		// print ($"{normalizedReward} from {reward}");
 		AddReward(normalizedReward);
 		_bodyManager.SetDebugFrameReward(normalizedReward);
