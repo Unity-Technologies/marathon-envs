@@ -49,7 +49,7 @@ MarathonManBrain:
     beta: .003
     max_steps: 10.e6    
 
-SparseMarathonManBrain:
+MarathonManSparseBrain:
     num_epoch: 10 
     time_horizon: 1000 
     summary_freq: 250000
