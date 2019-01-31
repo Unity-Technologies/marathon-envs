@@ -256,19 +256,22 @@ namespace MLAgents
             Communicator communicator = null;
 
             var spawnPrefab = agentSpawner.GetPrefabFor(GetAgentId());
-            var spawnAgentPrefab = spawnPrefab.GetComponentInChildren<Agent>();
-            var spawnAgentPrefabBrain = spawnAgentPrefab?.brain;
-            var spawnerEnabled = spawnAgentPrefabBrain!=null;
+            var spawnAgentPrefabs = spawnPrefab.GetComponentsInChildren<Agent>();
+            var spawnAgentPrefabBrains = spawnAgentPrefabs
+                .Where(x=>x.brain as LearningBrain != null)
+                .Select(x=>x.brain)
+                .ToList();
+            var spawnerEnabled = spawnAgentPrefabBrains.Count > 0;
             var hubBrains = broadcastHub.broadcastingBrains.Where(x => x != null).ToList();;
             var hubControlledBrains = broadcastHub.broadcastingBrains.Where(
                 x => x != null && x is LearningBrain && broadcastHub.IsControlled(x));
 
             IEnumerable<Brain> exposedBrains = 
-                spawnerEnabled ? new []{spawnAgentPrefabBrain}.ToList() : hubBrains;
+                spawnerEnabled ? spawnAgentPrefabBrains : hubBrains;
             IEnumerable<Brain> controlledBrains = hubControlledBrains;
             if (spawnerEnabled)
                 controlledBrains = agentSpawner.trainingMode 
-                    ? new []{spawnAgentPrefabBrain}.ToList() 
+                    ? spawnAgentPrefabBrains 
                     : new List<Brain>();
             
             // Try to launch the communicator by usig the arguments passed at launch
