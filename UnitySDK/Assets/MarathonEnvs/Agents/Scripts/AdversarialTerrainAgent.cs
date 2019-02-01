@@ -28,8 +28,28 @@ public class AdversarialTerrainAgent : Agent {
 		// get start position
 		if (this.terrain == null)
 		{
-			var terrains = Terrain.activeTerrains;
-			this.terrain = terrains.FirstOrDefault(x=>x.gameObject.transform.parent == gameObject.transform.parent);
+			var parent = gameObject.transform.parent;
+			terrain = parent.GetComponentInChildren<Terrain>();
+			// var terrains = Terrain.activeTerrains;
+			// this.terrain = terrains.FirstOrDefault(x=>x.gameObject.transform.parent == gameObject.transform.parent);
+			var sharedTerrainData = terrain.terrainData;
+			terrain.terrainData = new TerrainData();
+			terrain.terrainData.heightmapResolution = sharedTerrainData.heightmapResolution;
+			terrain.terrainData.baseMapResolution = sharedTerrainData.baseMapResolution;
+			terrain.terrainData.SetDetailResolution(sharedTerrainData.detailResolution, sharedTerrainData.detailResolutionPerPatch);
+			terrain.terrainData.size = sharedTerrainData.size;
+			// terrain.terrainData.SetAlphamaps()
+			// terrain.terrainData.alphamapLayers = sharedTerrainData.alphamapLayers;
+			// terrain.terrainData.alphamapTextureCount = sharedTerrainData.alphamapTextureCount;
+			// terrain.terrainData.alphamapTextures = sharedTerrainData.alphamapTextures;
+			// terrain.terrainData.heightmapScale = sharedTerrainData.heightmapScale;
+			// terrain.terrainData.heightmapTexture = sharedTerrainData.heightmapTexture;
+			// terrain.terrainData.
+			terrain.terrainData.thickness = sharedTerrainData.thickness;
+			terrain.terrainData.splatPrototypes = sharedTerrainData.splatPrototypes;
+			terrain.terrainData.terrainLayers = sharedTerrainData.terrainLayers;
+
+			// Terrain.CreateTerrainGameObject(terrain.terrainData);
 		}
 		if (this._agent == null)
 			_agent = GetComponent<Agent>();
