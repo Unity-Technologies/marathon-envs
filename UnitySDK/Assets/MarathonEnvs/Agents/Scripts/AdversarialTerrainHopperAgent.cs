@@ -51,9 +51,7 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
         SetCenterOfMass();
         var xpos = _centerOfMass.x;
         var terminate = false;
-        if (xpos < 4f && _pain > 1f)
-            terminate = true;
-        else if (xpos < 2f && _pain > 0f)
+        if (NonFootHitTerrain)
             terminate = true;
         if (terminate)
             _adversarialTerrainAgent.Terminate(GetCumulativeReward());
@@ -171,11 +169,11 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
         }
 
         var reward = velocity
-            +uprightBonus
-            // -heightPenality
-            -effortPenality
-            -jointsAtLimitPenality
-            -_pain
+            // +uprightBonus
+            // // -heightPenality
+            // -effortPenality
+            // -jointsAtLimitPenality
+            // -_pain
             ;
         if (ShowMonitor) {
             // var hist = new []{reward,velocity,uprightBonus,-heightPenality,-effortPenality}.ToList();
