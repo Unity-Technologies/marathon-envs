@@ -105,3 +105,33 @@ OpenAIAntBrain:
     buffer_size: 2048 
     beta: .003
     max_steps: 1.e6
+
+
+AdversarialTerrainHopperBrain:
+    beta: 1.0e-2
+    time_horizon: 1000
+    summary_freq: 1000
+    normalize: true
+    num_layers: 2
+    hidden_units: 256
+    batch_size: 2048
+    buffer_size: 10240
+    max_steps: 10e5
+AdversarialTerrainWalkerBrain:
+    beta: 1.0e-2
+    time_horizon: 1000
+    summary_freq: 1000
+    normalize: true
+    num_layers: 2
+    hidden_units: 256
+    batch_size: 2048
+    buffer_size: 10240
+    max_steps: 10e5
+AdversarialTerrainBrain:
+    # use_recurrent: true
+    # sequence_length: 64
+    # normalize: true
+    num_layers: 2
+    hidden_units: 64
+    # memory_size: 256
+    max_steps: 10e5
