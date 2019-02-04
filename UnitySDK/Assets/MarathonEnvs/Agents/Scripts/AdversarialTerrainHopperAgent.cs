@@ -90,18 +90,29 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
     }    
     void ObservationsDefault()
     {
-        if (ShowMonitor) {
-        }
+        // var pelvis = BodyParts["pelvis"];
+        // AddVectorObs(pelvis.velocity);
+        // AddVectorObs(pelvis.transform.forward); // gyroscope 
+        // AddVectorObs(pelvis.transform.up);
+        
+        // AddVectorObs(SensorIsInTouch);
+        // JointRotations.ForEach(x=>AddVectorObs(x));
+        // AddVectorObs(JointVelocity);
+        // var foot = BodyParts["foot"];
+        // AddVectorObs(foot.transform.position.y);
+
         var pelvis = BodyParts["pelvis"];
-        AddVectorObs(pelvis.velocity);
+        Vector3 normalizedVelocity = this.GetNormalizedVelocity(pelvis.velocity);
+        AddVectorObs(normalizedVelocity);
         AddVectorObs(pelvis.transform.forward); // gyroscope 
         AddVectorObs(pelvis.transform.up);
-        
+
         AddVectorObs(SensorIsInTouch);
-        JointRotations.ForEach(x=>AddVectorObs(x));
+        JointRotations.ForEach(x => AddVectorObs(x));
         AddVectorObs(JointVelocity);
         var foot = BodyParts["foot"];
-        AddVectorObs(foot.transform.position.y);
+        Vector3 normalizedFootPosition = this.GetNormalizedPosition(foot.transform.position);
+        AddVectorObs(normalizedFootPosition.y);        
 
         (List<float> distances, float fraction) = 
             _adversarialTerrainAgent.GetDistances2d(

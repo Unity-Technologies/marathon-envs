@@ -193,6 +193,11 @@ public class AdversarialTerrainAgent : Agent {
                 Debug.DrawRay(origin, direction*Mathf.Abs(distance), color, time, false);
             }
         }
-		return (distances, fraction); 
+		List<float> normalizedDistances = distances
+			.Select(x => Mathf.Clamp(x, -10f, 10f))
+			.Select(x => x/10f)
+			.ToList();
+		;
+		return (normalizedDistances, fraction); 
 	}
 }
