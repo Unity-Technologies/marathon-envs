@@ -128,40 +128,28 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
 
     float StepRewardHopper101()
     {
-        // float heightPenality = GetHeightPenality(0.5f);
-        float uprightBonus = GetForwardBonus("pelvis");
-        float velocity = GetVelocity("pelvis");
-        float effort = GetEffort();
-        // var effortPenality = 1e-2f * (float)effort;
-        var effortPenality = 3e-1f * (float)effort;
-        var jointsAtLimitPenality = GetJointsAtLimitPenality();
-        velocity = Mathf.Clamp(velocity,0f,1f);
+        float uprightBonus = GetDirectionBonus("pelvis", Vector3.forward, 1f);
+        uprightBonus = Mathf.Clamp(uprightBonus, 0f, 1f);
+        float velocity = Mathf.Clamp(GetNormalizedVelocity("pelvis").x, 0f, 1f);
+        // float position = Mathf.Clamp(GetNormalizedPosition("pelvis").x, 0f, 1f);
+        float effort = 1f - GetEffortNormalized();
 
-        //var uprightScaler = Mathf.Clamp(velocity,0,1);
-        //uprightBonus *= 0f;//uprightScaler;
-        if (_pain > 0f){
-            uprightBonus = 0f;
-        }
-        if (_modeRecover) {
-            uprightBonus = 0f;
-            effortPenality = 0f;
-        }
+        uprightBonus *= 0.05f;
+        velocity *= 0.7f;
+        if (velocity >= .25f)
+            effort *= 0.25f;
+        else
+            effort *= velocity;
 
         var reward = velocity
-            // +uprightBonus
-            // // -heightPenality
-            // -effortPenality
-            -jointsAtLimitPenality
-            // -_pain
-            ;
-        if (ShowMonitor) {
-            // var hist = new []{reward,velocity,uprightBonus,-heightPenality,-effortPenality}.ToList();
-            var hist = new []{reward, velocity, uprightBonus, -effortPenality, 
-            -jointsAtLimitPenality,
-            -_pain
-            }.ToList();
-            Monitor.Log("rewardHist", hist.ToArray().ToString());
+                     + uprightBonus
+                     + effort;
+        if (ShowMonitor)
+        {
+            var hist = new[] {reward, velocity, uprightBonus, effort};
+            Monitor.Log("rewardHist", hist, displayType: Monitor.DisplayType.INDEPENDENT);
         }
+
         _pain = 0f;
         return reward;
     }
