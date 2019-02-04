@@ -103,34 +103,10 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
         var foot = BodyParts["foot"];
         AddVectorObs(foot.transform.position.y);
 
-        var xpos = pelvis.transform.position.x;
-        xpos -= 2f;
-        float fraction = (xpos - (Mathf.Floor(xpos*5)/5)) * 5;
-        float ypos = pelvis.transform.position.y;
-        List<Ray> rays = Enumerable.Range(0, 5*5).Select(x => new Ray(new Vector3(xpos+(x*.2f), AdversarialTerrainAgent._maxHeight, 0f), Vector3.down)).ToList();
-        List<float> distances = rays.Select
-            ( x=>
-                ypos - (AdversarialTerrainAgent._maxHeight - 
-                Physics.RaycastAll(x)
-                .OrderBy(y=>y.distance)
-                .FirstOrDefault()
-                .distance)
-            ).ToList();
-        if (Application.isEditor && ShowMonitor)
-        {
-            var view = distances.Skip(10).Take(20).Select(x=>x).ToList();
-            Monitor.Log("distances", view.ToArray());
-            var time = Time.deltaTime;
-            time *= agentParameters.numberOfActionsBetweenDecisions;
-            for (int i = 0; i < rays.Count; i++)
-            {
-                var distance = distances[i];
-                var origin = new Vector3(rays[i].origin.x, ypos,0f);
-                var direction = distance > 0 ? Vector3.down : Vector3.up;
-                var color = distance > 0 ? Color.yellow : Color.red;
-                Debug.DrawRay(origin, direction*Mathf.Abs(distance), color, time, false);
-            }
-        }        
+        (List<float> distances, float fraction) = 
+            _adversarialTerrainAgent.GetDistances2d(
+                pelvis.transform.position, ShowMonitor);
+   
         AddVectorObs(distances);
         AddVectorObs(fraction);
     }
@@ -158,7 +134,7 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
         float effort = GetEffort();
         // var effortPenality = 1e-2f * (float)effort;
         var effortPenality = 3e-1f * (float)effort;
-        var jointsAtLimitPenality = GetJointsAtLimitPenality() * 4;
+        var jointsAtLimitPenality = GetJointsAtLimitPenality();
         velocity = Mathf.Clamp(velocity,0f,1f);
 
         //var uprightScaler = Mathf.Clamp(velocity,0,1);
@@ -175,7 +151,7 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
             // +uprightBonus
             // // -heightPenality
             // -effortPenality
-            // -jointsAtLimitPenality
+            -jointsAtLimitPenality
             // -_pain
             ;
         if (ShowMonitor) {

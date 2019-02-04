@@ -134,6 +134,14 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
         var bodyPart = BodyParts.FirstOrDefault(x=>x.Group == bodyPartGroup);
         return bodyPart;
     }
+    public List<BodyPart002> GetBodyParts()
+    {
+        return BodyParts;
+    }
+    public List<BodyPart002> GetBodyParts(BodyPartGroup bodyPartGroup)
+    {
+        return BodyParts.Where(x=>x.Group == bodyPartGroup).ToList();
+    }
 
     public float GetActionDifference()
     {

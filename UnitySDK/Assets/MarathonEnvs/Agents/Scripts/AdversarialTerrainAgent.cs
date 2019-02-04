@@ -14,6 +14,7 @@ public class AdversarialTerrainAgent : Agent {
 	int _posXInTerrain;
 	int _posYInTerrain;
 	float[,] _heights;
+	float[,] _rowHeight;
 
 	int _heightIndex;
 	float _curHeight;
@@ -41,6 +42,7 @@ public class AdversarialTerrainAgent : Agent {
 			terrain.terrainData.terrainLayers = sharedTerrainData.terrainLayers;
 			var collider = terrain.GetComponent<TerrainCollider>();
 			collider.terrainData = terrain.terrainData;
+			_rowHeight = new float[terrain.terrainData.heightmapResolution,1];
 		}
 		if (this._agent == null)
 			_agent = GetComponent<Agent>();
@@ -60,7 +62,7 @@ public class AdversarialTerrainAgent : Agent {
         // get the heights of the terrain under this game object
         _heights = terrain.terrainData.GetHeights(_posXInTerrain-offset,_posYInTerrain-offset, 100,1);
 		_curHeight = _midHeight;
-		_heightIndex = 0;
+		_heightIndex = _posXInTerrain;
 		_actionReward = 0f;
 
         
@@ -75,6 +77,7 @@ public class AdversarialTerrainAgent : Agent {
 		SetNextHeight(0);
 		SetNextHeight(0);
 		SetNextHeight(0);
+		SetNextHeight(0);
 
 		lastSteps = 0;
 		//RequestDecision();
@@ -82,12 +85,11 @@ public class AdversarialTerrainAgent : Agent {
 
 	void ResetHeights()
 	{
-		for (int i = 0; i < _heights.Length; i++)
-		{
-			_heights[0,i] = _midHeight / _mapScaleY;
-		}
-        this.terrain.terrainData.SetHeights(_posXInTerrain, _posYInTerrain, _heights);
-        this.terrain.terrainData.SetHeights(_posXInTerrain, _posYInTerrain+1, _heights);
+		float height = _curHeight / _mapScaleY;
+		for (int i = 0; i < terrain.terrainData.heightmapHeight; i++)
+			_rowHeight[i,0] = height;
+		for (int i = 0; i < terrain.terrainData.heightmapHeight; i++)
+			this.terrain.terrainData.SetHeights(i, 0, _rowHeight);
 	}
 
 	void SetNextHeight(int action)
@@ -111,18 +113,13 @@ public class AdversarialTerrainAgent : Agent {
 			}
 		}
 
-		_heights[0,_heightIndex] = _curHeight / _mapScaleY;
-        // this.terrain.terrainData.SetHeights(_posXInTerrain, _posYInTerrain, _heights);
-        // this.terrain.terrainData.SetHeights(_posXInTerrain, _posYInTerrain+1, _heights);
+		float height = _curHeight / _mapScaleY;
 		for (int i = 0; i < terrain.terrainData.heightmapHeight; i++)
-		{
-	        this.terrain.terrainData.SetHeights(_posXInTerrain, i, _heights);
-		}
+			_rowHeight[i,0] = height;
+		this.terrain.terrainData.SetHeights(_heightIndex, 0, _rowHeight);
 
 		_heightIndex++;
 		_actionReward = actionSize;
-		// if (_actionReward != 0 && actionPos)
-		// 	_actionReward *= 2f; // boost reward for uphill
 	}
 	internal void OnNextMeter()
 	{
@@ -164,5 +161,38 @@ public class AdversarialTerrainAgent : Agent {
 		// each action is a descreate for height change
 		int action = (int)vectorAction[0];
 		SetNextHeight(action);
+	}
+
+	public (List<float>, float) GetDistances2d(Vector3 pos, bool showDebug)
+	{
+        var xpos = pos.x;
+        xpos -= 2f;
+        float fraction = (xpos - (Mathf.Floor(xpos*5)/5)) * 5;
+        float ypos = pos.y;
+        List<Ray> rays = Enumerable.Range(0, 5*5).Select(x => new Ray(new Vector3(xpos+(x*.2f), AdversarialTerrainAgent._maxHeight, 0f), Vector3.down)).ToList();
+        List<float> distances = rays.Select
+            ( x=>
+                ypos - (AdversarialTerrainAgent._maxHeight - 
+                Physics.RaycastAll(x)
+                .OrderBy(y=>y.distance)
+                .FirstOrDefault()
+                .distance)
+            ).ToList();
+        if (Application.isEditor && showDebug)
+        {
+            var view = distances.Skip(10).Take(20).Select(x=>x).ToList();
+            Monitor.Log("distances", view.ToArray());
+            var time = Time.deltaTime;
+            time *= agentParameters.numberOfActionsBetweenDecisions;
+            for (int i = 0; i < rays.Count; i++)
+            {
+                var distance = distances[i];
+                var origin = new Vector3(rays[i].origin.x, ypos,0f);
+                var direction = distance > 0 ? Vector3.down : Vector3.up;
+                var color = distance > 0 ? Color.yellow : Color.red;
+                Debug.DrawRay(origin, direction*Mathf.Abs(distance), color, time, false);
+            }
+        }
+		return (distances, fraction); 
 	}
 }
