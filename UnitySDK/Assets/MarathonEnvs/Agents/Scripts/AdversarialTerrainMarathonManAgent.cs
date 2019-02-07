@@ -10,9 +10,12 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 	BodyManager002 _bodyManager;
 
     AdversarialTerrainAgent _adversarialTerrainAgent;
-    int _lastXPosInMeters;
+    public int lastXPosInMeters;
     float _pain;
     bool _modeRecover;
+
+	List<float> distances;
+	float fraction;
 
 	override public void CollectObservations()
 	{
@@ -34,21 +37,13 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 		AddVectorObs(_bodyManager.GetSensorZPositions());
 
 		_bodyManager.OnCollectObservationsHandleDebug(GetInfo());
-
-        if (_adversarialTerrainAgent == null)
-            _adversarialTerrainAgent = GetComponent<AdversarialTerrainAgent>();
         
-        (List<float> distances, float fraction) = 
+        (distances, fraction) = 
             _adversarialTerrainAgent.GetDistances2d(
                 pelvis.Rigidbody.transform.position, _bodyManager.ShowMonitor);
     
         AddVectorObs(distances);
         AddVectorObs(fraction);
-
-        _lastXPosInMeters = (int) 
-            _bodyManager.GetBodyParts(BodyPartGroup.Foot)
-            .Average(x=>x.Transform.position.x);
-        _adversarialTerrainAgent.Terminate(GetCumulativeReward());
 	}
 
 	public override void AgentAction(float[] vectorAction, string textAction)
@@ -73,16 +68,29 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 		// 				+ notAtLimitBonus
 		// 				+ reducedPowerBonus
 		// 				+ actionDifference;		
-        var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
-		if (pelvis.Transform.position.y<0){
-			Done();
-		}
-		
-
         var reward = velocity;
-
 		AddReward(reward);
 		_bodyManager.SetDebugFrameReward(reward);
+
+        var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
+		float xpos = 
+            _bodyManager.GetBodyParts(BodyPartGroup.Foot)
+            .Average(x=>x.Transform.position.x);
+		int newXPosInMeters = (int) xpos;
+        if (newXPosInMeters > lastXPosInMeters) {
+            _adversarialTerrainAgent.OnNextMeter();
+            lastXPosInMeters = newXPosInMeters;
+        }
+        var terminate = false;
+		if (pelvis.Rigidbody.transform.position.y < 0f)
+            terminate = true;
+        if (xpos < 4f && _pain > 1f)
+            terminate = true;
+        else if (xpos < 2f && _pain > 0f)
+            terminate = true;
+        if (terminate){
+			Done();
+		}
 	}
 
 
@@ -91,6 +99,14 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 		if (_bodyManager == null)
 			_bodyManager = GetComponent<BodyManager002>();
 		_bodyManager.OnAgentReset();
+        if (_adversarialTerrainAgent == null)
+            _adversarialTerrainAgent = GetComponent<AdversarialTerrainAgent>();
+        _adversarialTerrainAgent.Terminate(GetCumulativeReward());
+		lastXPosInMeters = (int)
+            _bodyManager.GetBodyParts(BodyPartGroup.Foot)
+            .Average(x=>x.Transform.position.x);
+        _pain = 0f;
+        _modeRecover = false;
 	}
 	public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
 	{
@@ -114,10 +130,8 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 				break;
 			default:
 				// AddReward(-100f);
-				if (!IsDone()){
-					Done();
-                    _adversarialTerrainAgent.Terminate(GetCumulativeReward());
-				}
+				_pain += 5f;
+                _modeRecover = true;
 				break;
 		}
 	}

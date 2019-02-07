@@ -11,14 +11,14 @@ public class AdversarialTerrainAgent : Agent {
 	Agent _agent;
 
 
-	int _posXInTerrain;
-	int _posYInTerrain;
+	public int posXInTerrain;
+	public int posYInTerrain;
 	float[,] _heights;
 	float[,] _rowHeight;
 
-	int _heightIndex;
-	float _curHeight;
-	float _actionReward;
+	public int heightIndex;
+	public float curHeight;
+	public float actionReward;
 
 	internal const float _maxHeight = 10f;
 	const float _midHeight = 5f;
@@ -51,19 +51,20 @@ public class AdversarialTerrainAgent : Agent {
 		// get the normalized position of this game object relative to the terrain
         Vector3 tempCoord = (transform.position - terrain.gameObject.transform.position);
         Vector3 coord;
+		tempCoord.z = Mathf.Clamp(tempCoord.z,0f, terrain.terrainData.size.z-0.000001f);
         coord.x = (tempCoord.x-1) / terrain.terrainData.size.x;
         coord.y = tempCoord.y / terrain.terrainData.size.y;
         coord.z = tempCoord.z / terrain.terrainData.size.z;
         // get the position of the terrain heightmap where this game object is
-        _posXInTerrain = (int) (coord.x * terrain.terrainData.heightmapWidth); 
-        _posYInTerrain = (int) (coord.z * terrain.terrainData.heightmapHeight);
+        posXInTerrain = (int) (coord.x * terrain.terrainData.heightmapWidth); 
+        posYInTerrain = (int) (coord.z * terrain.terrainData.heightmapHeight);
         // we set an offset so that all the raising terrain is under this game object
         int offset = 0 / 2;
         // get the heights of the terrain under this game object
-        _heights = terrain.terrainData.GetHeights(_posXInTerrain-offset,_posYInTerrain-offset, 100,1);
-		_curHeight = _midHeight;
-		_heightIndex = _posXInTerrain;
-		_actionReward = 0f;
+        _heights = terrain.terrainData.GetHeights(posXInTerrain-offset,posYInTerrain-offset, 100,1);
+		curHeight = _midHeight;
+		heightIndex = posXInTerrain;
+		actionReward = 0f;
 
         
         // set the new height
@@ -85,7 +86,7 @@ public class AdversarialTerrainAgent : Agent {
 
 	void ResetHeights()
 	{
-		float height = _curHeight / _mapScaleY;
+		float height = curHeight / _mapScaleY;
 		for (int i = 0; i < terrain.terrainData.heightmapHeight; i++)
 			_rowHeight[i,0] = height;
 		for (int i = 0; i < terrain.terrainData.heightmapHeight; i++)
@@ -99,33 +100,33 @@ public class AdversarialTerrainAgent : Agent {
 		if (action != 0)
 		{
 			actionSize = ((float)((action+1)/2)) * 0.1f;
-			_curHeight += actionPos ? actionSize : -actionSize;
-			if (_curHeight < 0) {
-				_curHeight = 0f;
+			curHeight += actionPos ? actionSize : -actionSize;
+			if (curHeight < 0) {
+				curHeight = 0f;
 				actionSize = 0;
 				AddReward(-1f);
 			}
-			if (_curHeight > _maxHeight)
+			if (curHeight > _maxHeight)
 			{
-				_curHeight = _maxHeight;
+				curHeight = _maxHeight;
 				actionSize = 0;
 				AddReward(-1f);				
 			}
 		}
 
-		float height = _curHeight / _mapScaleY;
+		float height = curHeight / _mapScaleY;
 		for (int i = 0; i < terrain.terrainData.heightmapHeight; i++)
 			_rowHeight[i,0] = height;
-		this.terrain.terrainData.SetHeights(_heightIndex, 0, _rowHeight);
+		this.terrain.terrainData.SetHeights(heightIndex, 0, _rowHeight);
 
-		_heightIndex++;
-		_actionReward = actionSize;
+		heightIndex++;
+		actionReward = actionSize;
 	}
 	internal void OnNextMeter()
 	{
 		// AddReward(1);
 		// AddReward(_actionReward);
-		_actionReward = 0f;
+		actionReward = 0f;
 		RequestDecision();
 	}
 	internal void Terminate(float cumulativeReward)
@@ -143,7 +144,7 @@ public class AdversarialTerrainAgent : Agent {
 
 	public override void CollectObservations()
 	{
-		var height = _curHeight / _maxHeight;
+		var height = curHeight / _maxHeight;
 		// add last agent distance
 		
 		int curSteps = 0;
@@ -154,7 +155,7 @@ public class AdversarialTerrainAgent : Agent {
 		lastSteps = curSteps;
         AddVectorObs(numberSinceLast);
         AddVectorObs(height);
-        AddVectorObs(_actionReward);
+        AddVectorObs(actionReward);
 	}
 	public override void AgentAction(float[] vectorAction, string textAction)
 	{
@@ -165,6 +166,7 @@ public class AdversarialTerrainAgent : Agent {
 
 	public (List<float>, float) GetDistances2d(Vector3 pos, bool showDebug)
 	{
+		int layerMask = ~(1 << 14);
         var xpos = pos.x;
         xpos -= 2f;
         float fraction = (xpos - (Mathf.Floor(xpos*5)/5)) * 5;
@@ -173,7 +175,7 @@ public class AdversarialTerrainAgent : Agent {
         List<float> distances = rays.Select
             ( x=>
                 ypos - (AdversarialTerrainAgent._maxHeight - 
-                Physics.RaycastAll(x)
+                Physics.RaycastAll(x,_maxHeight,layerMask)
                 .OrderBy(y=>y.distance)
                 .FirstOrDefault()
                 .distance)
