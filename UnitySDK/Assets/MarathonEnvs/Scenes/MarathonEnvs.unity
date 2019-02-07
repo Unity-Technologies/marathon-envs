@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.49641287, b: 0.5748173, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -288,6 +288,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: b4c68a827b3bf4e50b00de698141b8fd, type: 2}
     - {fileID: 11400000, guid: c3f7addec59364d98afd58440cbb5f14, type: 2}
     - {fileID: 11400000, guid: 9ea886974783b4c4dac8a8ff9eff1958, type: 2}
+    - {fileID: 11400000, guid: c0c29a662c0244e458c6d6be9d7a83a2, type: 2}
     _brainsToControl:
     - {fileID: 11400000, guid: 6ecfdf95a9eee4a2580de3d7224c2cdb, type: 2}
     - {fileID: 11400000, guid: bc7914b266edc45269ac68e42404a71e, type: 2}
@@ -299,6 +300,7 @@ MonoBehaviour:
     - {fileID: 0}
     - {fileID: 11400000, guid: c3f7addec59364d98afd58440cbb5f14, type: 2}
     - {fileID: 11400000, guid: 9ea886974783b4c4dac8a8ff9eff1958, type: 2}
+    - {fileID: 11400000, guid: c0c29a662c0244e458c6d6be9d7a83a2, type: 2}
   agentSpawner:
     spawnableEnvDefinitions:
     - envId: Hopper-v0
@@ -325,10 +327,10 @@ MonoBehaviour:
     - envId: AdversarialTerrainMarathonMan-v0
       envPrefab: {fileID: 4916072010681759962, guid: 6c4968a75ee5a4a3396645ffd8f466e3,
         type: 3}
-    envIdDefault: AdversarialTerrainHopper-v0
+    envIdDefault: AdversarialTerrainMarathonMan-v0
     trainingNumEnvsDefault: 16
     inferenceNumEnvsDefault: 1
-    trainingMode: 0
+    trainingMode: 1
   maxSteps: 0
   trainingConfiguration:
     width: 480

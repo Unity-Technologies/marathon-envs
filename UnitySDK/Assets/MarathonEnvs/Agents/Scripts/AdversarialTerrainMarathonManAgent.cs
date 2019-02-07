@@ -91,6 +91,7 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
         if (terminate){
 			Done();
 		}
+        _pain = 0f;
 	}
 
 

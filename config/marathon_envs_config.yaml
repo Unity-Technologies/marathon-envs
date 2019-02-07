@@ -108,16 +108,6 @@ OpenAIAntBrain:
 
 
 AdversarialTerrainHopperBrain:
-    # beta: 1.0e-2
-    # time_horizon: 1000
-    # summary_freq: 1000
-    # normalize: true
-    # num_layers: 2
-    # hidden_units: 256
-    # batch_size: 2048
-    # buffer_size: 10240
-    # max_steps: 10e5
-    # normalize: true
     num_epoch: 10 
     time_horizon: 100 
     summary_freq: 25000
@@ -129,22 +119,39 @@ AdversarialTerrainHopperBrain:
     batch_size: 64
     buffer_size: 2048 
     beta: .003
-    max_steps: 3.e6
+    max_steps: 10.e6
+
+AdversarialTerrainMarathonManBrain:
+    num_epoch: 10 
+    time_horizon: 100 
+    summary_freq: 25000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 64
+    buffer_size: 2048 
+    beta: .003
+    max_steps: 10.e6
 
 AdversarialTerrainWalkerBrain:
-    normalize: true
-    beta: 1.0e-2
-    time_horizon: 1000
-    summary_freq: 1000
-    normalize: true
+    num_epoch: 10 
+    time_horizon: 100 
+    summary_freq: 25000
+    use_recurrent: false
+    normalize: false 
     num_layers: 2
-    hidden_units: 256
-    batch_size: 2048
-    buffer_size: 10240
-    max_steps: 10e5
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 64
+    buffer_size: 2048 
+    beta: .003
+    max_steps: 10.e6
+    
 AdversarialTerrainBrain:
     # normalize: true
     summary_freq: 25000
     num_layers: 2
     hidden_units: 64
-    max_steps: 3.e6
+    max_steps: 10.e6
