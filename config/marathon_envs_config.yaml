@@ -131,12 +131,13 @@ AdversarialTerrainMarathonManBrain:
     hidden_units: 64
     learning_rate: 3e-4
     batch_size: 64
-    buffer_size: 2048 
+    # buffer_size: 2048 
+    buffer_size: 10240
     beta: .003
     max_steps: 50e6
     
 AdversarialTerrainBrain:
-    # normalize: true
+    normalize: true
     summary_freq: 25000
     num_layers: 2
     hidden_units: 64
