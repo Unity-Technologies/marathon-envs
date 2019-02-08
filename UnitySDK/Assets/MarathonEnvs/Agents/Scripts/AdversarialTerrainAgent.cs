@@ -26,6 +26,7 @@ public class AdversarialTerrainAgent : Agent {
 	internal const float _maxSpawnHeight = 8f;
 	const float _midHeight = 5f;
 	float _mapScaleY;
+	static Dictionary<string, float[,]> _resetHights;
 
 	public override void AgentReset()
 	{
@@ -98,11 +99,21 @@ public class AdversarialTerrainAgent : Agent {
 
 	void ResetHeights()
 	{
-		float height = curHeight / _mapScaleY;
-		for (int i = 0; i < terrain.terrainData.heightmapHeight; i++)
-			_rowHeight[i,0] = height;
-		for (int i = 0; i < terrain.terrainData.heightmapHeight; i++)
-			this.terrain.terrainData.SetHeights(i, 0, _rowHeight);
+		string key = @"{terrain.terrainData.heightmapWidth},{terrain.terrainData.heightmapHeight}";
+		if (_resetHights == null){
+			_resetHights = new Dictionary<string, float[,]>();
+		}
+		if (!_resetHights.ContainsKey(key)){
+			float height = curHeight / _mapScaleY;
+			var entry = new float [terrain.terrainData.heightmapWidth, terrain.terrainData.heightmapHeight];
+			for (int w = 0; w < terrain.terrainData.heightmapWidth; w++)
+			{
+				for (int h = 0; h < terrain.terrainData.heightmapWidth; h++)
+					entry[w,h] = height;
+			}
+			_resetHights.Add(key,entry);
+		}
+		this.terrain.terrainData.SetHeights(0, 0, _resetHights[key]);
 	}
 
 	void SetNextHeight(int action)
