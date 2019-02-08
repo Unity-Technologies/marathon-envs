@@ -10,6 +10,7 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 	BodyManager002 _bodyManager;
 
     AdversarialTerrainAgent _adversarialTerrainAgent;
+	SpawnableEnv _spawnableEnv;
     public int lastXPosInMeters;
     float _pain;
     bool _modeRecover;
@@ -82,16 +83,22 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
             lastXPosInMeters = newXPosInMeters;
         }
         var terminate = false;
-		if (pelvis.Rigidbody.transform.position.y < 0f)
+		// bool isInBounds = _spawnableEnv.IsPointWithinBoundsInWorldSpace(pelvis.Transform.position);
+		// if (!isInBounds)
+        // if (pelvis.Rigidbody.transform.position.y < 0f)
+		if (_adversarialTerrainAgent.IsPointOffEdge(pelvis.Transform.position))
             terminate = true;
         if (xpos < 4f && _pain > 1f)
             terminate = true;
         else if (xpos < 2f && _pain > 0f)
             terminate = true;
+		else if (_pain > 2f)
+            terminate = true;
         if (terminate){
 			Done();
 		}
         _pain = 0f;
+        _modeRecover = false;
 	}
 
 
@@ -102,6 +109,8 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 		_bodyManager.OnAgentReset();
         if (_adversarialTerrainAgent == null)
             _adversarialTerrainAgent = GetComponent<AdversarialTerrainAgent>();
+		if (_spawnableEnv == null)
+			_spawnableEnv = GetComponentInParent<SpawnableEnv>();
         _adversarialTerrainAgent.Terminate(GetCumulativeReward());
 		lastXPosInMeters = (int)
             _bodyManager.GetBodyParts(BodyPartGroup.Foot)
@@ -123,11 +132,14 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 		{
 			case BodyHelper002.BodyPartGroup.None:
 			case BodyHelper002.BodyPartGroup.Foot:
-			// case BodyHelper002.BodyPartGroup.LegUpper:
 			case BodyHelper002.BodyPartGroup.LegLower:
+				break;
+			case BodyHelper002.BodyPartGroup.LegUpper:
 			case BodyHelper002.BodyPartGroup.Hand:
-			// case BodyHelper002.BodyPartGroup.ArmLower:
-			// case BodyHelper002.BodyPartGroup.ArmUpper:
+			case BodyHelper002.BodyPartGroup.ArmLower:
+			case BodyHelper002.BodyPartGroup.ArmUpper:
+				_pain += .1f;
+                _modeRecover = true;
 				break;
 			default:
 				// AddReward(-100f);

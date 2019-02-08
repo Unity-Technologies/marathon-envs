@@ -296,8 +296,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 1b23b0637158f4bf1a0a53eee29cbdac, type: 2}
     - {fileID: 11400000, guid: 14ef212b228874b5ea289d5facb060d7, type: 2}
     - {fileID: 11400000, guid: b4c68a827b3bf4e50b00de698141b8fd, type: 2}
-    - {fileID: 0}
-    - {fileID: 0}
     - {fileID: 11400000, guid: c3f7addec59364d98afd58440cbb5f14, type: 2}
     - {fileID: 11400000, guid: 9ea886974783b4c4dac8a8ff9eff1958, type: 2}
     - {fileID: 11400000, guid: c0c29a662c0244e458c6d6be9d7a83a2, type: 2}
@@ -330,7 +328,7 @@ MonoBehaviour:
     envIdDefault: AdversarialTerrainMarathonMan-v0
     trainingNumEnvsDefault: 16
     inferenceNumEnvsDefault: 1
-    trainingMode: 1
+    trainingMode: 0
   maxSteps: 0
   trainingConfiguration:
     width: 480

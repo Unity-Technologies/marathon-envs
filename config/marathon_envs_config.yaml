@@ -119,7 +119,7 @@ AdversarialTerrainHopperBrain:
     batch_size: 64
     buffer_size: 2048 
     beta: .003
-    max_steps: 10.e6
+    max_steps: 10e6
 
 AdversarialTerrainMarathonManBrain:
     num_epoch: 10 
@@ -133,25 +133,11 @@ AdversarialTerrainMarathonManBrain:
     batch_size: 64
     buffer_size: 2048 
     beta: .003
-    max_steps: 10.e6
-
-AdversarialTerrainWalkerBrain:
-    num_epoch: 10 
-    time_horizon: 100 
-    summary_freq: 25000
-    use_recurrent: false
-    normalize: false 
-    num_layers: 2
-    hidden_units: 64
-    learning_rate: 3e-4
-    batch_size: 64
-    buffer_size: 2048 
-    beta: .003
-    max_steps: 10.e6
+    max_steps: 50e6
     
 AdversarialTerrainBrain:
     # normalize: true
     summary_freq: 25000
     num_layers: 2
     hidden_units: 64
-    max_steps: 10.e6
+    max_steps: 50e6

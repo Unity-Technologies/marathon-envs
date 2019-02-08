@@ -26,7 +26,16 @@ namespace MLAgents
                 b.center = col.transform.position + (col.terrainData.size/2);
                 b.size =  col.terrainData.size;
                 bounds.Encapsulate(b);
-            }          
+            }
+        }
+        public bool IsPointWithinBoundsInWorldSpace(Vector3 point)
+        {
+            var boundsInWorldSpace = new Bounds(
+                bounds.center + transform.position,
+                bounds.size
+            );
+            bool isInBounds = boundsInWorldSpace.Contains(point);
+            return isInBounds;
         }
     }
 }

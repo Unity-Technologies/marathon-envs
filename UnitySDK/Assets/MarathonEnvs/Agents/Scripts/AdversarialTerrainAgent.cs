@@ -20,7 +20,10 @@ public class AdversarialTerrainAgent : Agent {
 	public float curHeight;
 	public float actionReward;
 
+	internal const float _minHeight = 0f;
 	internal const float _maxHeight = 10f;
+	internal const float _minSpawnHeight = 2f;
+	internal const float _maxSpawnHeight = 8f;
 	const float _midHeight = 5f;
 	float _mapScaleY;
 
@@ -51,6 +54,7 @@ public class AdversarialTerrainAgent : Agent {
 		// get the normalized position of this game object relative to the terrain
         Vector3 tempCoord = (transform.position - terrain.gameObject.transform.position);
         Vector3 coord;
+		tempCoord.x = Mathf.Clamp(tempCoord.x,0f, terrain.terrainData.size.x-0.000001f);
 		tempCoord.z = Mathf.Clamp(tempCoord.z,0f, terrain.terrainData.size.z-0.000001f);
         coord.x = (tempCoord.x-1) / terrain.terrainData.size.x;
         coord.y = tempCoord.y / terrain.terrainData.size.y;
@@ -83,6 +87,14 @@ public class AdversarialTerrainAgent : Agent {
 		lastSteps = 0;
 		//RequestDecision();
 	}
+	public bool IsPointOffEdge(Vector3 point)
+	{
+        Vector3 localPos = (point - terrain.gameObject.transform.position);
+		bool isOffEdge = false;
+		isOffEdge |= (localPos.z < 0f);
+		isOffEdge |= (localPos.z >= terrain.terrainData.size.z);
+		return isOffEdge;
+	}
 
 	void ResetHeights()
 	{
@@ -101,14 +113,14 @@ public class AdversarialTerrainAgent : Agent {
 		{
 			actionSize = ((float)((action+1)/2)) * 0.1f;
 			curHeight += actionPos ? actionSize : -actionSize;
-			if (curHeight < 0) {
-				curHeight = 0f;
+			if (curHeight < _minSpawnHeight) {
+				curHeight = _minSpawnHeight;
 				actionSize = 0;
 				AddReward(-1f);
 			}
-			if (curHeight > _maxHeight)
+			if (curHeight > _maxSpawnHeight)
 			{
-				curHeight = _maxHeight;
+				curHeight = _maxSpawnHeight;
 				actionSize = 0;
 				AddReward(-1f);				
 			}
