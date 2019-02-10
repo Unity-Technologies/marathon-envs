@@ -22,8 +22,8 @@ public class AdversarialTerrainAgent : Agent {
 
 	internal const float _minHeight = 0f;
 	internal const float _maxHeight = 10f;
-	internal const float _minSpawnHeight = 2f;
-	internal const float _maxSpawnHeight = 8f;
+	internal const float _minSpawnHeight = 0f;//2f;
+	internal const float _maxSpawnHeight = 10f;//8f;
 	const float _midHeight = 5f;
 	float _mapScaleY;
 	static Dictionary<string, float[,]> _resetHights;
