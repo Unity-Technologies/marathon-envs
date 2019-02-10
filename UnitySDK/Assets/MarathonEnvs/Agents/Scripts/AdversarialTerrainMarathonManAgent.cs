@@ -34,10 +34,12 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 		AddVectorObs(_bodyManager.GetSensorIsInTouch());
 		AddVectorObs(_bodyManager.GetBodyPartsObservations());
 		AddVectorObs(_bodyManager.GetMusclesObservations());
-		AddVectorObs(_bodyManager.GetSensorYPositions());
+		// AddVectorObs(_bodyManager.GetSensorYPositions());
+		var sensors = _bodyManager.Sensors;
+		var sensorsPos = sensors.Select(x=>x.transform.position);
+		var senorHeights = _adversarialTerrainAgent.GetDistances2d(sensorsPos);
+		AddVectorObs(senorHeights);
 		AddVectorObs(_bodyManager.GetSensorZPositions());
-
-		_bodyManager.OnCollectObservationsHandleDebug(GetInfo());
         
         (distances, fraction) = 
             _adversarialTerrainAgent.GetDistances2d(
@@ -45,6 +47,7 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
     
         AddVectorObs(distances);
         AddVectorObs(fraction);
+		_bodyManager.OnCollectObservationsHandleDebug(GetInfo());
 	}
 
 	public override void AgentAction(float[] vectorAction, string textAction)

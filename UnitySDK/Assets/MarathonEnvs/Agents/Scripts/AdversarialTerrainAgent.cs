@@ -173,7 +173,7 @@ public class AdversarialTerrainAgent : Agent {
 		int curSteps = 0;
 		if (_agent != null)
 			curSteps = _agent.GetStepCount();
-		var numberSinceLast = curSteps - lastSteps;
+		float numberSinceLast = curSteps - lastSteps;
 		numberSinceLast = 1 - (numberSinceLast/1000);
 		lastSteps = curSteps;
         AddVectorObs(numberSinceLast);
@@ -185,6 +185,30 @@ public class AdversarialTerrainAgent : Agent {
 		// each action is a descreate for height change
 		int action = (int)vectorAction[0];
 		SetNextHeight(action);
+	}
+
+	public List<float> GetDistances2d(IEnumerable<Vector3> points)
+	{
+		List<float> distances = points
+			.Select(x=> GetDistance2d(x))
+			.ToList();
+		return distances;
+	}
+	float GetDistance2d(Vector3 point)
+	{
+		int layerMask = ~(1 << 14);
+		var ray = new Ray(point, Vector3.down);
+		var hits = Physics.RaycastAll(ray,_maxHeight,layerMask);
+		if (hits==null || hits.Length == 0)
+			return 1f;
+		var hit = hits
+				.OrderBy(y=>y.distance)
+                .FirstOrDefault();
+		float distance = hit.distance;
+		// distance = Mathf.Clamp(distance, -10f, 10f);
+		// distance = distance / 10f;
+		distance = Mathf.Clamp(distance, -1f, 1f);
+		return distance;
 	}
 
 	public (List<float>, float) GetDistances2d(Vector3 pos, bool showDebug)
