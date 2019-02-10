@@ -127,13 +127,13 @@ public class AdversarialTerrainAgent : Agent {
 			if (curHeight < _minSpawnHeight) {
 				curHeight = _minSpawnHeight;
 				actionSize = 0;
-				AddReward(-1f);
+				AddReward(-100f);
 			}
 			if (curHeight > _maxSpawnHeight)
 			{
 				curHeight = _maxSpawnHeight;
 				actionSize = 0;
-				AddReward(-1f);				
+				AddReward(-100f);				
 			}
 		}
 

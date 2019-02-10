@@ -34,12 +34,23 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 		AddVectorObs(_bodyManager.GetSensorIsInTouch());
 		AddVectorObs(_bodyManager.GetBodyPartsObservations());
 		AddVectorObs(_bodyManager.GetMusclesObservations());
-		// AddVectorObs(_bodyManager.GetSensorYPositions());
 		var sensors = _bodyManager.Sensors;
-		var sensorsPos = sensors.Select(x=>x.transform.position);
+		var sphereCollider = sensors.Select(x=>x.GetComponent<SphereCollider>()).ToList();
+		var sensorsPos = sensors.Select(x=>x.transform.position).ToList();
+		for (int i = 0; i < sensors.Count; i++)
+			sensorsPos[i] = sphereCollider[i].transform.TransformPoint(sphereCollider[i].center);
 		var senorHeights = _adversarialTerrainAgent.GetDistances2d(sensorsPos);
+		for (int i = 0; i < sensors.Count; i++) {
+			if (senorHeights[i] >= 1f)
+				continue;
+			senorHeights[i] -= sphereCollider[i].radius;
+		}
 		AddVectorObs(senorHeights);
-		AddVectorObs(_bodyManager.GetSensorZPositions());
+		var bounds = _spawnableEnv.bounds;
+		var normalizedZ = sensorsPos
+			.Select(x=>x.z / (bounds.extents.z))
+			.ToList();
+		AddVectorObs(normalizedZ);
         
         (distances, fraction) = 
             _adversarialTerrainAgent.GetDistances2d(
