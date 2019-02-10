@@ -4,6 +4,7 @@ using UnityEngine;
 using MLAgents;
 using System.Linq;
 using static BodyHelper002;
+using System;
 
 public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 {
@@ -35,6 +36,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 
 	Agent _agent;
 	SpawnableEnv _spawnableEnv;
+	AdversarialTerrainAgent _adversarialTerrainAgent;
 
 	static int _startCount;
 
@@ -46,6 +48,8 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 	/**< \brief Max distance travelled across all episodes*/
 	public float MaxDistanceTraveled;
 
+	List<SphereCollider> sensorColliders;
+	static int _spawnCount;
 	
 	// static ScoreHistogramData _scoreHistogramData;
 
@@ -69,6 +73,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
     void Start()
     {
 		_spawnableEnv = GetComponentInParent<SpawnableEnv>();        
+		_adversarialTerrainAgent = GetComponentInParent<AdversarialTerrainAgent>();
         SetupBody();
     }
 
@@ -83,12 +88,20 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		Sensors = _agent.GetComponentsInChildren<SensorBehavior>()
 			.Select(x=>x.gameObject)
 			.ToList();
+		sensorColliders = Sensors
+			.Select(x=>x.GetComponent<SphereCollider>())
+			.ToList();
 		SensorIsInTouch = Enumerable.Range(0,Sensors.Count).Select(x=>0f).ToList();
 		// HACK first spawned agent should grab the camera
 		var smoothFollow = GameObject.FindObjectOfType<SmoothFollow>();
 		if (smoothFollow != null && smoothFollow.target == null) {
-			smoothFollow.target = CameraTarget;
-			ShowMonitor = true;                
+			if (_spawnCount == 1) // HACK follow nth agent
+			{
+				smoothFollow.target = CameraTarget;
+				ShowMonitor = true;   
+			}
+			else
+				_spawnCount++;             
 		}
 		lastVectorAction = null;
 		vectorDifference = null;		
@@ -426,6 +439,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
         }        
         return vectorObservation;
     }
+	[Obsolete("use GetSensorObservations()")]
     public List<float> GetSensorYPositions()
     {
 		var sensorYpositions = Sensors
@@ -434,6 +448,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 			.ToList();
         return sensorYpositions;
     }
+	[Obsolete("use GetSensorObservations()")]
 	public List<float> GetSensorZPositions()
     {
 		var sensorYpositions = Sensors
@@ -442,6 +457,36 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 			.ToList();
         return sensorYpositions;
     }
+
+	public List<float> GetSensorObservations()
+	{
+		var localSensorsPos = new Vector3[Sensors.Count];
+		var globalSensorsPos = new Vector3[Sensors.Count];
+		for (int i = 0; i < Sensors.Count; i++) {
+			globalSensorsPos[i] = sensorColliders[i].transform.TransformPoint(sensorColliders[i].center);
+			localSensorsPos[i] = globalSensorsPos[i] - startPosition;
+		}
+
+		// get heights based on global senor position
+		var sensorsPos = Sensors
+			.Select(x=>x.transform.position).ToList();
+		var senorHeights = _adversarialTerrainAgent.GetDistances2d(globalSensorsPos);
+		for (int i = 0; i < Sensors.Count; i++) {
+			senorHeights[i] -= sensorColliders[i].radius;
+			if (senorHeights[i] >= 1f)
+				senorHeights[i] = 1f;
+		}
+			
+		// get z positions based on local positions
+		var bounds = _spawnableEnv.bounds;
+		var normalizedZ = localSensorsPos
+			.Select(x=>x.z / (bounds.extents.z))
+			.ToList();
+		var observations = senorHeights
+			.Concat(normalizedZ)
+			.ToList();
+		return observations;
+	}
 
     public void OnCollectObservationsHandleDebug(AgentInfo info)
     {

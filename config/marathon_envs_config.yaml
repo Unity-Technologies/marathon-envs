@@ -138,6 +138,8 @@ AdversarialTerrainMarathonManBrain:
     
 AdversarialTerrainBrain:
     normalize: true
+    # use_recurrent: true
+    hidden_units: 16
     summary_freq: 50000
     num_layers: 2
     hidden_units: 64
