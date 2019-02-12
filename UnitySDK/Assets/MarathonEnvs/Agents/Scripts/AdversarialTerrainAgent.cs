@@ -26,6 +26,9 @@ public class AdversarialTerrainAgent : Agent {
 	internal const float _maxSpawnHeight = 10f;//8f;
 	const float _midHeight = 5f;
 	float _mapScaleY;
+	public List<float> debugLastHeights;
+	public List<float> debugLastNormHeights;
+	public float debugLastFraction;
 	static Dictionary<string, float[,]> _resetHights;
 
 	public override void AgentReset()
@@ -83,7 +86,8 @@ public class AdversarialTerrainAgent : Agent {
 		SetNextHeight(0);
 		SetNextHeight(0);
 		SetNextHeight(0);
-		SetNextHeight(0);
+		// SetNextHeight(0);
+		RequestDecision();
 
 		lastSteps = 0;
 		//RequestDecision();
@@ -218,7 +222,7 @@ public class AdversarialTerrainAgent : Agent {
         xpos -= 2f;
         float fraction = (xpos - (Mathf.Floor(xpos*5)/5)) * 5;
         float ypos = pos.y;
-        List<Ray> rays = Enumerable.Range(0, 5*5).Select(x => new Ray(new Vector3(xpos+(x*.2f), AdversarialTerrainAgent._maxHeight, 0f), Vector3.down)).ToList();
+        List<Ray> rays = Enumerable.Range(0, 5*7).Select(x => new Ray(new Vector3(xpos+(x*.2f), AdversarialTerrainAgent._maxHeight, pos.z), Vector3.down)).ToList();
         List<float> distances = rays.Select
             ( x=>
                 ypos - (AdversarialTerrainAgent._maxHeight - 
@@ -247,6 +251,10 @@ public class AdversarialTerrainAgent : Agent {
 			.Select(x => x/10f)
 			.ToList();
 		;
+		debugLastNormHeights = normalizedDistances;
+		debugLastHeights = distances;
+		debugLastFraction = fraction;
+
 		return (normalizedDistances, fraction); 
 	}
 }

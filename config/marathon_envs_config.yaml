@@ -123,7 +123,7 @@ AdversarialTerrainHopperBrain:
 
 AdversarialTerrainMarathonManBrain:
     num_epoch: 10 
-    time_horizon: 100 
+    time_horizon: 1000 
     summary_freq: 50000
     use_recurrent: false
     normalize: false 
@@ -134,7 +134,7 @@ AdversarialTerrainMarathonManBrain:
     #buffer_size: 2048 
     buffer_size:  10240
     beta: .003
-    max_steps: 100e6
+    max_steps: 20e6
     
 AdversarialTerrainBrain:
     normalize: true
@@ -143,4 +143,4 @@ AdversarialTerrainBrain:
     summary_freq: 50000
     num_layers: 2
     hidden_units: 64
-    max_steps: 100e6
+    max_steps: 20e6

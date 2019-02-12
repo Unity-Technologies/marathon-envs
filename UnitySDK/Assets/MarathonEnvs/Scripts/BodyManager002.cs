@@ -95,7 +95,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		// HACK first spawned agent should grab the camera
 		var smoothFollow = GameObject.FindObjectOfType<SmoothFollow>();
 		if (smoothFollow != null && smoothFollow.target == null) {
-			if (_spawnCount == 1) // HACK follow nth agent
+			if (_spawnCount == 0) // HACK follow nth agent
 			{
 				smoothFollow.target = CameraTarget;
 				ShowMonitor = true;   

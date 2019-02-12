@@ -327,7 +327,7 @@ MonoBehaviour:
         type: 3}
     envIdDefault: AdversarialTerrainMarathonMan-v0
     trainingNumEnvsDefault: 16
-    inferenceNumEnvsDefault: 1
+    inferenceNumEnvsDefault: 2
     trainingMode: 0
   maxSteps: 0
   trainingConfiguration:

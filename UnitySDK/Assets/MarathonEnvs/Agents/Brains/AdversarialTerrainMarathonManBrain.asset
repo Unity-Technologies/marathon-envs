@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AdversarialTerrainMarathonManBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 250
+    vectorObservationSize: 260
     numStackedVectorObservations: 1
     vectorActionSize: 15000000
     cameraResolutions: []
