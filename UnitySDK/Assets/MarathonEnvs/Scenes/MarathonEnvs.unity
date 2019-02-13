@@ -325,9 +325,9 @@ MonoBehaviour:
     - envId: AdversarialTerrainMarathonMan-v0
       envPrefab: {fileID: 4916072010681759962, guid: 6c4968a75ee5a4a3396645ffd8f466e3,
         type: 3}
-    envIdDefault: AdversarialTerrainMarathonMan-v0
+    envIdDefault: AdversarialTerrainHopper-v0
     trainingNumEnvsDefault: 16
-    inferenceNumEnvsDefault: 2
+    inferenceNumEnvsDefault: 8
     trainingMode: 0
   maxSteps: 0
   trainingConfiguration:

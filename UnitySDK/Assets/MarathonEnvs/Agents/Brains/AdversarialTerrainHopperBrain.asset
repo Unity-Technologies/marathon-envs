@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AdversarialTerrainHopperBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 57
+    vectorObservationSize: 67
     numStackedVectorObservations: 1
     vectorActionSize: 04000000
     cameraResolutions: []
@@ -23,4 +23,4 @@ MonoBehaviour:
     - 
     - 
     vectorActionSpaceType: 1
-  model: {fileID: 4900000, guid: 8d2cb48badce6504e811c458737f8c54, type: 3}
+  model: {fileID: 4900000, guid: a7396ea04b508504b948fe4e3498cfc7, type: 3}
