@@ -46,6 +46,9 @@ MonoBehaviour:
   heightIndex: 0
   curHeight: 0
   actionReward: 0
+  debugLastHeights: []
+  debugLastNormHeights: []
+  debugLastFraction: 0
 --- !u!1001 &1475409452120201348
 PrefabInstance:
   m_ObjectHideFlags: 0

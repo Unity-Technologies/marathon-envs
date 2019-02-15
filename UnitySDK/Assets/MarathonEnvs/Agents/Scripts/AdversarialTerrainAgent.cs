@@ -103,7 +103,7 @@ public class AdversarialTerrainAgent : Agent {
 
 	void ResetHeights()
 	{
-		string key = @"{terrain.terrainData.heightmapWidth},{terrain.terrainData.heightmapHeight}";
+		string key = $"{terrain.terrainData.heightmapWidth},{terrain.terrainData.heightmapHeight}";
 		if (_resetHights == null){
 			_resetHights = new Dictionary<string, float[,]>();
 		}

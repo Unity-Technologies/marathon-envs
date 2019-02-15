@@ -10,17 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b23992c8eb17439887f5e944bf04a40, type: 3}
-  m_Name: AdversarialTerrainHopperBrain
+  m_Name: AdversarialTerrainAntBrain
   m_EditorClassIdentifier: 
   brainParameters:
-    vectorObservationSize: 67
+    vectorObservationSize: 89
     numStackedVectorObservations: 1
-    vectorActionSize: 04000000
+    vectorActionSize: 08000000
     cameraResolutions: []
     vectorActionDescriptions:
     - 
     - 
     - 
     - 
+    - 
+    - 
+    - 
+    - 
     vectorActionSpaceType: 1
-  model: {fileID: 4900000, guid: 8d2cb48badce6504e811c458737f8c54, type: 3}
+  model: {fileID: 4900000, guid: 2488a761ef9e5b545a76e0bc3a574fd6, type: 3}
