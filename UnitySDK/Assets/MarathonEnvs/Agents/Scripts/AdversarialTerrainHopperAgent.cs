@@ -51,9 +51,9 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
         SetCenterOfMass();
         var xpos = _centerOfMass.x;
         var terminate = false;
-        if (xpos < 4f && _pain > 1f)
+        if (xpos < 2f && _pain > 0f)
             terminate = true;
-        else if (xpos < 2f && _pain > 0f)
+        else if (_pain > 1f)
             terminate = true;
         if (terminate)
             _adversarialTerrainAgent.Terminate(GetCumulativeReward());
@@ -66,8 +66,7 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
 
         switch (other.name.ToLowerInvariant().Trim())
         {
-            case "thigh": // dm_hopper
-            case "pelvis": // dm_hopper
+            case "torso": // dm_hopper
                 _pain += 5f;
                 NonFootHitTerrain = true;
                 _modeRecover = true;
@@ -77,7 +76,9 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
                 FootHitTerrain = true;
                 break;
             default:
-                _pain += 5f;
+            case "thigh": // dm_hopper
+            case "pelvis": // dm_hopper
+                _pain += .5f;
                 NonFootHitTerrain = true;
                 _modeRecover = true;
                 break;
