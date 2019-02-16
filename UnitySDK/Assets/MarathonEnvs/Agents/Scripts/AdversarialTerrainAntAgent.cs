@@ -8,6 +8,7 @@ public class AdversarialTerrainAntAgent : MarathonAgent {
 
     AdversarialTerrainAgent _adversarialTerrainAgent;
     int _lastXPosInMeters;
+    int _stepCountAtLastMeter;
     float _pain;
     bool _modeRecover;
     Vector3 _centerOfMass;
@@ -31,6 +32,7 @@ public class AdversarialTerrainAntAgent : MarathonAgent {
         StepRewardFunction = StepRewardAnt101;
         TerminateFunction = LocalTerminate;
         ObservationsFunction = ObservationsDefault;
+        OnTerminateRewardValue = 0f;
         // OnTerminateRewardValue = -100f;
         _pain = 0f;
         _modeRecover = false;
@@ -45,14 +47,19 @@ public class AdversarialTerrainAntAgent : MarathonAgent {
         if (newXPosInMeters > _lastXPosInMeters) {
             _adversarialTerrainAgent.OnNextMeter();
             _lastXPosInMeters = newXPosInMeters;
+            _stepCountAtLastMeter = this.GetStepCount();
         }
 
         SetCenterOfMass();
         var xpos = _centerOfMass.x;
         var terminate = false;
-		if (_adversarialTerrainAgent.IsPointOffEdge(BodyParts["pelvis"].transform.position))
+		if (_adversarialTerrainAgent.IsPointOffEdge(BodyParts["pelvis"].transform.position)){
             terminate = true;
-        if (xpos < 4f && _pain > 1f)
+            AddReward(-1f);
+        }
+        if (this.GetStepCount()-_stepCountAtLastMeter >= (200*5))
+            terminate = true;
+        else if (xpos < 4f && _pain > 1f)
             terminate = true;
         else if (xpos < 2f && _pain > 0f)
             terminate = true;
@@ -132,21 +139,22 @@ public class AdversarialTerrainAntAgent : MarathonAgent {
         float velocity = Mathf.Clamp(GetNormalizedVelocity("pelvis").x, 0f, 1f);
         float effort = 1f - GetEffortNormalized();
 
-        velocity *= 0.7f;
-        if (velocity >= .25f)
-            effort *= 0.25f;
-        else
-            effort *= velocity;
+        // velocity *= 0.7f;
+        // if (velocity >= .25f)
+        //     effort *= 0.25f;
+        // else
+        //     effort *= velocity;
 
-        var reward = velocity
-                     + effort;
-        if (ShowMonitor)
-        {
-            var hist = new[] {reward, velocity, effort};
-            Monitor.Log("rewardHist", hist, displayType: Monitor.DisplayType.INDEPENDENT);
-        }
-
+        // var reward = velocity
+        //              + effort;
+        // if (ShowMonitor)
+        // {
+        //     var hist = new[] {reward, velocity, effort};
+        //     Monitor.Log("rewardHist", hist, displayType: Monitor.DisplayType.INDEPENDENT);
+        // }
         _pain = 0f;
+        var reward = velocity;
         return reward;
+        // return 0f;
     }
 }

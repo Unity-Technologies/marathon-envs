@@ -11,6 +11,7 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 
     AdversarialTerrainAgent _adversarialTerrainAgent;
 	SpawnableEnv _spawnableEnv;
+    int _stepCountAtLastMeter;
     public int lastXPosInMeters;
     float _pain;
     bool _modeRecover;
@@ -79,14 +80,19 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
         if (newXPosInMeters > lastXPosInMeters) {
             _adversarialTerrainAgent.OnNextMeter();
             lastXPosInMeters = newXPosInMeters;
+            _stepCountAtLastMeter = this.GetStepCount();
         }
         var terminate = false;
 		// bool isInBounds = _spawnableEnv.IsPointWithinBoundsInWorldSpace(pelvis.Transform.position);
 		// if (!isInBounds)
         // if (pelvis.Rigidbody.transform.position.y < 0f)
-		if (_adversarialTerrainAgent.IsPointOffEdge(pelvis.Transform.position))
+		if (_adversarialTerrainAgent.IsPointOffEdge(pelvis.Transform.position)){
             terminate = true;
-        if (xpos < 4f && _pain > 1f)
+            AddReward(-1f);
+		}
+        if (this.GetStepCount()-_stepCountAtLastMeter >= (200*5))
+            terminate = true;
+		else if (xpos < 4f && _pain > 1f)
             terminate = true;
         else if (xpos < 2f && _pain > 0f)
             terminate = true;

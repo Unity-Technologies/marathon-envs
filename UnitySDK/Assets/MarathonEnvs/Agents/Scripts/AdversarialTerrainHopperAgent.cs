@@ -8,6 +8,7 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
 
     AdversarialTerrainAgent _adversarialTerrainAgent;
     int _lastXPosInMeters;
+    int _stepCountAtLastMeter;
     float _pain;
     bool _modeRecover;
     Vector3 _centerOfMass;
@@ -25,6 +26,7 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
             _adversarialTerrainAgent = GetComponent<AdversarialTerrainAgent>();
         _lastXPosInMeters = (int) BodyParts["foot"].transform.position.x;
         _adversarialTerrainAgent.Terminate(GetCumulativeReward());
+        _stepCountAtLastMeter = 0;
 
         // set to true this to show monitor while training
         Monitor.SetActive(true);
@@ -32,7 +34,7 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
         StepRewardFunction = StepRewardHopper101;
         TerminateFunction = LocalTerminate;
         ObservationsFunction = ObservationsDefault;
-        // OnTerminateRewardValue = -100f;
+        OnTerminateRewardValue = 0f;
         _pain = 0f;
         _modeRecover = false;
 
@@ -46,12 +48,15 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
         if (newXPosInMeters > _lastXPosInMeters) {
             _adversarialTerrainAgent.OnNextMeter();
             _lastXPosInMeters = newXPosInMeters;
+            _stepCountAtLastMeter = this.GetStepCount();
         }
 
         SetCenterOfMass();
         var xpos = _centerOfMass.x;
         var terminate = false;
-        if (xpos < 2f && _pain > 0f)
+        if (this.GetStepCount()-_stepCountAtLastMeter >= (100*5))
+            terminate = true;
+        else if (xpos < 2f && _pain > 0f)
             terminate = true;
         else if (_pain > 1f)
             terminate = true;
@@ -146,21 +151,22 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
         // float position = Mathf.Clamp(GetNormalizedPosition("pelvis").x, 0f, 1f);
         float effort = 1f - GetEffortNormalized();
 
-        uprightBonus *= 0.05f;
-        velocity *= 0.7f;
-        if (velocity >= .25f)
-            effort *= 0.25f;
-        else
-            effort *= velocity;
+        // uprightBonus *= 0.05f;
+        // velocity *= 0.7f;
+        // if (velocity >= .25f)
+        //     effort *= 0.25f;
+        // else
+        //     effort *= velocity;
 
-        var reward = velocity
-                     + uprightBonus
-                     + effort;
-        if (ShowMonitor)
-        {
-            var hist = new[] {reward, velocity, uprightBonus, effort};
-            Monitor.Log("rewardHist", hist, displayType: Monitor.DisplayType.INDEPENDENT);
-        }
+        // var reward = velocity
+        //              + uprightBonus
+        //              + effort;
+        // if (ShowMonitor)
+        // {
+        //     var hist = new[] {reward, velocity, uprightBonus, effort};
+        //     Monitor.Log("rewardHist", hist, displayType: Monitor.DisplayType.INDEPENDENT);
+        // }
+        var reward = velocity;
 
         _pain = 0f;
         return reward;

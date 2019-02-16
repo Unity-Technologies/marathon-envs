@@ -8,6 +8,7 @@ public class AdversarialTerrainWalkerAgent : MarathonAgent {
 
     AdversarialTerrainAgent _adversarialTerrainAgent;
     int _lastXPosInMeters;
+    int _stepCountAtLastMeter;
     float _pain;
     bool _modeRecover;
     Vector3 _centerOfMass;
@@ -28,6 +29,7 @@ public class AdversarialTerrainWalkerAgent : MarathonAgent {
             _adversarialTerrainAgent = GetComponent<AdversarialTerrainAgent>();
         _lastXPosInMeters = (int) BodyParts["pelvis"].transform.position.x;
         _adversarialTerrainAgent.Terminate(GetCumulativeReward());
+        _stepCountAtLastMeter = 0;
 
         // set to true this to show monitor while training
         Monitor.SetActive(true);
@@ -35,7 +37,7 @@ public class AdversarialTerrainWalkerAgent : MarathonAgent {
         StepRewardFunction = StepRewardWalker106;
         TerminateFunction = LocalTerminate;
         ObservationsFunction = ObservationsDefault;
-        // OnTerminateRewardValue = -100f;
+        OnTerminateRewardValue = 0f;
         _pain = 0f;
         _modeRecover = false;
 
@@ -49,12 +51,15 @@ public class AdversarialTerrainWalkerAgent : MarathonAgent {
         if (newXPosInMeters > _lastXPosInMeters) {
             _adversarialTerrainAgent.OnNextMeter();
             _lastXPosInMeters = newXPosInMeters;
+            _stepCountAtLastMeter = this.GetStepCount();
         }
 
         SetCenterOfMass();
         var xpos = _centerOfMass.x;
         var terminate = false;
-        if (xpos < 4f && _pain > 1f)
+        if (this.GetStepCount()-_stepCountAtLastMeter >= (100*5))
+            terminate = true;
+        else if (xpos < 4f && _pain > 1f)
             terminate = true;
         else if (xpos < 2f && _pain > 0f)
             terminate = true;
@@ -144,17 +149,18 @@ public class AdversarialTerrainWalkerAgent : MarathonAgent {
             Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.INDEPENDENT);
         }
 
-        uprightBonus *= 0.1f;
-        velocity *= 0.45f;
-        if (velocity >= .45f)
-            effort *= 0.45f;
-        else
-            effort *= velocity;
+        // uprightBonus *= 0.1f;
+        // velocity *= 0.45f;
+        // if (velocity >= .45f)
+        //     effort *= 0.45f;
+        // else
+        //     effort *= velocity;
 
-        var reward = velocity
-                     + uprightBonus
-                     + effort;
-
+        // var reward = velocity
+        //              + uprightBonus
+        //              + effort;
+        var reward = velocity;
+        _pain = 0f;
         return reward;
     }
 }
