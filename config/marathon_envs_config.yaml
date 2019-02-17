@@ -174,3 +174,64 @@ AdversarialTerrainBrain:
     num_layers: 2
     hidden_units: 64
     max_steps: 100e6
+
+
+
+
+TerrainHopperBrain-v0:
+    num_epoch: 10 
+    time_horizon: 1000 
+    summary_freq: 50000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 32
+    buffer_size: 2048 
+    beta: .003
+    max_steps: 25e6
+
+TerrainWalkerBrain-v0:
+    num_epoch: 10 
+    time_horizon: 1000 
+    summary_freq: 50000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 32
+    buffer_size: 2048 
+    beta: .003
+    max_steps: 25e6
+
+TerrainAntBrain-v0:
+    num_epoch: 10 
+    time_horizon: 1000 
+    summary_freq: 50000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 32
+    buffer_size: 2048 
+    beta: .001
+    max_steps: 50e6
+
+
+TerrainMarathonManBrain-v0:
+    num_epoch: 10 
+    time_horizon: 1000 
+    summary_freq: 50000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 32
+    buffer_size: 2048 
+    # buffer_size:  10240
+    beta: .0003
+    max_steps: 50e6    

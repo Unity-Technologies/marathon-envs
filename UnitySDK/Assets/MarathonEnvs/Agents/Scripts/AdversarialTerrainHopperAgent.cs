@@ -71,11 +71,11 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
 
         switch (other.name.ToLowerInvariant().Trim())
         {
-            case "torso": // dm_hopper
-                _pain += 5f;
-                NonFootHitTerrain = true;
-                _modeRecover = true;
-                break;
+            // case "torso": // dm_hopper
+            //     _pain += 5f;
+            //     NonFootHitTerrain = true;
+            //     _modeRecover = true;
+            //     break;
             case "foot": // dm_hopper
             case "calf": // dm_hopper
                 FootHitTerrain = true;
@@ -83,6 +83,7 @@ public class AdversarialTerrainHopperAgent : MarathonAgent {
             default:
             case "thigh": // dm_hopper
             case "pelvis": // dm_hopper
+            case "torso": // dm_hopper
                 _pain += .5f;
                 NonFootHitTerrain = true;
                 _modeRecover = true;
