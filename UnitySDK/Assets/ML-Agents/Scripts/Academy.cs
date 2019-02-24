@@ -649,6 +649,7 @@ namespace MLAgents
         void FixedUpdate()
         {
             EnvironmentStep();
+            agentSpawner.TriggerPhysicsStep();
         }
     }
 }

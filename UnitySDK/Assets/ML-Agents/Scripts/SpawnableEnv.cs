@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 
 namespace MLAgents
 {
@@ -10,6 +10,9 @@ namespace MLAgents
         public float paddingBetweenEnvs;
         [Space()]
         public Bounds bounds;
+
+        Scene _spawnedScene;
+        PhysicsScene _spawnedPhysicsScene;
 
         public void UpdateBounds()
         {
@@ -37,5 +40,28 @@ namespace MLAgents
             bool isInBounds = boundsInWorldSpace.Contains(point);
             return isInBounds;
         }
+
+        public void SetSceneAndPhysicsScene(Scene spawnedScene, PhysicsScene spawnedPhysicsScene)
+        {
+            _spawnedScene = spawnedScene;
+            _spawnedPhysicsScene = spawnedPhysicsScene;
+        }
+
+        // float timer = 0;
+
+        // // void FixedUpdate()
+        // void Update()
+        // {
+        //     timer += Time.deltaTime;
+
+        //     if (_spawnedPhysicsScene != null && _spawnedPhysicsScene.IsValid()) {
+        //         while (timer >= Time.fixedDeltaTime) {
+        //             timer -= Time.fixedDeltaTime;
+        //             var aa = Time.fixedDeltaTime;
+        //             _spawnedPhysicsScene.Simulate(aa);
+        //         }
+        //     }
+        // }
+
     }
 }

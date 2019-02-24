@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace MLAgents
 {
@@ -22,6 +23,8 @@ namespace MLAgents
             public Vector3 Negative;
             public Vector3 Positive;
         }
+
+        List<PhysicsScene> physicsScenes;
 
         [SerializeField]
         public List<SpawnableEnvDefinition> spawnableEnvDefinitions = new List<SpawnableEnvDefinition>();
@@ -59,6 +62,9 @@ namespace MLAgents
         /// </summary>
         public void SpawnSpawnableEnv(GameObject parent, int numInstances, GameObject envPrefab)
         {
+            CreateSceneParameters csp = new CreateSceneParameters(LocalPhysicsMode.Physics3D);
+            physicsScenes = new List<PhysicsScene>();
+
             Vector3 spawnStartPos = parent.transform.position;
             SpawnableEnv spawnableEnv = envPrefab.GetComponent<SpawnableEnv>();
             spawnableEnv.UpdateBounds();
@@ -67,11 +73,34 @@ namespace MLAgents
             for (int i = 0; i < numInstances; i++)
             {
                 var agent = Agent.Instantiate(envPrefab, spawnStartPos, envPrefab.gameObject.transform.rotation);
-                spawnStartPos += step;
+                bool multiverse = true;
+                if (!multiverse)
+                {
+                    spawnStartPos += step;
+                }
+                else
+                {
+                    Scene scene = SceneManager.CreateScene($"SpawnedEnv-{i}", csp);
+                    PhysicsScene physicsScene = scene.GetPhysicsScene();
+                    SceneManager.MoveGameObjectToScene(agent, scene);
+                    SpawnableEnv spawnedEnv = agent.GetComponent<SpawnableEnv>();
+                    spawnableEnv.SetSceneAndPhysicsScene(scene, physicsScene);
+                    physicsScenes.Add(physicsScene);
+                }
             }
-
         }
-        
+        /// <summary>
+        /// Reqests a physics step in each scene
+        /// </summary>
+        public void TriggerPhysicsStep()
+        {
+            var stepSize = Time.fixedDeltaTime;
+            foreach (var physicsScene in physicsScenes)
+            {
+                physicsScene.Simulate(stepSize);
+            }
+        }
+
         /// <summary>
         /// Removes all the Brains of the BroadcastHub
         /// </summary>
