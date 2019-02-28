@@ -53,7 +53,9 @@ class RpcCommunicator(Communicator):
             self.server = grpc.server(ThreadPoolExecutor(max_workers=10))
             self.unity_to_external = UnityToExternalServicerImplementation()
             add_UnityToExternalServicer_to_server(self.unity_to_external, self.server)
-            self.server.add_insecure_port('localhost:' + str(self.port))
+            # Using unspecified address, which means that grpc is communicating on all IPs
+            # This is so that the docker container can connect.
+            self.server.add_insecure_port('[::]:' + str(self.port))
             self.server.start()
             self.is_open = True
         except:
@@ -76,7 +78,8 @@ class RpcCommunicator(Communicator):
             raise UnityTimeOutException(
                 "The Unity environment took too long to respond. Make sure that :\n"
                 "\t The environment does not need user interaction to launch\n"
-                "\t The Academy and the External Brain(s) are attached to objects in the Scene\n"
+                "\t The Academy's Broadcast Hub is configured correctly\n"
+                "\t The Agents are linked to the appropriate Brains\n"
                 "\t The environment and the Python interface have compatible versions.")
         aca_param = self.unity_to_external.parent_conn.recv().unity_output
         message = UnityMessage()

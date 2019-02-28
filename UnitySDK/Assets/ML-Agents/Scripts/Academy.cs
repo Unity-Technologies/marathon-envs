@@ -45,6 +45,7 @@ namespace MLAgents
 
         [Tooltip("Frames per second (FPS) engine attempts to maintain.")]
         public int targetFrameRate;
+
         /// Initializes a new instance of the 
         /// <see cref="EnvironmentConfiguration"/> class.
         /// <param name="width">Width of environment window (pixels).</param>
@@ -94,7 +95,20 @@ namespace MLAgents
         [SerializeField] 
         public BroadcastHub broadcastHub = new BroadcastHub();
         public EnvSpawner agentSpawner = new EnvSpawner();
-        private const string kApiVersion = "API-6";
+        
+        private const string kApiVersion = "API-7";
+
+        /// Temporary storage for global gravity value
+        /// Used to restore oringal value when deriving Academy modifies it 
+        private Vector3 originalGravity;
+
+        /// Temporary storage for global fixedDeltaTime value
+        /// Used to restore oringal value when deriving Academy modifies it 
+        private float originalFixedDeltaTime;
+        
+        /// Temporary storage for global maximumDeltaTime value
+        /// Used to restore oringal value when deriving Academy modifies it 
+        private float originalMaximumDeltaTime;
 
         // Fields provided in the Inspector
 
@@ -252,6 +266,10 @@ namespace MLAgents
         /// </summary>
         private void InitializeEnvironment()
         {
+            originalGravity = Physics.gravity;
+            originalFixedDeltaTime = Time.fixedDeltaTime;
+            originalMaximumDeltaTime = Time.maximumDeltaTime;
+            
             InitializeAcademy();
             Communicator communicator = null;
 
@@ -409,8 +427,9 @@ namespace MLAgents
         /// </summary>
         public int GetNumAgents()
         {
-            if (pythonParameters != null && pythonParameters.NumAgents != 0)
-                return pythonParameters.NumAgents;
+            // // TODO - re-enable python coms
+            // if (pythonParameters != null && pythonParameters.NumAgents != 0)
+            //     return pythonParameters.NumAgents;
             return isInference ? agentSpawner.inferenceNumEnvsDefault : agentSpawner.trainingNumEnvsDefault;
         }
 
@@ -419,8 +438,9 @@ namespace MLAgents
         /// </summary>
         public string GetAgentId()
         {
-            if (pythonParameters != null && !string.IsNullOrWhiteSpace(pythonParameters?.AgentId))
-                return pythonParameters.AgentId;
+            // // TODO - re-enable python coms
+            // if (pythonParameters != null && !string.IsNullOrWhiteSpace(pythonParameters?.AgentId))
+            //     return pythonParameters.AgentId;
             return agentSpawner.envIdDefault;
         }
 
@@ -649,6 +669,16 @@ namespace MLAgents
         void FixedUpdate()
         {
             EnvironmentStep();
+        }
+
+        /// <summary>
+        /// Cleanup function
+        /// </summary>
+        protected virtual void OnDestroy()
+        {
+            Physics.gravity = originalGravity;
+            Time.fixedDeltaTime = originalFixedDeltaTime;
+            Time.maximumDeltaTime = originalMaximumDeltaTime;
         }
     }
 }

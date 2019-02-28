@@ -69,6 +69,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: DeepMindHopperEnv
       objectReference: {fileID: 0}
+    - target: {fileID: 8087028546548217645, guid: c7f549aabbce548e7aae2b2101ae3062,
+        type: 3}
+      propertyPath: paddingBetweenEnvs
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2608565721708774061, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -124,20 +129,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8087028546548217645, guid: c7f549aabbce548e7aae2b2101ae3062,
+    - target: {fileID: 6392590009493042066, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
-      propertyPath: paddingBetweenEnvs
-      value: 0
+      propertyPath: m_RootOrder
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4220755503070646539, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 6392590009493042066, guid: c7f549aabbce548e7aae2b2101ae3062,
+    - target: {fileID: 4475872956784911638, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c7f549aabbce548e7aae2b2101ae3062, type: 3}
