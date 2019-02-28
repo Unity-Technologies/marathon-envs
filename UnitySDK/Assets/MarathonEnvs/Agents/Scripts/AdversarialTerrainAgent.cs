@@ -31,8 +31,14 @@ public class AdversarialTerrainAgent : Agent {
 	public float debugLastFraction;
 	static Dictionary<string, float[,]> _resetHights;
 
+	SpawnableEnv _spawnableEnv;
+	PhysicsScene _physicsScene;
+
 	public override void AgentReset()
 	{
+		if (_spawnableEnv == null)
+			_spawnableEnv = GetComponentInParent<SpawnableEnv>();
+		_physicsScene = _spawnableEnv?.GetPhysicsScene() ?? Physics.defaultPhysicsScene;
 		// get start position
 		if (this.terrain == null)
 		{
@@ -201,13 +207,16 @@ public class AdversarialTerrainAgent : Agent {
 	float GetDistance2d(Vector3 point)
 	{
 		int layerMask = ~(1 << 14);
-		var ray = new Ray(point, Vector3.down);
-		var hits = Physics.RaycastAll(ray,_maxHeight,layerMask);
-		if (hits==null || hits.Length == 0)
+		// var ray = new Ray(point, Vector3.down);
+		// var hits = Physics.RaycastAll(ray,_maxHeight,layerMask);
+		// if (hits==null || hits.Length == 0)
+		// 	return 1f;
+		// var hit = hits
+		// 		.OrderBy(y=>y.distance)
+        //         .FirstOrDefault();
+		RaycastHit hit;
+		if(!_physicsScene.Raycast(point, Vector3.down, out hit, _maxHeight,layerMask))
 			return 1f;
-		var hit = hits
-				.OrderBy(y=>y.distance)
-                .FirstOrDefault();
 		float distance = hit.distance;
 		// distance = Mathf.Clamp(distance, -10f, 10f);
 		// distance = distance / 10f;
@@ -221,16 +230,28 @@ public class AdversarialTerrainAgent : Agent {
         var xpos = pos.x;
         xpos -= 2f;
         float fraction = (xpos - (Mathf.Floor(xpos*5)/5)) * 5;
-        float ypos = pos.y;
-        List<Ray> rays = Enumerable.Range(0, 5*7).Select(x => new Ray(new Vector3(xpos+(x*.2f), AdversarialTerrainAgent._maxHeight, pos.z), Vector3.down)).ToList();
-        List<float> distances = rays.Select
-            ( x=>
-                ypos - (AdversarialTerrainAgent._maxHeight - 
-                Physics.RaycastAll(x,_maxHeight,layerMask)
-                .OrderBy(y=>y.distance)
-                .FirstOrDefault()
-                .distance)
-            ).ToList();
+        // float ypos = pos.y;
+        // List<Ray> rays = Enumerable.Range(0, 5*7).Select(x => new Ray(new Vector3(xpos+(x*.2f), AdversarialTerrainAgent._maxHeight, pos.z), Vector3.down)).ToList();
+        // List<float> distances = rays.Select
+        //     ( x=>
+        //         ypos - (AdversarialTerrainAgent._maxHeight - 
+        //         Physics.RaycastAll(x,_maxHeight,layerMask)
+        //         .OrderBy(y=>y.distance)
+        //         .FirstOrDefault()
+        //         .distance)
+        //     ).ToList();
+		List<Ray> rays = Enumerable.Range(0, 5*7).Select(x => new Ray(new Vector3(xpos+(x*.2f), AdversarialTerrainAgent._maxHeight, pos.z), Vector3.down)).ToList();
+		List<float> distances = new List<float>();
+		foreach (var ray in rays)
+		{
+	        float ypos = pos.y;
+			ypos -= AdversarialTerrainAgent._maxHeight;
+			RaycastHit hit;
+			if(_physicsScene.Raycast(ray.origin, ray.direction, out hit, _maxHeight,layerMask))
+				ypos += hit.distance;
+			distances.Add(ypos);
+		}
+
         if (Application.isEditor && showDebug)
         {
             var view = distances.Skip(10).Take(20).Select(x=>x).ToList();
@@ -240,7 +261,7 @@ public class AdversarialTerrainAgent : Agent {
             for (int i = 0; i < rays.Count; i++)
             {
                 var distance = distances[i];
-                var origin = new Vector3(rays[i].origin.x, ypos,0f);
+                var origin = new Vector3(rays[i].origin.x, pos.y,0f);
                 var direction = distance > 0 ? Vector3.down : Vector3.up;
                 var color = distance > 0 ? Color.yellow : Color.red;
                 Debug.DrawRay(origin, direction*Mathf.Abs(distance), color, time, false);

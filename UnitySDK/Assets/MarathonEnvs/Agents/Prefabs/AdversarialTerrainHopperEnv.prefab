@@ -61,6 +61,9 @@ MonoBehaviour:
   heightIndex: 0
   curHeight: 0
   actionReward: 0
+  debugLastHeights: []
+  debugLastNormHeights: []
+  debugLastFraction: 0
 --- !u!1001 &489361563428808484
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -200,6 +203,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2860934576457593134, guid: c7f549aabbce548e7aae2b2101ae3062,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5965315998760433598, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}

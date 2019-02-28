@@ -93,7 +93,8 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 			.ToList();
 		SensorIsInTouch = Enumerable.Range(0,Sensors.Count).Select(x=>0f).ToList();
 		// HACK first spawned agent should grab the camera
-		var smoothFollow = GameObject.FindObjectOfType<SmoothFollow>();
+		// var smoothFollow = GameObject.FindObjectOfType<SmoothFollow>();
+		var smoothFollow = this.transform.parent.gameObject.GetComponentsInChildren<SmoothFollow>()[0];
 		if (smoothFollow != null && smoothFollow.target == null) {
 			if (_spawnCount == 0) // HACK follow nth agent
 			{

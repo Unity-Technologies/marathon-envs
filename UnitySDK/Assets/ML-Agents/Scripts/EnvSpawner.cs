@@ -69,23 +69,24 @@ namespace MLAgents
             SpawnableEnv spawnableEnv = envPrefab.GetComponent<SpawnableEnv>();
             spawnableEnv.UpdateBounds();
             Vector3 step = new Vector3(0f, 0f, spawnableEnv.bounds.size.z + (spawnableEnv.bounds.size.z*spawnableEnv.paddingBetweenEnvs));
+            if (spawnableEnv.CreateUniquePhysicsScene)
+                step = Vector3.zero;
 
             for (int i = 0; i < numInstances; i++)
             {
                 var agent = Agent.Instantiate(envPrefab, spawnStartPos, envPrefab.gameObject.transform.rotation);
-                bool multiverse = true;
-                if (!multiverse)
-                {
-                    spawnStartPos += step;
-                }
-                else
+                spawnStartPos += step;
+                if (spawnableEnv.CreateUniquePhysicsScene)
                 {
                     Scene scene = SceneManager.CreateScene($"SpawnedEnv-{i}", csp);
                     PhysicsScene physicsScene = scene.GetPhysicsScene();
                     SceneManager.MoveGameObjectToScene(agent, scene);
                     SpawnableEnv spawnedEnv = agent.GetComponent<SpawnableEnv>();
-                    spawnableEnv.SetSceneAndPhysicsScene(scene, physicsScene);
+                    spawnedEnv.SetSceneAndPhysicsScene(scene, physicsScene);
                     physicsScenes.Add(physicsScene);
+                    // only render the 1st scene
+                    // if (i == 0)
+                    //     Camera.main.scene = scene;
                 }
             }
         }

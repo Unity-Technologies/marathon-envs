@@ -10,6 +10,9 @@ namespace MLAgents
         public float paddingBetweenEnvs;
         [Space()]
         public Bounds bounds;
+        [Space()]
+        [Tooltip("Creates a unique scene and physics scene for this envionment")]
+        public bool CreateUniquePhysicsScene;
 
         Scene _spawnedScene;
         PhysicsScene _spawnedPhysicsScene;
@@ -46,22 +49,9 @@ namespace MLAgents
             _spawnedScene = spawnedScene;
             _spawnedPhysicsScene = spawnedPhysicsScene;
         }
-
-        // float timer = 0;
-
-        // // void FixedUpdate()
-        // void Update()
-        // {
-        //     timer += Time.deltaTime;
-
-        //     if (_spawnedPhysicsScene != null && _spawnedPhysicsScene.IsValid()) {
-        //         while (timer >= Time.fixedDeltaTime) {
-        //             timer -= Time.fixedDeltaTime;
-        //             var aa = Time.fixedDeltaTime;
-        //             _spawnedPhysicsScene.Simulate(aa);
-        //         }
-        //     }
-        // }
-
+        public PhysicsScene GetPhysicsScene()
+        {
+            return _spawnedPhysicsScene != null ? _spawnedPhysicsScene : Physics.defaultPhysicsScene;
+        }
     }
 }

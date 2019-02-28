@@ -355,7 +355,7 @@ MonoBehaviour:
     - envId: TerrainWalker-v0
       envPrefab: {fileID: 1196756990693198912, guid: 515881092c976a545900d4298620103a,
         type: 3}
-    envIdDefault: MarathonMan-v0
+    envIdDefault: Hopper-v0
     trainingNumEnvsDefault: 16
     inferenceNumEnvsDefault: 8
     trainingMode: 0
