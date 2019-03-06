@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b23992c8eb17439887f5e944bf04a40, type: 3}
-  m_Name: TerrainWalkerBrain-v0
+  m_Name: TerrainWalker2dBrain-v0
   m_EditorClassIdentifier: 
   brainParameters:
     vectorObservationSize: 77
@@ -25,5 +25,5 @@ MonoBehaviour:
     - 
     - 
     vectorActionSpaceType: 1
-  model: {fileID: 4900000, guid: 18df3c16de4e14cfaad6b64474694be1, type: 3}
+  model: {fileID: 11400000, guid: d0e39036a78d36d40b02921382168be9, type: 3}
   inferenceDevice: 0

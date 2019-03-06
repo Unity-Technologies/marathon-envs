@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b23992c8eb17439887f5e944bf04a40, type: 3}
-  m_Name: MarathonManBrain
+  m_Name: MarathonManBrain-v0
   m_EditorClassIdentifier: 
   brainParameters:
     vectorObservationSize: 224
