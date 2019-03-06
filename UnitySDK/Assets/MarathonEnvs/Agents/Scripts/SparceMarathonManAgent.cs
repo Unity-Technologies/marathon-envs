@@ -171,40 +171,15 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 
 	void AddEpisodeEndReward()
 	{
-		// var normalizedPosition = _bodyManager.GetNormalizedPosition();
-        // var reward = normalizedPosition.x;
 		var reward = _episodeMaxDistance;
-		// calcualte average velocity over run
-		// reward *= (this.agentParameters.maxStep / this.agentParameters.numberOfActionsBetweenDecisions);
-		// reward /= this.GetStepCount();
 
-		// var normalizedPosition = _bodyManager.GetNormalizedPosition();
-		// var endPos = normalizedPosition.x * 0.8f;
-        // var reward = endPos;
-		// if (endPos > 0.1f)
-		// 	reward += _heightReward * 0.1f;
-		// else
-		// 	reward += _heightReward * endPos;
-		// if (endPos > 0.02f){
-		// 	reward += _torsoUprightReward * 0.025f;
-		// 	reward += _torsoForwardReward * 0.025f;
-		// 	reward += _hipsUprightReward  * 0.025f;
-		// 	reward +=  _hipsForwardReward * 0.025f;
-		// }
-		// else {
-		// 	reward += _torsoUprightReward * endPos;
-		// 	reward += _torsoForwardReward * endPos;
-		// 	reward += _hipsUprightReward  * endPos;
-		// 	reward +=  _hipsForwardReward * endPos;
-		// }
+		AddReward(reward);
+		_bodyManager.SetDebugFrameReward(reward);
 
-		// AddReward(reward);
-		// _bodyManager.SetDebugFrameReward(reward);
-		float normalizedReward = (float)rollingAverage.Normalize(reward);
-		 normalizedReward += (float)rollingAverage.Mean;
-
-		// print ($"{normalizedReward} from {reward}");
-		AddReward(normalizedReward);
-		_bodyManager.SetDebugFrameReward(normalizedReward);
+		// # normalized reward
+		// float normalizedReward = (float)rollingAverage.Normalize(reward);
+		// normalizedReward += (float)rollingAverage.Mean;
+		// AddReward(normalizedReward);
+		// _bodyManager.SetDebugFrameReward(normalizedReward);
 	}
 }

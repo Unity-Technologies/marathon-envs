@@ -26,8 +26,7 @@ class UnityEnvironment(object):
 
     def __init__(self, file_name=None, worker_id=0,
                  base_port=5005, seed=0,
-                 docker_training=False, no_graphics=False,
-                 num_agents=0, agent_id=''):
+                 docker_training=False, no_graphics=False):
         """
         Starts a new unity environment and establishes a connection with the environment.
         Notice: Currently communication between Unity and Python takes place over an open socket without authentication.
@@ -38,8 +37,6 @@ class UnityEnvironment(object):
         :int worker_id: Number to add to communication port (5005) [0]. Used for asynchronous agent scenarios.
         :param docker_training: Informs this class whether the process is being run within a container.
         :param no_graphics: Whether to run the Unity simulator in no-graphics mode
-        :param num_agents: The number of agests to request the Unity enviroment to generate
-        :param agent_id: The name of the agent to request the Unity enviroment to instantiate 
         """
 
         atexit.register(self._close)
@@ -64,9 +61,7 @@ class UnityEnvironment(object):
         self._loaded = True
 
         rl_init_parameters_in = UnityRLInitializationInput(
-            seed=seed,
-            num_agents=num_agents, 
-            agent_id=agent_id
+            seed=seed
         )
         try:
             aca_params = self.send_academy_parameters(rl_init_parameters_in)
@@ -123,15 +118,6 @@ class UnityEnvironment(object):
     @property
     def number_external_brains(self):
         return self._num_external_brains
-
-    @property
-    def number_agents(self):
-        # agents = 0
-        # for brain_name in self._external_brain_names:
-        #     n_agent = self._n_agents[brain_name]
-        #     agents = agents+n_agent
-        # return agents
-        return len(self._n_agents)
 
     @property
     def brain_names(self):
