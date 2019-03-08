@@ -36,7 +36,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 
 	Agent _agent;
 	SpawnableEnv _spawnableEnv;
-	AdversarialTerrainAgent _adversarialTerrainAgent;
+	TerrainGenerator _terrainGenerator;
 
 	static int _startCount;
 
@@ -73,7 +73,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
     void Start()
     {
 		_spawnableEnv = GetComponentInParent<SpawnableEnv>();        
-		_adversarialTerrainAgent = GetComponentInParent<AdversarialTerrainAgent>();
+		_terrainGenerator = GetComponentInParent<TerrainGenerator>();
         SetupBody();
     }
 
@@ -470,7 +470,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		// get heights based on global senor position
 		var sensorsPos = Sensors
 			.Select(x=>x.transform.position).ToList();
-		var senorHeights = _adversarialTerrainAgent.GetDistances2d(globalSensorsPos);
+		var senorHeights = _terrainGenerator.GetDistances2d(globalSensorsPos);
 		for (int i = 0; i < Sensors.Count; i++) {
 			senorHeights[i] -= sensorColliders[i].radius;
 			if (senorHeights[i] >= 1f)

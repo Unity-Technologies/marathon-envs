@@ -1,16 +1,15 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using MLAgents;
 using UnityEngine;
+using MLAgents;
+using System.Linq;
 
-public class AdversarialTerrainAgent : Agent {
+
+public class TerrainGenerator : MonoBehaviour
+{
 
     Terrain terrain;
-	int lastSteps;
 	Agent _agent;
-
-
 	public int posXInTerrain;
 	public int posYInTerrain;
 	float[,] _heights;
@@ -26,14 +25,26 @@ public class AdversarialTerrainAgent : Agent {
 	internal const float _maxSpawnHeight = 10f;//8f;
 	const float _midHeight = 5f;
 	float _mapScaleY;
+	float[,] _heightMap;
 	public List<float> debugLastHeights;
 	public List<float> debugLastNormHeights;
 	public float debugLastFraction;
-	static Dictionary<string, float[,]> _resetHights;
 
-	public override void AgentReset()
-	{
-		// get start position
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    public void Reset()
+    {
 		if (this.terrain == null)
 		{
 			var parent = gameObject.transform.parent;
@@ -53,7 +64,8 @@ public class AdversarialTerrainAgent : Agent {
 		}
 		if (this._agent == null)
 			_agent = GetComponent<Agent>();
-        //print($"HeightMap {this.terrain.terrainData.heightmapWidth}, {this.terrain.terrainData.heightmapHeight}. Scale {this.terrain.terrainData.heightmapScale}. Resolution {this.terrain.terrainData.heightmapResolution}");
+        //print($"HeightMap {this.terrain.terrainData.heightmapWidth}, {this.terrain.terrainData.heightmapHeight}. 
+		// Scale {this.terrain.terrainData.heightmapScale}. Resolution {this.terrain.terrainData.heightmapResolution}");
         _mapScaleY = this.terrain.terrainData.heightmapScale.y;
 		// get the normalized position of this game object relative to the terrain
         Vector3 tempCoord = (transform.position - terrain.gameObject.transform.position);
@@ -73,53 +85,40 @@ public class AdversarialTerrainAgent : Agent {
 		curHeight = _midHeight;
 		heightIndex = posXInTerrain;
 		actionReward = 0f;
-
         
-        // set the new height
-        // terrain.terrainData.SetHeights(_posXInTerrain-offset,_posYInTerrain-offset,_heights);
-        //_heights[0,0] = 0.1f/600f;
-        //this.terrain.terrainData.SetHeights(_posXInTerrain, _posYInTerrain, _heights);
-		ResetHeights();
-		SetNextHeight(0);
-		SetNextHeight(0);
-		SetNextHeight(0);
-		SetNextHeight(0);
-		SetNextHeight(0);
-		SetNextHeight(0);
-		// SetNextHeight(0);
-		RequestDecision();
-
-		lastSteps = 0;
-		//RequestDecision();
-	}
-	public bool IsPointOffEdge(Vector3 point)
-	{
-        Vector3 localPos = (point - terrain.gameObject.transform.position);
-		bool isOffEdge = false;
-		isOffEdge |= (localPos.z < 0f);
-		isOffEdge |= (localPos.z >= terrain.terrainData.size.z);
-		return isOffEdge;
-	}
-
+		ResetHeights();        
+    }
 	void ResetHeights()
 	{
-		string key = $"{terrain.terrainData.heightmapWidth},{terrain.terrainData.heightmapHeight}";
-		if (_resetHights == null){
-			_resetHights = new Dictionary<string, float[,]>();
-		}
-		if (!_resetHights.ContainsKey(key)){
-			float height = curHeight / _mapScaleY;
-			var entry = new float [terrain.terrainData.heightmapWidth, terrain.terrainData.heightmapHeight];
-			for (int w = 0; w < terrain.terrainData.heightmapWidth; w++)
-			{
-				for (int h = 0; h < terrain.terrainData.heightmapWidth; h++)
-					entry[w,h] = height;
-			}
-			_resetHights.Add(key,entry);
-		}
-		this.terrain.terrainData.SetHeights(0, 0, _resetHights[key]);
-	}
+		if (_heightMap == null){
+			_heightMap = new float [terrain.terrainData.heightmapWidth, terrain.terrainData.heightmapHeight];
+        }
+		heightIndex = 0;
+		while(heightIndex <posXInTerrain)
+			SetNextHeight(0);
 
+		SetNextHeight(0);
+		SetNextHeight(0);
+		SetNextHeight(0);
+		SetNextHeight(0);
+		SetNextHeight(0);
+		SetNextHeight(0);
+		while(heightIndex < terrain.terrainData.heightmapWidth)
+		{
+			int action = Random.Range(0,21);
+			try
+			{
+				SetNextHeight(action);				
+			}
+			catch (System.Exception ex)
+			{
+				SetNextHeight(action);
+				throw;
+			}
+		}
+		this.terrain.terrainData.SetHeights(0, 0, _heightMap);
+
+	}
 	void SetNextHeight(int action)
 	{
 		float actionSize = 0f;
@@ -131,64 +130,26 @@ public class AdversarialTerrainAgent : Agent {
 			if (curHeight < _minSpawnHeight) {
 				curHeight = _minSpawnHeight;
 				actionSize = 0;
-				AddReward(-100f);
 			}
 			if (curHeight > _maxSpawnHeight)
 			{
 				curHeight = _maxSpawnHeight;
 				actionSize = 0;
-				AddReward(-100f);				
 			}
 		}
 
 		float height = curHeight / _mapScaleY;
-		for (int i = 0; i < terrain.terrainData.heightmapHeight; i++)
-			_rowHeight[i,0] = height;
-		this.terrain.terrainData.SetHeights(heightIndex, 0, _rowHeight);
-
+		// var unit = terrain.terrainData.heightmapWidth / (int)_mapScaleY;
+		int unit = 1;
+		int startH = heightIndex * unit;
+        for (int h = startH; h < startH+unit; h++)
+        {
+            for (int w = 0; w < terrain.terrainData.heightmapWidth; w++){
+                _heightMap[w,h] = height;
+			}
+			height += 1/300f/_mapScaleY;
+        }
 		heightIndex++;
-		actionReward = actionSize;
-	}
-	internal void OnNextMeter()
-	{
-		// AddReward(1);
-		// AddReward(_actionReward);
-		actionReward = 0f;
-		RequestDecision();
-	}
-	internal void Terminate(float cumulativeReward)
-	{
-		if (this.IsDone())
-			return;
-		var maxReward = 1000f;
-		var agentReward = cumulativeReward;
-		agentReward = Mathf.Clamp(agentReward, 0f, maxReward);
-		var adverseralReward = maxReward - agentReward;
-		AddReward(adverseralReward);
-		Done();
-		// RequestDecision();
-	}
-
-	public override void CollectObservations()
-	{
-		var height = curHeight / _maxHeight;
-		// add last agent distance
-		
-		int curSteps = 0;
-		if (_agent != null)
-			curSteps = _agent.GetStepCount();
-		float numberSinceLast = curSteps - lastSteps;
-		numberSinceLast = 1 - (numberSinceLast/1000);
-		lastSteps = curSteps;
-        AddVectorObs(numberSinceLast);
-        AddVectorObs(height);
-        AddVectorObs(actionReward);
-	}
-	public override void AgentAction(float[] vectorAction, string textAction)
-	{
-		// each action is a descreate for height change
-		int action = (int)vectorAction[0];
-		SetNextHeight(action);
 	}
 
 	public List<float> GetDistances2d(IEnumerable<Vector3> points)
@@ -215,6 +176,16 @@ public class AdversarialTerrainAgent : Agent {
 		return distance;
 	}
 
+
+	public bool IsPointOffEdge(Vector3 point)
+	{
+        Vector3 localPos = (point - terrain.gameObject.transform.position);
+		bool isOffEdge = false;
+		isOffEdge |= (localPos.z < 0f);
+		isOffEdge |= (localPos.z >= terrain.terrainData.size.z);
+		return isOffEdge;
+	}
+
 	public (List<float>, float) GetDistances2d(Vector3 pos, bool showDebug)
 	{
 		int layerMask = ~(1 << 14);
@@ -222,10 +193,10 @@ public class AdversarialTerrainAgent : Agent {
         xpos -= 2f;
         float fraction = (xpos - (Mathf.Floor(xpos*5)/5)) * 5;
         float ypos = pos.y;
-        List<Ray> rays = Enumerable.Range(0, 5*7).Select(x => new Ray(new Vector3(xpos+(x*.2f), AdversarialTerrainAgent._maxHeight, pos.z), Vector3.down)).ToList();
+        List<Ray> rays = Enumerable.Range(0, 5*7).Select(x => new Ray(new Vector3(xpos+(x*.2f), TerrainGenerator._maxHeight, pos.z), Vector3.down)).ToList();
         List<float> distances = rays.Select
             ( x=>
-                ypos - (AdversarialTerrainAgent._maxHeight - 
+                ypos - (TerrainGenerator._maxHeight - 
                 Physics.RaycastAll(x,_maxHeight,layerMask)
                 .OrderBy(y=>y.distance)
                 .FirstOrDefault()
@@ -236,7 +207,7 @@ public class AdversarialTerrainAgent : Agent {
             var view = distances.Skip(10).Take(20).Select(x=>x).ToList();
             Monitor.Log("distances", view.ToArray());
             var time = Time.deltaTime;
-            time *= agentParameters.numberOfActionsBetweenDecisions;
+            time *= _agent.agentParameters.numberOfActionsBetweenDecisions;
             for (int i = 0; i < rays.Count; i++)
             {
                 var distance = distances[i];
@@ -256,5 +227,5 @@ public class AdversarialTerrainAgent : Agent {
 		debugLastFraction = fraction;
 
 		return (normalizedDistances, fraction); 
-	}
-}
+	}    
+}    

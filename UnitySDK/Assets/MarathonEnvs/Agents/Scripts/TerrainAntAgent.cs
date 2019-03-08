@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using MLAgents;
-public class AdversarialTerrainWalkerAgent : MarathonAgent {
+public class TerrainAntAgent : MarathonAgent {
 
-    AdversarialTerrainAgent _adversarialTerrainAgent;
+    TerrainGenerator _terrainGenerator;
     int _lastXPosInMeters;
     int _stepCountAtLastMeter;
     float _pain;
@@ -17,27 +17,23 @@ public class AdversarialTerrainWalkerAgent : MarathonAgent {
     {
         base.AgentReset();
 
-        BodyParts["pelvis"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "torso");
-        BodyParts["left_thigh"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "left_thigh");
-        BodyParts["right_thigh"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "right_thigh");
-        BodyParts["right_foot"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "right_foot");
-        BodyParts["left_foot"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "left_foot");
+        BodyParts["pelvis"] = GetComponentsInChildren<Rigidbody>().FirstOrDefault(x => x.name == "torso_geom");
 
         SetCenterOfMass();
 
-        if (_adversarialTerrainAgent == null)
-            _adversarialTerrainAgent = GetComponent<AdversarialTerrainAgent>();
+        if (_terrainGenerator == null)
+            _terrainGenerator = GetComponent<TerrainGenerator>();
         _lastXPosInMeters = (int) BodyParts["pelvis"].transform.position.x;
-        _adversarialTerrainAgent.Terminate(GetCumulativeReward());
-        _stepCountAtLastMeter = 0;
+        _terrainGenerator.Reset();
 
         // set to true this to show monitor while training
         Monitor.SetActive(true);
 
-        StepRewardFunction = StepRewardWalker106;
+        StepRewardFunction = StepRewardAnt101;
         TerminateFunction = LocalTerminate;
         ObservationsFunction = ObservationsDefault;
         OnTerminateRewardValue = 0f;
+        // OnTerminateRewardValue = -100f;
         _pain = 0f;
         _modeRecover = false;
 
@@ -49,7 +45,6 @@ public class AdversarialTerrainWalkerAgent : MarathonAgent {
     {
         int newXPosInMeters = (int) BodyParts["pelvis"].transform.position.x;
         if (newXPosInMeters > _lastXPosInMeters) {
-            _adversarialTerrainAgent.OnNextMeter();
             _lastXPosInMeters = newXPosInMeters;
             _stepCountAtLastMeter = this.GetStepCount();
         }
@@ -57,14 +52,16 @@ public class AdversarialTerrainWalkerAgent : MarathonAgent {
         SetCenterOfMass();
         var xpos = _centerOfMass.x;
         var terminate = false;
-        if (this.GetStepCount()-_stepCountAtLastMeter >= (100*5))
+		if (_terrainGenerator.IsPointOffEdge(BodyParts["pelvis"].transform.position)){
+            terminate = true;
+            AddReward(-1f);
+        }
+        if (this.GetStepCount()-_stepCountAtLastMeter >= (200*5))
             terminate = true;
         else if (xpos < 4f && _pain > 1f)
             terminate = true;
         else if (xpos < 2f && _pain > 0f)
             terminate = true;
-        if (terminate)
-            _adversarialTerrainAgent.Terminate(GetCumulativeReward());
 
         return terminate;
     }
@@ -79,10 +76,10 @@ public class AdversarialTerrainWalkerAgent : MarathonAgent {
                 NonFootHitTerrain = true;
                 _modeRecover = true;
                 break;
-            case "right_leg": // dm_walker
-            case "left_leg": // dm_walker
-            case "right_foot": // dm_walker
-            case "left_foot": // dm_walker
+            case "left_ankle_geom": // oai_ant
+            case "right_ankle_geom": // oai_ant
+            case "third_ankle_geom": // oai_ant
+            case "fourth_ankle_geom": // oai_ant
                 FootHitTerrain = true;
                 break;
             default:
@@ -100,7 +97,7 @@ public class AdversarialTerrainWalkerAgent : MarathonAgent {
     void ObservationsDefault()
     {
         var pelvis = BodyParts["pelvis"];
-        Vector3 normalizedVelocity = this.GetNormalizedVelocity(pelvis.velocity);
+        Vector3 normalizedVelocity = GetNormalizedVelocity(pelvis.velocity);
         AddVectorObs(normalizedVelocity);
         AddVectorObs(pelvis.transform.forward); // gyroscope 
         AddVectorObs(pelvis.transform.up);
@@ -108,13 +105,11 @@ public class AdversarialTerrainWalkerAgent : MarathonAgent {
         AddVectorObs(SensorIsInTouch);
         JointRotations.ForEach(x => AddVectorObs(x));
         AddVectorObs(JointVelocity);
-        // AddVectorObs(new []{
-        //     this.GetNormalizedPosition(BodyParts["left_foot"].transform.position).y,
-        //     this.GetNormalizedPosition(BodyParts["right_foot"].transform.position).y
-        // });
+        // Vector3 normalizedFootPosition = this.GetNormalizedPosition(pelvis.transform.position);
+        // AddVectorObs(normalizedFootPosition.y);
 
         (List<float> distances, float fraction) = 
-            _adversarialTerrainAgent.GetDistances2d(
+            _terrainGenerator.GetDistances2d(
                 pelvis.transform.position, ShowMonitor);
    
         AddVectorObs(distances);
@@ -136,31 +131,27 @@ public class AdversarialTerrainWalkerAgent : MarathonAgent {
         _centerOfMass /= c;
     }
 
-    float StepRewardWalker106()
+    float StepRewardAnt101()
     {
-        float uprightBonus = GetDirectionBonus("pelvis", Vector3.forward, 1f);
-        uprightBonus = Mathf.Clamp(uprightBonus, 0f, 1f);
         float velocity = Mathf.Clamp(GetNormalizedVelocity("pelvis").x, 0f, 1f);
         float effort = 1f - GetEffortNormalized();
 
-        if (ShowMonitor)
-        {
-            var hist = new[] {velocity, uprightBonus, effort}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.INDEPENDENT);
-        }
-
-        // uprightBonus *= 0.1f;
-        // velocity *= 0.45f;
-        // if (velocity >= .45f)
-        //     effort *= 0.45f;
+        // velocity *= 0.7f;
+        // if (velocity >= .25f)
+        //     effort *= 0.25f;
         // else
         //     effort *= velocity;
 
         // var reward = velocity
-        //              + uprightBonus
         //              + effort;
-        var reward = velocity;
+        // if (ShowMonitor)
+        // {
+        //     var hist = new[] {reward, velocity, effort};
+        //     Monitor.Log("rewardHist", hist, displayType: Monitor.DisplayType.INDEPENDENT);
+        // }
         _pain = 0f;
+        var reward = velocity;
         return reward;
+        // return 0f;
     }
 }

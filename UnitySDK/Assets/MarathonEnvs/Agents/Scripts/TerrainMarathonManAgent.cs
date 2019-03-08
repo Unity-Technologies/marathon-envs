@@ -5,11 +5,11 @@ using MLAgents;
 using System.Linq;
 using static BodyHelper002;
 
-public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
+public class TerrainMarathonManAgent : Agent, IOnTerrainCollision
 {
 	BodyManager002 _bodyManager;
 
-    AdversarialTerrainAgent _adversarialTerrainAgent;
+    TerrainGenerator _terrainGenerator;
 	SpawnableEnv _spawnableEnv;
     int _stepCountAtLastMeter;
     public int lastXPosInMeters;
@@ -38,7 +38,7 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 		AddVectorObs(_bodyManager.GetSensorObservations());
         
         (distances, fraction) = 
-            _adversarialTerrainAgent.GetDistances2d(
+            _terrainGenerator.GetDistances2d(
                 pelvis.Rigidbody.transform.position, _bodyManager.ShowMonitor);
     
         AddVectorObs(distances);
@@ -78,7 +78,6 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
             .Average(x=>x.Transform.position.x);
 		int newXPosInMeters = (int) xpos;
         if (newXPosInMeters > lastXPosInMeters) {
-            _adversarialTerrainAgent.OnNextMeter();
             lastXPosInMeters = newXPosInMeters;
             _stepCountAtLastMeter = this.GetStepCount();
         }
@@ -86,7 +85,7 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 		// bool isInBounds = _spawnableEnv.IsPointWithinBoundsInWorldSpace(pelvis.Transform.position);
 		// if (!isInBounds)
         // if (pelvis.Rigidbody.transform.position.y < 0f)
-		if (_adversarialTerrainAgent.IsPointOffEdge(pelvis.Transform.position)){
+		if (_terrainGenerator.IsPointOffEdge(pelvis.Transform.position)){
             terminate = true;
             AddReward(-1f);
 		}
@@ -111,11 +110,11 @@ public class AdversarialTerrainMarathonManAgent : Agent, IOnTerrainCollision
 		if (_bodyManager == null)
 			_bodyManager = GetComponent<BodyManager002>();
 		_bodyManager.OnAgentReset();
-        if (_adversarialTerrainAgent == null)
-            _adversarialTerrainAgent = GetComponent<AdversarialTerrainAgent>();
+        if (_terrainGenerator == null)
+            _terrainGenerator = GetComponent<TerrainGenerator>();
 		if (_spawnableEnv == null)
 			_spawnableEnv = GetComponentInParent<SpawnableEnv>();
-        _adversarialTerrainAgent.Terminate(GetCumulativeReward());
+        _terrainGenerator.Reset();
 		lastXPosInMeters = (int)
             _bodyManager.GetBodyParts(BodyPartGroup.Foot)
             .Average(x=>x.Transform.position.x);

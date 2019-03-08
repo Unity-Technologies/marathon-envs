@@ -7,7 +7,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 431079410306153460}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 321e00e8334f24bda89c935caf02d19a, type: 3}
   m_Name: 
@@ -64,6 +64,26 @@ MonoBehaviour:
   Observations: []
   ObservationNormalizedErrors: 0
   MaxObservationNormalizedErrors: 0
+--- !u!114 &6864436367006974252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431079410306153460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4da94542694fa499d98d191423809c64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  posXInTerrain: 9
+  posYInTerrain: 128
+  heightIndex: 257
+  curHeight: 3.9000018
+  actionReward: 0
+  debugLastHeights: []
+  debugLastNormHeights: []
+  debugLastFraction: 0
 --- !u!1001 &432275803552451820
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -142,7 +162,7 @@ PrefabInstance:
     - target: {fileID: 8081357739622870871, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
       propertyPath: m_Name
-      value: TerrainWalkerEnv-v0
+      value: TerrainWalker2dEnv-v0
       objectReference: {fileID: 0}
     - target: {fileID: 2608565721708774061, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
