@@ -89,5 +89,13 @@ namespace MLAgents
         /// Is called once per Environment Step after the Brain has been initialized.
         /// </summary>
         protected abstract void DecideAction();
+        public void Clear()
+        {
+            var academy = FindObjectOfType<Academy>();
+            if (academy != null)
+                academy.BrainDecideAction -= BrainDecideAction;
+            agentInfos.Clear();
+            _isInitialized = false;
+        }
     }
 }

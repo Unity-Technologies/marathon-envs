@@ -1098,5 +1098,13 @@ namespace MLAgents
             RenderTexture.active = prevActiveRT;
             RenderTexture.ReleaseTemporary(tempRT);
         }
-    }
+        /// <summary>
+        /// Cleanup function
+        /// </summary>
+        protected virtual void OnDestroy()
+        {
+            brain?.Clear();
+            Monitor.RemoveAllValues(transform);
+        }
+     }
 }

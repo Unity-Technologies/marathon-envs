@@ -71,13 +71,5 @@ namespace MLAgents
             }
 
         }
-        
-        /// <summary>
-        /// Removes all the Brains of the BroadcastHub
-        /// </summary>
-        public void Clear()
-        {
-            spawnableEnvDefinitions.Clear();
-        }
     }
 }

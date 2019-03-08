@@ -30,7 +30,7 @@ namespace MLAgents
         /// </summary>
         [HideInInspector] static public float verticalOffset = 3f;
 
-        static bool isInstantiated;
+        static bool isInstantiated{ get {return canvas!=null;} }
         static GameObject canvas;
         static Dictionary<Transform, Dictionary<string, DisplayValue>> displayTransformValues;
 
@@ -86,7 +86,6 @@ namespace MLAgents
             if (!isInstantiated)
             {
                 InstantiateCanvas();
-                isInstantiated = true;
             }
 
             if (target == null)
@@ -156,7 +155,6 @@ namespace MLAgents
             if (!isInstantiated)
             {
                 InstantiateCanvas();
-                isInstantiated = true;
             }
 
             if (target == null)
@@ -218,7 +216,6 @@ namespace MLAgents
             if (!isInstantiated)
             {
                 InstantiateCanvas();
-                isInstantiated = true;
             }
 
             if (target == null)
@@ -332,8 +329,6 @@ namespace MLAgents
             if (!isInstantiated)
             {
                 InstantiateCanvas();
-                isInstantiated = true;
-
             }
 
             if (canvas != null)
@@ -352,6 +347,7 @@ namespace MLAgents
                 canvas = new GameObject();
                 canvas.name = "AgentMonitorCanvas";
                 canvas.AddComponent<Monitor>();
+                // DontDestroyOnLoad(canvas);
             }
 
             displayTransformValues = new Dictionary<Transform,

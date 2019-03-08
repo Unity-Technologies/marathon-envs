@@ -242,7 +242,23 @@ namespace MLAgents
         /// </summary>
         void Awake()
         {
-            InitializeEnvironment();
+            if (ShouldInitalizeOnAwake())
+                InitializeEnvironment();
+            else
+                enabled = false;
+        }
+        void OnEnable()
+        {
+            if (!ShouldInitalizeOnAwake())
+                InitializeEnvironment();            
+        }
+        bool ShouldInitalizeOnAwake()
+        {
+            if (agentSpawner != null && agentSpawner.trainingMode)
+                return true;
+            if (GetComponent<SelectEnvToSpawn>() == null)
+                return true;
+            return false;
         }
 
         // Used to read Python-provided environment parameters
@@ -679,6 +695,9 @@ namespace MLAgents
             Physics.gravity = originalGravity;
             Time.fixedDeltaTime = originalFixedDeltaTime;
             Time.maximumDeltaTime = originalMaximumDeltaTime;
+            broadcastHub.Clear();
+            broadcastHub = null;
+            agentSpawner = null;
         }
     }
 }
