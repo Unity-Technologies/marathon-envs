@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4132043790615226}
   - component: {fileID: 114269483692438478}
   - component: {fileID: 114968519458122122}
-  m_Layer: 10
+  m_Layer: 14
   m_Name: DeepMindWalker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,8 +73,6 @@ MonoBehaviour:
     onDemandDecision: 0
     numberOfActionsBetweenDecisions: 5
     skipActionsWithDecisions: 1
-  agentBoundsMaxOffset: {x: 200, y: 2, z: 0.5}
-  agentBoundsMinOffset: {x: 0, y: 0, z: -0.5}
   CameraTarget: {fileID: 0}
   ShowMonitor: 0
   FootHitTerrain: 0

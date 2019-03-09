@@ -259,6 +259,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1574236049}
   - component: {fileID: 1574236048}
+  - component: {fileID: 1574236050}
   m_Layer: 0
   m_Name: Academy
   m_TagString: Untagged
@@ -286,15 +287,10 @@ MonoBehaviour:
     - {fileID: 11400000, guid: bc7914b266edc45269ac68e42404a71e, type: 2}
     - {fileID: 11400000, guid: 14ef212b228874b5ea289d5facb060d7, type: 2}
     - {fileID: 11400000, guid: b4c68a827b3bf4e50b00de698141b8fd, type: 2}
-    - {fileID: 11400000, guid: c3f7addec59364d98afd58440cbb5f14, type: 2}
-    - {fileID: 11400000, guid: 9ea886974783b4c4dac8a8ff9eff1958, type: 2}
-    - {fileID: 11400000, guid: c0c29a662c0244e458c6d6be9d7a83a2, type: 2}
-    - {fileID: 11400000, guid: d96d7a098f0a64779a092a4b8cb78b50, type: 2}
-    - {fileID: 11400000, guid: 9649ff6fb8e2b47ef962dc419561bc87, type: 2}
-    - {fileID: 11400000, guid: 9dc1f4f405604c74bb668ead770430ca, type: 2}
     - {fileID: 11400000, guid: 75fdb007db80c2348a5d26445aec749a, type: 2}
-    - {fileID: 11400000, guid: f19b5abaefcf12b459a780c784b48030, type: 2}
     - {fileID: 11400000, guid: 3b4503ba684ef4845b18250ae0927eaa, type: 2}
+    - {fileID: 11400000, guid: 9dc1f4f405604c74bb668ead770430ca, type: 2}
+    - {fileID: 11400000, guid: f19b5abaefcf12b459a780c784b48030, type: 2}
     _brainsToControl:
     - {fileID: 11400000, guid: 6ecfdf95a9eee4a2580de3d7224c2cdb, type: 2}
     - {fileID: 11400000, guid: bc7914b266edc45269ac68e42404a71e, type: 2}
@@ -302,11 +298,11 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 1b23b0637158f4bf1a0a53eee29cbdac, type: 2}
     - {fileID: 11400000, guid: 14ef212b228874b5ea289d5facb060d7, type: 2}
     - {fileID: 11400000, guid: b4c68a827b3bf4e50b00de698141b8fd, type: 2}
-    - {fileID: 11400000, guid: c3f7addec59364d98afd58440cbb5f14, type: 2}
-    - {fileID: 11400000, guid: 9ea886974783b4c4dac8a8ff9eff1958, type: 2}
-    - {fileID: 11400000, guid: c0c29a662c0244e458c6d6be9d7a83a2, type: 2}
-    - {fileID: 11400000, guid: d96d7a098f0a64779a092a4b8cb78b50, type: 2}
-    - {fileID: 11400000, guid: 9649ff6fb8e2b47ef962dc419561bc87, type: 2}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
     - {fileID: 11400000, guid: 3b4503ba684ef4845b18250ae0927eaa, type: 2}
     - {fileID: 11400000, guid: f19b5abaefcf12b459a780c784b48030, type: 2}
     - {fileID: 11400000, guid: 75fdb007db80c2348a5d26445aec749a, type: 2}
@@ -322,42 +318,30 @@ MonoBehaviour:
     - envId: Ant-v0
       envPrefab: {fileID: 5262237177341221258, guid: c3c332aefbae14d7bb05a9a9d1e92822,
         type: 3}
-    - envId: Humanoid-v0
-      envPrefab: {fileID: 3037751692074211891, guid: 0cf4acf0631414b60a6743fdb80b1857,
-        type: 3}
     - envId: MarathonMan-v0
       envPrefab: {fileID: 1802870815327278923, guid: 7e60d2adba0a6460496d49f806ce6581,
         type: 3}
     - envId: MarathonManSparse-v0
       envPrefab: {fileID: 233471726635017911, guid: e5ff581d16faa48b8827455b500a4fa5,
         type: 3}
-    - envId: AdversarialTerrainHopper-v0
-      envPrefab: {fileID: 7947809634594933162, guid: 3ad4b2dd236314577951f70e0d0754ca,
-        type: 3}
-    - envId: AdversarialTerrainMarathonMan-v0
-      envPrefab: {fileID: 4916072010681759962, guid: c7a78a9d534f9a14e8554d8a484fadcd,
-        type: 3}
-    - envId: AdversarialTerrainAnt-v0
-      envPrefab: {fileID: 7047730086699436974, guid: 55e792b4dbf0c4ef7b5f21a7b6f9b321,
-        type: 3}
-    - envId: AdversarialTerrainWalker-v0
-      envPrefab: {fileID: 1196756990693198912, guid: 8b47b0c44d6f8468689c48a4c4c5bf82,
-        type: 3}
     - envId: TerrainHopper-v0
       envPrefab: {fileID: 7947809634594933162, guid: ab36b786276a623428519ab8ad2f0357,
         type: 3}
-    - envId: TerrainMarathonMan-v0
-      envPrefab: {fileID: 4916072010681759962, guid: dd522fee983368f46be78694bfb2531c,
+    - envId: TerrainWalker2d-v0
+      envPrefab: {fileID: 1196756990693198912, guid: 515881092c976a545900d4298620103a,
         type: 3}
     - envId: TerrainAnt-v0
       envPrefab: {fileID: 7047730086699436974, guid: dd561613900448e47bc63ecccb726f8e,
         type: 3}
-    - envId: TerrainWalker-v0
-      envPrefab: {fileID: 1196756990693198912, guid: 515881092c976a545900d4298620103a,
+    - envId: TerrainMarathonMan-v0
+      envPrefab: {fileID: 4916072010681759962, guid: dd522fee983368f46be78694bfb2531c,
         type: 3}
-    envIdDefault: Hopper-v0
-    trainingNumEnvsDefault: 16
-    inferenceNumEnvsDefault: 8
+    - envId: DomRandWalker2d-v0
+      envPrefab: {fileID: 5749487745970749956, guid: f0a64bf3e1f9c4153a749bc702bf13a7,
+        type: 3}
+    envIdDefault: DomRandWalker2d-v0
+    trainingNumEnvsDefault: 128
+    inferenceNumEnvsDefault: 10
     trainingMode: 0
   maxSteps: 0
   trainingConfiguration:
@@ -388,6 +372,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1574236050
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574236047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c6aab15e75b54228815ec12f6185f2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1715640920
 GameObject:
   m_ObjectHideFlags: 0

@@ -27,11 +27,11 @@ public class CameraHelper : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("`") || Input.GetKeyDown(KeyCode.Delete))
-		{
-			ToggleTimeScale(_defaultTimeScale);
-			SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
-		}
+		// if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("`") || Input.GetKeyDown(KeyCode.Delete))
+		// {
+		// 	ToggleTimeScale(_defaultTimeScale);
+		// 	SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
+		// }
 
 		if (Input.GetKeyDown("0"))
 		{

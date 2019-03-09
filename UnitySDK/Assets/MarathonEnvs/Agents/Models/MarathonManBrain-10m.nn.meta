@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 62fb3926205854a6f8d13063624cbdbe
+ScriptedImporter:
+  fileIDToRecycleName:
+    11400000: Assets/MarathonEnvs/Agents/Models/MarathonManBrain-10m.nn
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+  script: {fileID: 11500000, guid: 83221ad3db87f4b3b91b041047cb2bc5, type: 3}

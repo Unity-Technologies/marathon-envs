@@ -79,7 +79,7 @@ class BCTrainer(Trainer):
         else:
             return 0
 
-    def increment_step_and_update_last_reward(self, num_steps=1):
+    def increment_step_and_update_last_reward(self):
         """
         Increment the step count of the trainer and Updates the last reward
         """

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4132043790615226}
   - component: {fileID: 114269483692438478}
   - component: {fileID: 114957047460082758}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: DeepMindHopper
   m_TagString: Untagged
   m_Icon: {fileID: 0}

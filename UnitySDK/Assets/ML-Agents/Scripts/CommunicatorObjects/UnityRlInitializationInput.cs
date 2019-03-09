@@ -26,13 +26,12 @@ namespace MLAgents.CommunicatorObjects {
           string.Concat(
             "CkZtbGFnZW50cy9lbnZzL2NvbW11bmljYXRvcl9vYmplY3RzL3VuaXR5X3Js",
             "X2luaXRpYWxpemF0aW9uX2lucHV0LnByb3RvEhRjb21tdW5pY2F0b3Jfb2Jq",
-            "ZWN0cyJQChpVbml0eVJMSW5pdGlhbGl6YXRpb25JbnB1dBIMCgRzZWVkGAEg",
-            "ASgFEhIKCm51bV9hZ2VudHMYAiABKAUSEAoIYWdlbnRfaWQYAyABKAlCH6oC",
-            "HE1MQWdlbnRzLkNvbW11bmljYXRvck9iamVjdHNiBnByb3RvMw=="));
+            "ZWN0cyIqChpVbml0eVJMSW5pdGlhbGl6YXRpb25JbnB1dBIMCgRzZWVkGAEg",
+            "ASgFQh+qAhxNTEFnZW50cy5Db21tdW5pY2F0b3JPYmplY3RzYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::MLAgents.CommunicatorObjects.UnityRLInitializationInput), global::MLAgents.CommunicatorObjects.UnityRLInitializationInput.Parser, new[]{ "Seed", "NumAgents", "AgentId" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::MLAgents.CommunicatorObjects.UnityRLInitializationInput), global::MLAgents.CommunicatorObjects.UnityRLInitializationInput.Parser, new[]{ "Seed" }, null, null, null)
           }));
     }
     #endregion
@@ -65,8 +64,6 @@ namespace MLAgents.CommunicatorObjects {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public UnityRLInitializationInput(UnityRLInitializationInput other) : this() {
       seed_ = other.seed_;
-      numAgents_ = other.numAgents_;
-      agentId_ = other.agentId_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -86,28 +83,6 @@ namespace MLAgents.CommunicatorObjects {
       }
     }
 
-    /// <summary>Field number for the "num_agents" field.</summary>
-    public const int NumAgentsFieldNumber = 2;
-    private int numAgents_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int NumAgents {
-      get { return numAgents_; }
-      set {
-        numAgents_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "agent_id" field.</summary>
-    public const int AgentIdFieldNumber = 3;
-    private string agentId_ = "";
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string AgentId {
-      get { return agentId_; }
-      set {
-        agentId_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
-      }
-    }
-
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as UnityRLInitializationInput);
@@ -122,8 +97,6 @@ namespace MLAgents.CommunicatorObjects {
         return true;
       }
       if (Seed != other.Seed) return false;
-      if (NumAgents != other.NumAgents) return false;
-      if (AgentId != other.AgentId) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -131,8 +104,6 @@ namespace MLAgents.CommunicatorObjects {
     public override int GetHashCode() {
       int hash = 1;
       if (Seed != 0) hash ^= Seed.GetHashCode();
-      if (NumAgents != 0) hash ^= NumAgents.GetHashCode();
-      if (AgentId.Length != 0) hash ^= AgentId.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -150,14 +121,6 @@ namespace MLAgents.CommunicatorObjects {
         output.WriteRawTag(8);
         output.WriteInt32(Seed);
       }
-      if (NumAgents != 0) {
-        output.WriteRawTag(16);
-        output.WriteInt32(NumAgents);
-      }
-      if (AgentId.Length != 0) {
-        output.WriteRawTag(26);
-        output.WriteString(AgentId);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -168,12 +131,6 @@ namespace MLAgents.CommunicatorObjects {
       int size = 0;
       if (Seed != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(Seed);
-      }
-      if (NumAgents != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(NumAgents);
-      }
-      if (AgentId.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(AgentId);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -189,12 +146,6 @@ namespace MLAgents.CommunicatorObjects {
       if (other.Seed != 0) {
         Seed = other.Seed;
       }
-      if (other.NumAgents != 0) {
-        NumAgents = other.NumAgents;
-      }
-      if (other.AgentId.Length != 0) {
-        AgentId = other.AgentId;
-      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -208,14 +159,6 @@ namespace MLAgents.CommunicatorObjects {
             break;
           case 8: {
             Seed = input.ReadInt32();
-            break;
-          }
-          case 16: {
-            NumAgents = input.ReadInt32();
-            break;
-          }
-          case 26: {
-            AgentId = input.ReadString();
             break;
           }
         }

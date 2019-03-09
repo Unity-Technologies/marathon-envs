@@ -36,7 +36,7 @@ MonoBehaviour:
   Observations: []
   ObservationNormalizedErrors: 0
   MaxObservationNormalizedErrors: 0
---- !u!114 &6369364645930203890
+--- !u!114 &7793092637145703857
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -45,21 +45,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 490557295161413692}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 321e00e8334f24bda89c935caf02d19a, type: 3}
+  m_Script: {fileID: 11500000, guid: 4da94542694fa499d98d191423809c64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brain: {fileID: 11400000, guid: 77ba043450cb8431f84cbdaf771339eb, type: 2}
-  agentParameters:
-    agentCameras: []
-    maxStep: 5000
-    resetOnDone: 1
-    onDemandDecision: 1
-    numberOfActionsBetweenDecisions: 1
-    skipActionsWithDecisions: 0
-  posXInTerrain: 0
-  posYInTerrain: 0
-  heightIndex: 0
-  curHeight: 0
+  posXInTerrain: 9
+  posYInTerrain: 128
+  heightIndex: 9
+  curHeight: 5
   actionReward: 0
   debugLastHeights: []
   debugLastNormHeights: []
@@ -204,22 +196,17 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 3
       objectReference: {fileID: 0}
-    - target: {fileID: 2860934576457593134, guid: c7f549aabbce548e7aae2b2101ae3062,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5965315998760433598, guid: c7f549aabbce548e7aae2b2101ae3062,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3617279857455892011, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3499865627114767964, guid: c7f549aabbce548e7aae2b2101ae3062,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5965315998760433598, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
       propertyPath: m_IsActive
       value: 0

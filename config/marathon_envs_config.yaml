@@ -21,10 +21,11 @@ default:
     curiosity_strength: 0.01
     curiosity_enc_size: 128
 
-DeepMindHumanoidBrain:
+HumanoidBrain-v0:
     num_epoch: 10 
     time_horizon: 1000
-    summary_freq: 250000
+    # summary_freq: 250000
+    summary_freq: 2500
     use_recurrent: false
     normalize: false 
     num_layers: 2
@@ -33,12 +34,14 @@ DeepMindHumanoidBrain:
     batch_size: 64
     buffer_size: 10240
     beta: .003
-    max_steps: 10.e6
+    # max_steps: 10.e6
+    max_steps: 78125
 
-MarathonManBrain:
+MarathonManBrain-v0:
     num_epoch: 10 
     time_horizon: 100 
-    summary_freq: 250000
+    # summary_freq: 250000
+    summary_freq: 2500
     use_recurrent: false
     normalize: false 
     num_layers: 2
@@ -47,12 +50,14 @@ MarathonManBrain:
     batch_size: 64
     buffer_size: 10240
     beta: .003
-    max_steps: 10.e6    
+    # max_steps: 10.e6    
+    max_steps: 78125
 
-MarathonManSparseBrain:
+MarathonManSparseBrain-v0:
     num_epoch: 10 
     time_horizon: 1000 
-    summary_freq: 250000
+    # summary_freq: 250000
+    summary_freq: 2500
     use_recurrent: false
     normalize: false 
     num_layers: 2
@@ -62,12 +67,14 @@ MarathonManSparseBrain:
     batch_size: 64
     buffer_size: 10240
     beta: .003
-    max_steps: 10.e6  
+    # max_steps: 10.e6  
+    max_steps: 78125
 
-DeepMindHopperBrain:
+HopperBrain-v0:
     num_epoch: 10 
     time_horizon: 100 
-    summary_freq: 100000
+    # summary_freq: 100000
+    summary_freq: 1000
     use_recurrent: false
     normalize: false 
     num_layers: 2
@@ -76,12 +83,14 @@ DeepMindHopperBrain:
     batch_size: 64
     buffer_size: 2048 
     beta: .003
-    max_steps: 1.e6
+    # max_steps: 1.e6
+    max_steps: 7813
 
-DeepMindWalkerBrain:
+Walker2dBrain-v0:
     num_epoch: 10 
     time_horizon: 100 
-    summary_freq: 100000
+    # summary_freq: 100000
+    summary_freq: 1000
     use_recurrent: false
     normalize: false 
     num_layers: 2
@@ -90,12 +99,14 @@ DeepMindWalkerBrain:
     batch_size: 64
     buffer_size: 2048 
     beta: .003
-    max_steps: 1.e6
+    # max_steps: 1.e6
+    max_steps: 7813
 
-OpenAIAntBrain:
+AntBrain-v0:
     num_epoch: 10 
     time_horizon: 100 
-    summary_freq: 100000
+    # summary_freq: 100000
+    summary_freq: 1000
     use_recurrent: false
     normalize: false 
     num_layers: 2
@@ -104,79 +115,8 @@ OpenAIAntBrain:
     batch_size: 64
     buffer_size: 2048 
     beta: .003
-    max_steps: 1.e6
-
-
-AdversarialTerrainHopperBrain:
-    num_epoch: 10 
-    time_horizon: 1000 
-    summary_freq: 50000
-    use_recurrent: false
-    normalize: false 
-    num_layers: 2
-    hidden_units: 64
-    learning_rate: 3e-4
-    batch_size: 32
-    buffer_size: 2048 
-    beta: .003
-    max_steps: 25e6
-
-AdversarialTerrainWalkerBrain:
-    num_epoch: 10 
-    time_horizon: 1000 
-    summary_freq: 50000
-    use_recurrent: false
-    normalize: false 
-    num_layers: 2
-    hidden_units: 64
-    learning_rate: 3e-4
-    batch_size: 32
-    buffer_size: 2048 
-    beta: .003
-    max_steps: 25e6
-
-AdversarialTerrainAntBrain:
-    num_epoch: 10 
-    time_horizon: 1000 
-    summary_freq: 50000
-    use_recurrent: false
-    normalize: false 
-    num_layers: 2
-    hidden_units: 64
-    learning_rate: 3e-4
-    batch_size: 32
-    buffer_size: 2048 
-    beta: .001
-    max_steps: 50e6
-
-
-AdversarialTerrainMarathonManBrain:
-    num_epoch: 10 
-    time_horizon: 1000 
-    summary_freq: 50000
-    use_recurrent: false
-    normalize: false 
-    num_layers: 2
-    hidden_units: 64
-    learning_rate: 3e-4
-    batch_size: 32
-    buffer_size: 2048 
-    # buffer_size:  10240
-    beta: .0003
-    max_steps: 100e6
-    
-AdversarialTerrainBrain:
-    normalize: true
-    # use_recurrent: true
-    hidden_units: 16
-    batch_size: 32
-    summary_freq: 50000
-    num_layers: 2
-    hidden_units: 64
-    max_steps: 100e6
-
-
-
+    # max_steps: 1.e6
+    max_steps: 7813
 
 TerrainHopperBrain-v0:
     num_epoch: 10 
@@ -192,7 +132,7 @@ TerrainHopperBrain-v0:
     beta: .003
     max_steps: 25e6
 
-TerrainWalkerBrain-v0:
+TerrainWalker2dBrain-v0:
     num_epoch: 10 
     time_horizon: 1000 
     summary_freq: 50000

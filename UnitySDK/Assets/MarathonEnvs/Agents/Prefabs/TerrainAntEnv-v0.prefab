@@ -1,33 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &40738806682282063
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7109920198982244263}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 321e00e8334f24bda89c935caf02d19a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  brain: {fileID: 11400000, guid: 77ba043450cb8431f84cbdaf771339eb, type: 2}
-  agentParameters:
-    agentCameras: []
-    maxStep: 5000
-    resetOnDone: 1
-    onDemandDecision: 1
-    numberOfActionsBetweenDecisions: 1
-    skipActionsWithDecisions: 0
-  posXInTerrain: 0
-  posYInTerrain: 0
-  heightIndex: 0
-  curHeight: 0
-  actionReward: 0
-  debugLastHeights: []
-  debugLastNormHeights: []
-  debugLastFraction: 0
 --- !u!114 &6330082916260573747
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -64,6 +36,26 @@ MonoBehaviour:
   Observations: []
   ObservationNormalizedErrors: 0
   MaxObservationNormalizedErrors: 0
+--- !u!114 &418585506858242275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7109920198982244263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4da94542694fa499d98d191423809c64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  posXInTerrain: 9
+  posYInTerrain: 128
+  heightIndex: 257
+  curHeight: 0.8
+  actionReward: 0
+  debugLastHeights: []
+  debugLastNormHeights: []
+  debugLastFraction: 0
 --- !u!1001 &1290370493263553785
 PrefabInstance:
   m_ObjectHideFlags: 0
