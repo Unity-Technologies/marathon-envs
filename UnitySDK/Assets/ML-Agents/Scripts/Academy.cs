@@ -252,7 +252,7 @@ namespace MLAgents
             if (!ShouldInitalizeOnAwake())
                 InitializeEnvironment();            
         }
-        bool ShouldInitalizeOnAwake()
+        public bool ShouldInitalizeOnAwake()
         {
             if (agentSpawner != null && agentSpawner.trainingMode)
                 return true;

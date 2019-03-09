@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 public class SelectEnvToSpawn : MonoBehaviour
 {
     public Button yourButton;
-    bool showPopUp = true;
+    bool showPopUp = false;
     static int envIdIdex = -1;
     string[] envIds;
     int heightRequirments;
@@ -30,6 +30,10 @@ public class SelectEnvToSpawn : MonoBehaviour
             var envDef = academy.agentSpawner.spawnableEnvDefinitions.FirstOrDefault(x => x.envId == envId);
             envIdIdex = academy.agentSpawner.spawnableEnvDefinitions.IndexOf(envDef);
         }
+        // exit if we should not dispplay the menu
+        if (academy.ShouldInitalizeOnAwake())
+            return;
+        showPopUp = true;
     }
 
     // Update is called once per frame

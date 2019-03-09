@@ -337,7 +337,7 @@ MonoBehaviour:
       envPrefab: {fileID: 4916072010681759962, guid: dd522fee983368f46be78694bfb2531c,
         type: 3}
     - envId: DrHopper-v0
-      envPrefab: {fileID: 1256658538897541068, guid: 1393b9e5d65bc5f4096b387ecea1eefb,
+      envPrefab: {fileID: 5480442662125391293, guid: 1393b9e5d65bc5f4096b387ecea1eefb,
         type: 3}
     - envId: DrWalker2d-v0
       envPrefab: {fileID: 5749487745970749956, guid: f0a64bf3e1f9c4153a749bc702bf13a7,
@@ -345,7 +345,7 @@ MonoBehaviour:
     envIdDefault: DrHopper-v0
     trainingNumEnvsDefault: 128
     inferenceNumEnvsDefault: 10
-    trainingMode: 0
+    trainingMode: 1
   maxSteps: 0
   trainingConfiguration:
     width: 480
