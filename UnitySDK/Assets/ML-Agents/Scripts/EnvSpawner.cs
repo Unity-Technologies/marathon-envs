@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -23,8 +24,6 @@ namespace MLAgents
             public Vector3 Negative;
             public Vector3 Positive;
         }
-
-        List<PhysicsScene> physicsScenes;
 
         [SerializeField]
         public List<SpawnableEnvDefinition> spawnableEnvDefinitions = new List<SpawnableEnvDefinition>();
@@ -63,7 +62,6 @@ namespace MLAgents
         public void SpawnSpawnableEnv(GameObject parent, int numInstances, GameObject envPrefab)
         {
             CreateSceneParameters csp = new CreateSceneParameters(LocalPhysicsMode.Physics3D);
-            physicsScenes = new List<PhysicsScene>();
 
             Vector3 spawnStartPos = parent.transform.position;
             SpawnableEnv spawnableEnv = envPrefab.GetComponent<SpawnableEnv>();
@@ -83,22 +81,10 @@ namespace MLAgents
                     SceneManager.MoveGameObjectToScene(agent, scene);
                     SpawnableEnv spawnedEnv = agent.GetComponent<SpawnableEnv>();
                     spawnedEnv.SetSceneAndPhysicsScene(scene, physicsScene);
-                    physicsScenes.Add(physicsScene);
                     // only render the 1st scene
                     // if (i == 0)
                     //     Camera.main.scene = scene;
                 }
-            }
-        }
-        /// <summary>
-        /// Reqests a physics step in each scene
-        /// </summary>
-        public void TriggerPhysicsStep()
-        {
-            var stepSize = Time.fixedDeltaTime;
-            foreach (var physicsScene in physicsScenes)
-            {
-                physicsScene.Simulate(stepSize);
             }
         }
 

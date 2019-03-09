@@ -30,11 +30,12 @@ public class TerrainGenerator : MonoBehaviour
 	public List<float> debugLastNormHeights;
 	public float debugLastFraction;
 
+	PhysicsScene physicsScene;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        physicsScene = (GetComponentInParent<SpawnableEnv>().GetPhysicsScene());
     }
 
     // Update is called once per frame
@@ -162,20 +163,13 @@ public class TerrainGenerator : MonoBehaviour
 	float GetDistance2d(Vector3 point)
 	{
 		int layerMask = ~(1 << 14);
-		var ray = new Ray(point, Vector3.down);
-		var hits = Physics.RaycastAll(ray,_maxHeight,layerMask);
-		if (hits==null || hits.Length == 0)
+		RaycastHit hit;
+		if (!physicsScene.Raycast(point, Vector3.down, out hit,_maxHeight,layerMask))
 			return 1f;
-		var hit = hits
-				.OrderBy(y=>y.distance)
-                .FirstOrDefault();
 		float distance = hit.distance;
-		// distance = Mathf.Clamp(distance, -10f, 10f);
-		// distance = distance / 10f;
 		distance = Mathf.Clamp(distance, -1f, 1f);
 		return distance;
 	}
-
 
 	public bool IsPointOffEdge(Vector3 point)
 	{
@@ -194,14 +188,13 @@ public class TerrainGenerator : MonoBehaviour
         float fraction = (xpos - (Mathf.Floor(xpos*5)/5)) * 5;
         float ypos = pos.y;
         List<Ray> rays = Enumerable.Range(0, 5*7).Select(x => new Ray(new Vector3(xpos+(x*.2f), TerrainGenerator._maxHeight, pos.z), Vector3.down)).ToList();
-        List<float> distances = rays.Select
-            ( x=>
-                ypos - (TerrainGenerator._maxHeight - 
-                Physics.RaycastAll(x,_maxHeight,layerMask)
-                .OrderBy(y=>y.distance)
-                .FirstOrDefault()
-                .distance)
-            ).ToList();
+		RaycastHit hit;
+		List<float> distances = rays.Select
+			( ray=> {
+				if (!physicsScene.Raycast(ray.origin, ray.direction, out hit,_maxHeight,layerMask))
+					return _maxHeight;
+				return ypos - (_maxHeight - hit.distance);
+			}).ToList();
         if (Application.isEditor && showDebug)
         {
             var view = distances.Skip(10).Take(20).Select(x=>x).ToList();

@@ -53,5 +53,13 @@ namespace MLAgents
         {
             return _spawnedPhysicsScene != null ? _spawnedPhysicsScene : Physics.defaultPhysicsScene;
         }
+        public static void TriggerPhysicsStep()
+        {
+            foreach (var env in FindObjectsOfType<SpawnableEnv>())
+            {
+                if (env.CreateUniquePhysicsScene)
+                    env._spawnedPhysicsScene.Simulate(Time.fixedDeltaTime);
+            }
+        }
     }
 }
