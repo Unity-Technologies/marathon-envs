@@ -82,8 +82,11 @@ namespace MLAgents
                     SpawnableEnv spawnedEnv = agent.GetComponent<SpawnableEnv>();
                     spawnedEnv.SetSceneAndPhysicsScene(scene, physicsScene);
                     // only render the 1st scene
-                    // if (i == 0)
-                    //     Camera.main.scene = scene;
+                    if (i == 0) {
+                        // var cam = Camera.FindObjectOfType<Camera>();
+                        // cam.scene = scene;
+                        // // Camera.main.enabled = false;
+                    }
                 }
             }
         }

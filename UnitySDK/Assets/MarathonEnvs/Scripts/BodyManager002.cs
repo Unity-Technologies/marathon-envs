@@ -48,6 +48,10 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 	/**< \brief Max distance travelled across all episodes*/
 	public float MaxDistanceTraveled;
 
+	[Tooltip("Distance travelled this episode")]
+	/**< \brief Distance travelled this episode*/
+	public float DistanceTraveled;
+
 	List<SphereCollider> sensorColliders;
 	static int _spawnCount;
 	
@@ -75,6 +79,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		_spawnableEnv = GetComponentInParent<SpawnableEnv>();        
 		_terrainGenerator = GetComponentInParent<TerrainGenerator>();
         SetupBody();
+		DistanceTraveled = float.MinValue;
     }
 
     // Update is called once per frame
@@ -84,6 +89,11 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 
 	public void OnAgentReset()
 	{
+		if (DistanceTraveled != float.MinValue)
+		{
+			var scorer = FindObjectOfType<Scorer>();
+			scorer?.ReportScore(DistanceTraveled, "Distance Traveled");
+		}
 		HandleModelReset();
 		Sensors = _agent.GetComponentsInChildren<SensorBehavior>()
 			.Select(x=>x.gameObject)
@@ -506,7 +516,8 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 			MaxObservationNormalizedErrors = ObservationNormalizedErrors;  
 
         var pelvis = GetFirstBodyPart(BodyPartGroup.Hips);
-		MaxDistanceTraveled = Mathf.Max(MaxDistanceTraveled, pelvis.Transform.position.x);
+		DistanceTraveled = pelvis.Transform.position.x;
+		MaxDistanceTraveled = Mathf.Max(MaxDistanceTraveled, DistanceTraveled);
         Vector3 metersPerSecond = pelvis.Rigidbody.velocity;
 		Vector3 mph = metersPerSecond * 2.236936f;
 		mphBuffer.Add(mph);

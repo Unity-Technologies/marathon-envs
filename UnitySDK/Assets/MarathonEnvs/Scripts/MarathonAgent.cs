@@ -77,6 +77,9 @@ namespace MLAgents
         [Tooltip("Rigidbody for FocalPoint")]
         /**< \brief Rigidbody for FocalPoint*/
         public Rigidbody FocalRidgedBody;
+        [Tooltip("Distance travelled this episode")]
+        /**< \brief Distance travelled this episode*/
+        public float DistanceTraveled = float.MinValue;
 
         [Tooltip("Max distance travelled across all episodes")]
         /**< \brief Max distance travelled across all episodes*/
@@ -131,6 +134,11 @@ namespace MLAgents
 
         public override void AgentReset()
         {
+            if (DistanceTraveled != float.MinValue)
+            {
+                var scorer = FindObjectOfType<Scorer>();
+                scorer?.ReportScore(DistanceTraveled, "Distance Traveled");
+            }            
             if (_spawnableEnv == null)
         		_spawnableEnv = GetComponentInParent<SpawnableEnv>();
             if (marathonSpawner == null)
@@ -670,7 +678,8 @@ namespace MLAgents
                 return;
 
             float dt = Time.fixedDeltaTime;
-            FocalPointMaxDistanceTraveled = Mathf.Max(FocalPointMaxDistanceTraveled, FocalPoint.transform.position.x);
+            DistanceTraveled = FocalPoint.transform.position.x;
+            FocalPointMaxDistanceTraveled = Mathf.Max(FocalPointMaxDistanceTraveled, DistanceTraveled);
 
             var topJoint = MarathonJoints[0];
             var topTransform = topJoint.Joint.transform;
