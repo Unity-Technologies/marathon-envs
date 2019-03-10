@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using MLAgents;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
 using UnityEngine.SceneManagement;
 
 namespace MLAgents
 {
     public class SelectEnvToSpawn : MonoBehaviour
     {
-        public Button yourButton;
         bool showPopUp = false;
         static int envIdIdex = -1;
         string[] envIds;
