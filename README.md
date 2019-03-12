@@ -11,6 +11,44 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 *Note: This project is the result of a contribution from [Joe Booth (@Sohojo)](https://github.com/Sohojoe), a member of the Unity community who currently maintains the repository. As such, the contents of this repository are not officially supported by Unity Technologies.* 
 
 ---
+## What's new
+### MarathonMan-v0
+
+* Optimized for Unity3d + fixes some bugs with the DeepMind.xml version
+* Merged from StyleTransfer experimental repro
+* Replaces DeepMindHumanoid
+### ManathonManSparse-v0
+* Sparse version of MarathonMan.
+* Single reward is given at end of episode.
+### TerrainHopperEnv-v0, TerrainWalker2dEnv-v0, TerrainAntEnv-v0, TerrainMarathonManEnv-v0
+* Random Terrain envionments
+* Merged from AssaultCourse experimental repro
+### SpawnableEnvs (Preview)
+* Set the number of instances of an envrionmwnt you want for training and inference
+* Envrionments are spawned from prefabs, so no need to manually duplicate
+* Supports ability to select from multiple agents in one build
+* Unique Physics Scene per Environment (makes it easier to port envionments however runs slower)
+* SelectEnvToSpawn.cs - Optional menu to enable user to select from all agents in build
+### Skip setting actions
+* Option to not set actions when skipping steps. 
+* Optimization for when running physics at high frequencey
+### Scorer.cs
+* Score agent against 'goal' (for example, max distance) to distinguish rewards from goals
+* Gives mean and std-div over 100 agents
+### Normalized Observations (-1 to 1) and reward (0 to 1)
+* No need to use normalize flag in training. Helps with OpenAI.Baselines training
+### Merge CameraHelper.cs from StyleTransfer. Controls are
+* 1, 2, 3 - Slow-mo modes
+* arrow keys or w-a-s-d rotate around agent
+* q-e zoom in / out
+### Default hyperparams are now closer to OpenAI.Baselines 
+* (1m steps for hopper, walker, ant, 10m for humanoid)
+### Training speed improvements - All feet detect distance from floor
+### ml-agents 0.7 support
+* Updated to work with ml-agents 0.7 / new inference engine
+
+
+
 ## Getting Started
 
 ### * * * New Turotial: [Getting Started With MarathonEnvs](https://towardsdatascience.com/gettingstartedwithmarathonenvs-v0-5-0a-c1054a0b540c) * * *
