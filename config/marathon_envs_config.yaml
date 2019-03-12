@@ -35,7 +35,7 @@ HumanoidBrain-v0:
     buffer_size: 10240
     beta: .003
     # max_steps: 10.e6
-    max_steps: 78125
+    max_steps: 10.e4
 
 MarathonManBrain-v0:
     num_epoch: 10 
@@ -51,7 +51,7 @@ MarathonManBrain-v0:
     buffer_size: 10240
     beta: .003
     # max_steps: 10.e6    
-    max_steps: 78125
+    max_steps: 10.e4
 
 MarathonManSparseBrain-v0:
     num_epoch: 10 
@@ -68,110 +68,116 @@ MarathonManSparseBrain-v0:
     buffer_size: 10240
     beta: .003
     # max_steps: 10.e6  
-    max_steps: 78125
+    max_steps: 10.e4
 
 HopperBrain-v0:
     num_epoch: 10 
     time_horizon: 100 
     # summary_freq: 100000
-    summary_freq: 1000
+    summary_freq: 1000 # HACK for 100 agents
     use_recurrent: false
     normalize: false 
     num_layers: 2
     hidden_units: 64
     learning_rate: 3e-4
-    batch_size: 64
-    buffer_size: 2048 
+    batch_size: 32
+    buffer_size: 512
     beta: .003
     # max_steps: 1.e6
-    max_steps: 7813
+    max_steps: 1.e4 # HACK for 100 agents
 
 Walker2dBrain-v0:
     num_epoch: 10 
     time_horizon: 100 
     # summary_freq: 100000
-    summary_freq: 1000
+    summary_freq: 1000 # HACK for 100 agents
     use_recurrent: false
     normalize: false 
     num_layers: 2
     hidden_units: 64
     learning_rate: 3e-4
-    batch_size: 64
-    buffer_size: 2048 
+    batch_size: 32
+    buffer_size: 512
     beta: .003
     # max_steps: 1.e6
-    max_steps: 7813
+    max_steps: 1.e4 # HACK for 100 agents
 
 AntBrain-v0:
     num_epoch: 10 
     time_horizon: 100 
     # summary_freq: 100000
-    summary_freq: 1000
+    summary_freq: 1000 # HACK for 100 agents
     use_recurrent: false
     normalize: false 
     num_layers: 2
     hidden_units: 64
     learning_rate: 3e-4
-    batch_size: 64
-    buffer_size: 2048 
+    batch_size: 32
+    buffer_size: 512
     beta: .003
     # max_steps: 1.e6
-    max_steps: 7813
+    max_steps: 1.e4 # HACK for 100 agents
 
 TerrainHopperBrain-v0:
     num_epoch: 10 
     time_horizon: 1000 
-    summary_freq: 50000
+    # summary_freq: 50000
+    summary_freq: 5000 # HACK for 100 agents
     use_recurrent: false
     normalize: false 
     num_layers: 2
     hidden_units: 64
     learning_rate: 3e-4
     batch_size: 32
-    buffer_size: 2048 
+    buffer_size: 512
     beta: .003
-    max_steps: 25e6
+    # max_steps: 25e6
+    max_steps: 25e4 # HACK for 100 agents
 
 TerrainWalker2dBrain-v0:
     num_epoch: 10 
     time_horizon: 1000 
-    summary_freq: 50000
+    # summary_freq: 50000
+    summary_freq: 5000 # HACK for 100 agents
     use_recurrent: false
     normalize: false 
     num_layers: 2
     hidden_units: 64
     learning_rate: 3e-4
     batch_size: 32
-    buffer_size: 2048 
+    buffer_size: 512 
     beta: .003
-    max_steps: 25e6
+    # max_steps: 25e6
+    max_steps: 25e4 # HACK for 100 agents
 
 TerrainAntBrain-v0:
     num_epoch: 10 
     time_horizon: 1000 
-    summary_freq: 50000
+    # summary_freq: 50000
+    summary_freq: 5000 # HACK for 100 agents
     use_recurrent: false
     normalize: false 
     num_layers: 2
     hidden_units: 64
     learning_rate: 3e-4
     batch_size: 32
-    buffer_size: 2048 
+    buffer_size: 512 
     beta: .001
-    max_steps: 50e6
-
+    # max_steps: 50e6
+    max_steps: 50e4 # HACK for 100 agents
 
 TerrainMarathonManBrain-v0:
     num_epoch: 10 
     time_horizon: 1000 
     summary_freq: 50000
+    summary_freq: 5000 # HACK for 100 agents
     use_recurrent: false
     normalize: false 
     num_layers: 2
     hidden_units: 64
     learning_rate: 3e-4
     batch_size: 32
-    buffer_size: 2048 
-    # buffer_size:  10240
+    buffer_size: 512 
     beta: .0003
-    max_steps: 50e6    
+    # max_steps: 50e6
+    max_steps: 50e4 # HACK for 100 agents
