@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -55,22 +56,13 @@ namespace MLAgents
         }
         public static void TriggerPhysicsStep()
         {
-            var globalGravity = Physics.gravity;
-            foreach (var env in FindObjectsOfType<SpawnableEnv>())
+            var uniquePhysicsEnvs = FindObjectsOfType<SpawnableEnv>()
+                .Where(x=>x.CreateUniquePhysicsScene)
+                .ToList();
+            foreach (var env in uniquePhysicsEnvs)
             {
-                var rx = Random.Range(-2,2);
-                var ry = Random.Range(-2,2);
-                var rz = Random.Range(-2,2);
-                var gravity = new Vector3(
-                    globalGravity.x + rx,
-                    globalGravity.y + ry,
-                    globalGravity.z + rz
-                    );
-                Physics.gravity = gravity;
-                if (env.CreateUniquePhysicsScene)
-                    env._spawnedPhysicsScene.Simulate(Time.fixedDeltaTime);
+                env._spawnedPhysicsScene.Simulate(Time.fixedDeltaTime);
             }
-            Physics.gravity = globalGravity;
         }
     }
 }

@@ -298,11 +298,6 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 1b23b0637158f4bf1a0a53eee29cbdac, type: 2}
     - {fileID: 11400000, guid: 14ef212b228874b5ea289d5facb060d7, type: 2}
     - {fileID: 11400000, guid: b4c68a827b3bf4e50b00de698141b8fd, type: 2}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
     - {fileID: 11400000, guid: 3b4503ba684ef4845b18250ae0927eaa, type: 2}
     - {fileID: 11400000, guid: f19b5abaefcf12b459a780c784b48030, type: 2}
     - {fileID: 11400000, guid: 75fdb007db80c2348a5d26445aec749a, type: 2}
@@ -336,13 +331,7 @@ MonoBehaviour:
     - envId: TerrainMarathonMan-v0
       envPrefab: {fileID: 4916072010681759962, guid: dd522fee983368f46be78694bfb2531c,
         type: 3}
-    - envId: DrHopper-v0
-      envPrefab: {fileID: 1256658538897541068, guid: 1393b9e5d65bc5f4096b387ecea1eefb,
-        type: 3}
-    - envId: DrWalker2d-v0
-      envPrefab: {fileID: 5749487745970749956, guid: f0a64bf3e1f9c4153a749bc702bf13a7,
-        type: 3}
-    envIdDefault: DrHopper-v0
+    envIdDefault: TerrainWalker2d-v0
     trainingNumEnvsDefault: 128
     inferenceNumEnvsDefault: 10
     trainingMode: 0
