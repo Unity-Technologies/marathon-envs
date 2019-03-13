@@ -51,7 +51,7 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 
 ## Getting Started
 
-### * * * New Turotial: [Getting Started With MarathonEnvs](https://towardsdatascience.com/gettingstartedwithmarathonenvs-v0-5-0a-c1054a0b540c) * * *
+### Turotial: [Getting Started With MarathonEnvs](https://towardsdatascience.com/gettingstartedwithmarathonenvs-v0-5-0a-c1054a0b540c)
 The tutorial covers:
 * How to setup your Development Environment (Unity, MarthonEnvs + ML-Agents + TensorflowSharp)
 * How to run each agent with their pre-trained models.
@@ -73,9 +73,11 @@ The tutorial covers:
 ---
 ## Publications & Usage 
 
-An early version of this work was presented March 19th, 2018 at the AI Summit - Game Developer Conference 2018 - http://schedule.gdconf.com/session/beyond-bots-making-machine-learning-accessible-and-useful/856147
+### Publications:
+* AAAI 2019 Workshop on Games and Simulations for Artificial Intelligence: [Marathon Environments: Multi-Agent Continuous Control Benchmarks in a Modern Video Game Engine](https://arxiv.org/abs/1902.09097)
+* An early version of this work was presented March 19th, 2018 at the AI Summit - Game Developer Conference 2018 - http://schedule.gdconf.com/session/beyond-bots-making-machine-learning-accessible-and-useful/856147
 
-### Active Research using ML-Agents + MarathonEnvs
+### Research using ML-Agents + MarathonEnvs
  * [ActiveRagdollAssaultCourse](https://github.com/Sohojoe/ActiveRagdollAssaultCourse) - Mastering Dynamic Environments
  * [ActiveRagdollControllers](https://github.com/Sohojoe/ActiveRagdollControllers) - Implementing a Player Controller
  * [ActiveRagdollStyleTransfer](https://github.com/Sohojoe/ActiveRagdollStyleTransfer) - Learning From Motioncapture Data
@@ -246,7 +248,7 @@ An early version of this work was presented March 19th, 2018 at the AI Summit - 
 * Currently, Marathon does not properly simulate how MuJoCo handles joint observations - as such, it maybe difficult to do transfer learning (from simulation to real world robots)
 
 
-### References:
+## References:
 * [OpenAI.Gym Mujoco](https://github.com/openai/gym/tree/master/gym/envs/mujoco) implementation. Good reference for enviroment setup, reward functions and termination functions.
 * [OpenAI.Roboschool](https://github.com/openai/roboschool) - Alternative OpenAI implementation based on [Bullet Physics](http://pybullet.org) with more advanced enviroments. Alternative reference for reward functions and termination functions.
 * [DeepMind Control Suite](https://github.com/deepmind/dm_control) - Set of continuous control tasks.
@@ -255,6 +257,5 @@ An early version of this work was presented March 19th, 2018 at the AI Summit - 
 * A good primer on the differences between physics engines is ['Physics simulation engines have traditional made tradeoffs between performance’](https://homes.cs.washington.edu/~todorov/papers/ErezICRA15.pdf) and it’s accompanying [video](https://homes.cs.washington.edu/~todorov/media/ErezICRA15.mp4).
 * [MuJoCo Unity Plugin](http://www.mujoco.org/book/unity.html) MuJoCo's Unity plugin which uses socket to comunicate between MuJoCo (for running the physics simulation and control) and Unity (for rendering).
 
-
-
-
+### Citing MarathonEnvs:
+If you use MarathonEnvs in your research, we ask that you please cite our [paper](https://arxiv.org/abs/1902.09097).
