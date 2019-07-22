@@ -89,7 +89,7 @@ with
                     ? spawnAgentPrefabBrains 
                     : new List<Brain>();
 ```
-line 336, replace
+line 336, add
 ```csharp
             foreach (LearningBrain brain in controlledBrains)
             {
@@ -133,11 +133,11 @@ line 441, add
             return agentSpawner.envIdDefault;
         }
 ```
-line 688, add
-            SpawnableEnv.TriggerPhysicsStep();
+line 688, add to `FixedUpdate()`
 ```python
+            SpawnableEnv.TriggerPhysicsStep();
 ```
-line 699, add
+line 699, add tp `OnDestroy()`
 ```python
             broadcastHub.Clear();
             broadcastHub = null;
@@ -200,7 +200,6 @@ with
                     RequestAction();
                 if (!skipDecision)
                     RequestDecision();
-                }
             }
         }
 ```
