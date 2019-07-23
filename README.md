@@ -11,43 +11,66 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 *Note: This project is the result of a contribution from [Joe Booth (@Sohojo)](https://github.com/Sohojoe), a member of the Unity community who currently maintains the repository. As such, the contents of this repository are not officially supported by Unity Technologies.* 
 
 ---
+
 ## What's new
+
+### ml-agents 0.8.2 support
+
+* Updated to work with ml-agents 0.8.2 / new inference engine
+
+### Unity 2018.4 LTS
+
+* Updated to use Unity 2018.4 LTS. Should work with later versions. However, sometimes Unity makes breaking physics changes.
+
 ### MarathonMan-v0
 
 * Optimized for Unity3d + fixes some bugs with the DeepMind.xml version
 * Merged from StyleTransfer experimental repro
 * Replaces DeepMindHumanoid
+
 ### ManathonManSparse-v0
+
 * Sparse version of MarathonMan.
 * Single reward is given at end of episode.
+
 ### TerrainHopperEnv-v0, TerrainWalker2dEnv-v0, TerrainAntEnv-v0, TerrainMarathonManEnv-v0
+
 * Random Terrain envionments
 * Merged from AssaultCourse experimental repro
+
 ### SpawnableEnvs (Preview)
+
 * Set the number of instances of an envrionmwnt you want for training and inference
 * Envrionments are spawned from prefabs, so no need to manually duplicate
 * Supports ability to select from multiple agents in one build
 * Unique Physics Scene per Environment (makes it easier to port envionments however runs slower)
 * SelectEnvToSpawn.cs - Optional menu to enable user to select from all agents in build
+
 ### Skip setting actions
+
 * Option to not set actions when skipping steps. 
 * Optimization for when running physics at high frequencey
+
 ### Scorer.cs
+
 * Score agent against 'goal' (for example, max distance) to distinguish rewards from goals
 * Gives mean and std-div over 100 agents
+
 ### Normalized Observations (-1 to 1) and reward (0 to 1)
+
 * No need to use normalize flag in training. Helps with OpenAI.Baselines training
+
 ### Merge CameraHelper.cs from StyleTransfer. Controls are
+
 * 1, 2, 3 - Slow-mo modes
 * arrow keys or w-a-s-d rotate around agent
 * q-e zoom in / out
-### Default hyperparams are now closer to OpenAI.Baselines 
+
+### Default hyperparams are now closer to OpenAI.Baselines
+
 * (1m steps for hopper, walker, ant, 10m for humanoid)
+
 ### Training speed improvements - All feet detect distance from floor
-### ml-agents 0.7 support
-* Updated to work with ml-agents 0.7 / new inference engine
-
-
 
 ## Getting Started
 
@@ -60,14 +83,15 @@ The tutorial covers:
 * See tutorial [here](https://towardsdatascience.com/gettingstartedwithmarathonenvs-v0-5-0a-c1054a0b540c)
 
 ### Requirements
- * Unity 2018.3 (Download [here](https://unity3d.com/get-unity/download)).
+ * Unity 2018.4 (Download [here](https://unity3d.com/get-unity/download)).
+ * ml-agents version 0.8.2 - install via `pip install mlagents=0.8.2`
 
 ### Project Organization
  * Marathon Enviroments Specific folders & files:
    * `MLAgentsSDK\Assets\MarathonEnvs` - The core project directory
    * `config\marathon_envs_config.yaml` - Config file for use when training with ml-agents
    * `README.md` - Read me for marathon-envs
- * Marathon Enviroments now incluses ML-Agents Toolkit v0.6 (Learn more [here](https://github.com/Unity-Technologies/ml-agents)). All other files and folders are for ML-Agents. We do not include the ML-Agents example and documentation to keep the repro size down.
+ * Marathon Enviroments now incluses ML-Agents Toolkit v0.8.2 (Learn more [here](https://github.com/Unity-Technologies/ml-agents)). All other files and folders are for ML-Agents. We do not include the ML-Agents examples and documentation to keep the repro size down.
  
 
 ---
