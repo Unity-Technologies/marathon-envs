@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 using System.Linq;
+using Barracuda;
 using MLAgents.InferenceBrain.Utils;
 
 namespace MLAgents.InferenceBrain
@@ -66,14 +67,15 @@ namespace MLAgents.InferenceBrain
         {
             tensor.Shape[0] = batchSize;
             var vecObsSizeT = tensor.Shape[tensor.Shape.Length - 1];
-            tensor.Data = new float[batchSize, vecObsSizeT];
+            var floatArray = new float[batchSize, vecObsSizeT];
+            tensor.Data = floatArray;
             var agentIndex = 0;
             foreach (var agent in agentInfo.Keys)
             {
                 var vectorObs = agentInfo[agent].stackedVectorObservation;
                 for (var j = 0; j < vecObsSizeT; j++)
                 {
-                    tensor.Data.SetValue(vectorObs[j], new int[2] {agentIndex, j});
+                    floatArray[agentIndex, j] = vectorObs[j];
                 }
                 agentIndex++;
             }
@@ -92,7 +94,8 @@ namespace MLAgents.InferenceBrain
         {
             tensor.Shape[0] = batchSize;
             var memorySize = tensor.Shape[tensor.Shape.Length - 1];
-            tensor.Data = new float[batchSize, memorySize];
+            var floatArray = new float[batchSize, memorySize];
+            tensor.Data = floatArray;
             var agentIndex = 0;
             foreach (var agent in agentInfo.Keys)
             {
@@ -108,7 +111,7 @@ namespace MLAgents.InferenceBrain
                     {
                         break;
                     }
-                    tensor.Data.SetValue(memory[j], new int[2] {agentIndex, j});
+                    floatArray[agentIndex, j] = memory[j];
                 }
                 agentIndex++;
             }
@@ -117,28 +120,27 @@ namespace MLAgents.InferenceBrain
     
     public class BarracudaRecurrentInputGenerator : TensorGenerator.Generator
     {
-        private bool firstHalf = true;
+        private int memoriesCount;
+        private int memoryIndex;
         
-        public BarracudaRecurrentInputGenerator(bool firstHalf)
+        public BarracudaRecurrentInputGenerator(int memoryIndex)
         {
-            this.firstHalf = firstHalf;
+            this.memoryIndex = memoryIndex;
         }
         
         public void Generate(Tensor tensor, int batchSize, Dictionary<Agent, AgentInfo> agentInfo)
         {
             tensor.Shape[0] = batchSize;
-            var memorySize = tensor.Shape[tensor.Shape.Length - 1];
+            
+            var memorySize = (int)tensor.Shape[tensor.Shape.Length - 1];
+            
             tensor.Data = new float[batchSize, memorySize];
             var agentIndex = 0;
             foreach (var agent in agentInfo.Keys)
             {
-                var memory = agentInfo[agent].memories;
+                var memory = agentInfo[agent].memories;         
 
-                int offset = 0;
-                if (!firstHalf)
-                {
-                    offset = memory.Count - (int)memorySize;
-                }
+                int offset = memorySize * memoryIndex;
                 
                 if (memory == null)
                 {
@@ -170,14 +172,15 @@ namespace MLAgents.InferenceBrain
         {
             tensor.Shape[0] = batchSize;
             var actionSize = tensor.Shape[tensor.Shape.Length - 1];
-            tensor.Data = new int[batchSize, actionSize];
+            var intArray = new int[batchSize, actionSize];
+            tensor.Data = intArray;
             var agentIndex = 0;
             foreach (var agent in agentInfo.Keys)
             {
                 var pastAction = agentInfo[agent].storedVectorActions;
                 for (var j = 0; j < actionSize; j++)
                 {
-                    tensor.Data.SetValue((int) pastAction[j], new int[2] {agentIndex, j});
+                    intArray[agentIndex, j] = (int) pastAction[j];
                 }
 
                 agentIndex++;
@@ -197,7 +200,8 @@ namespace MLAgents.InferenceBrain
         {
             tensor.Shape[0] = batchSize;
             var maskSize = tensor.Shape[tensor.Shape.Length - 1];
-            tensor.Data = new float[batchSize, maskSize];
+            var floatArray = new float[batchSize, maskSize];
+            tensor.Data = floatArray;
             var agentIndex = 0;
             foreach (var agent in agentInfo.Keys)
             {
@@ -205,7 +209,7 @@ namespace MLAgents.InferenceBrain
                 for (var j = 0; j < maskSize; j++)
                 {
                     var isUnmasked = (maskList != null && maskList[j]) ? 0.0f : 1.0f;
-                    tensor.Data.SetValue(isUnmasked, new int[2] {agentIndex, j});
+                    floatArray[agentIndex, j] = isUnmasked;
                 }
                 agentIndex++;
             }
@@ -256,6 +260,7 @@ namespace MLAgents.InferenceBrain
             var textures = agentInfo.Keys.Select(
                 agent => agentInfo[agent].visualObservations[_index]).ToList();
             tensor.Data = Utilities.TextureToFloatArray(textures, _grayScale);
+            tensor.Shape[0] = textures.Count;
         } 
     } 
 }

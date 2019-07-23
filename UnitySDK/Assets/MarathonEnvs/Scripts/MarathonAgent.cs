@@ -605,6 +605,7 @@ namespace MLAgents
 
         internal void ApplyAction(MarathonJoint mJoint, float? target = null)
         {
+            float powerMultiplier = 2.5f;
             ConfigurableJoint configurableJoint = mJoint.Joint as ConfigurableJoint;
             if (!target.HasValue) // handle random
                 target = UnityEngine.Random.value * 2 - 1;
@@ -615,7 +616,7 @@ namespace MLAgents
             angX.positionSpring = 1f;
             var scale = mJoint.MaximumForce * Mathf.Pow(Mathf.Abs(target.Value), 3);
             angX.positionDamper = Mathf.Max(1f, scale);
-            angX.maximumForce = 1f;
+            angX.maximumForce = Mathf.Max(1f, mJoint.MaximumForce * powerMultiplier);
             configurableJoint.angularXDrive = angX;
         }
 

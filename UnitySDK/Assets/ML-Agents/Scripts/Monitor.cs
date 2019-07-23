@@ -347,7 +347,6 @@ namespace MLAgents
                 canvas = new GameObject();
                 canvas.name = "AgentMonitorCanvas";
                 canvas.AddComponent<Monitor>();
-                // DontDestroyOnLoad(canvas);
             }
 
             displayTransformValues = new Dictionary<Transform,
