@@ -21,22 +21,6 @@ default:
     curiosity_strength: 0.01
     curiosity_enc_size: 128
 
-HumanoidBrain-v0:
-    num_epoch: 10 
-    time_horizon: 1000
-    # summary_freq: 250000
-    summary_freq: 2500
-    use_recurrent: false
-    normalize: false 
-    num_layers: 2
-    hidden_units: 64
-    learning_rate: 3e-4
-    batch_size: 64
-    buffer_size: 10240
-    beta: .003
-    # max_steps: 10.e6
-    max_steps: 10.e4
-
 MarathonManBrain-v0:
     num_epoch: 10 
     time_horizon: 100 
@@ -131,8 +115,8 @@ TerrainHopperBrain-v0:
     batch_size: 32
     buffer_size: 512
     beta: .003
-    # max_steps: 25e6
-    max_steps: 25e4 # HACK for 100 agents
+    # max_steps: 50e6
+    max_steps: 50e4 # HACK for 100 agents
 
 TerrainWalker2dBrain-v0:
     num_epoch: 10 
@@ -147,8 +131,8 @@ TerrainWalker2dBrain-v0:
     batch_size: 32
     buffer_size: 512 
     beta: .003
-    # max_steps: 25e6
-    max_steps: 25e4 # HACK for 100 agents
+    # max_steps: 50e6
+    max_steps: 50e4 # HACK for 100 agents
 
 TerrainAntBrain-v0:
     num_epoch: 10 
@@ -163,8 +147,8 @@ TerrainAntBrain-v0:
     batch_size: 32
     buffer_size: 512 
     beta: .001
-    # max_steps: 50e6
-    max_steps: 50e4 # HACK for 100 agents
+    # max_steps: 100e6
+    max_steps: 100e4 # HACK for 100 agents
 
 TerrainMarathonManBrain-v0:
     num_epoch: 10 
@@ -179,5 +163,5 @@ TerrainMarathonManBrain-v0:
     batch_size: 32
     buffer_size: 512 
     beta: .0003
-    # max_steps: 50e6
-    max_steps: 50e4 # HACK for 100 agents
+    # max_steps: 100e6
+    max_steps: 100e4 # HACK for 100 agents
