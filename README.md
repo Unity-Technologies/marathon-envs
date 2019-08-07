@@ -14,9 +14,9 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 
 ## What's new
 
-### ml-agents 0.8.2 support
+### ml-agents 0.9 support
 
-* Updated to work with ml-agents 0.8.2 / new inference engine
+* Updated to work with ml-agents 0.9.0 / new inference engine
 
 ### Unity 2018.4 LTS
 
@@ -84,7 +84,7 @@ The tutorial covers:
 
 ### Requirements
  * Unity 2018.4 (Download [here](https://unity3d.com/get-unity/download)).
- * ml-agents version 0.8.2 - install via `pip install mlagents=0.8.2`
+ * ml-agents version 0.9.0 - install via `pip install mlagents==0.9.0`
 
 ### Project Organization
  * Marathon Enviroments Specific folders & files:

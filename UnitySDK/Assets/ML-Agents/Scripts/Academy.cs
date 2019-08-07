@@ -97,7 +97,7 @@ namespace MLAgents
         public EnvSpawner agentSpawner = new EnvSpawner();
         
 
-        private const string kApiVersion = "API-8";
+        private const string kApiVersion = "API-9";
 
         /// Temporary storage for global gravity value
         /// Used to restore oringal value when deriving Academy modifies it
@@ -202,8 +202,6 @@ namespace MLAgents
         /// The path to where the log should be written.
         string logPath;
 
-        /// The parameters passed from python
-        CommunicatorObjects.UnityRLInitializationInput pythonParameters;
 
         // Flag used to keep track of the first time the Academy is reset.
         bool firstAcademyReset;
@@ -377,7 +375,7 @@ namespace MLAgents
                     );
                 }
 
-                pythonParameters = brainBatcher.SendAcademyParameters(academyParameters);
+                var pythonParameters = brainBatcher.SendAcademyParameters(academyParameters);
                 Random.InitState(pythonParameters.Seed);
                 Application.logMessageReceived += HandleLog;
                 logPath = Path.GetFullPath(".") + "/UnitySDK.log";

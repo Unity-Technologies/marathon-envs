@@ -14,6 +14,7 @@
 ## Scripts - Add Files
 ### UnitySDK/Assets/ML-Agents/Scripts/EnvSpawner.cs
 ### UnitySDK/Assets/ML-Agents/Scripts/SpawnableEnv.cs
+### UnitySDK/Assets/ML-Agents/Scripts/SelectEnvToSpawn.cs
 -----
 ## Scripts - Edits
 ### UnitySDK/Assets/ML-Agents/Scripts/Academy.cs
