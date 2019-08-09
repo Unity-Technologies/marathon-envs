@@ -4,7 +4,6 @@ default:
     beta: 5.0e-3
     buffer_size: 10240
     epsilon: 0.2
-    gamma: 0.99
     hidden_units: 128
     lambd: 0.95
     learning_rate: 3.0e-4
@@ -17,9 +16,11 @@ default:
     sequence_length: 64
     summary_freq: 1000
     use_recurrent: false
-    use_curiosity: false
-    curiosity_strength: 0.01
-    curiosity_enc_size: 128
+    vis_encode_type: simple
+    reward_signals: 
+        extrinsic:
+            strength: 1.0
+            gamma: 0.99
 
 MarathonManBrain-v0:
     num_epoch: 10 
@@ -45,7 +46,10 @@ MarathonManSparseBrain-v0:
     use_recurrent: false
     normalize: false 
     num_layers: 2
-    gamma: 0.9999
+    reward_signals: 
+        extrinsic:
+            strength: 1.0
+            gamma: 0.9999
     hidden_units: 64
     learning_rate: 3e-4
     batch_size: 64
@@ -153,7 +157,7 @@ TerrainAntBrain-v0:
 TerrainMarathonManBrain-v0:
     num_epoch: 10 
     time_horizon: 1000 
-    summary_freq: 50000
+    # summary_freq: 50000
     summary_freq: 5000 # HACK for 100 agents
     use_recurrent: false
     normalize: false 
