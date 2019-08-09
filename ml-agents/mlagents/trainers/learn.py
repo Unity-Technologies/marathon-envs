@@ -87,6 +87,7 @@ def run_training(
         no_graphics,
         run_seed,
         base_port + (sub_id * num_envs),
+        list([str(x) for t in run_options.items() for x in t]), # NOTE passes all arguments to Unity
     )
     env = SubprocessEnvManager(env_factory, num_envs)
     maybe_meta_curriculum = try_create_meta_curriculum(curriculum_folder, env)
@@ -206,6 +207,7 @@ def create_environment_factory(
     no_graphics: bool,
     seed: Optional[int],
     start_port: int,
+    unity_args={},
 ) -> Callable[[int], BaseUnityEnvironment]:
     if env_path is not None:
         # Strip out executable extensions if passed
@@ -241,6 +243,7 @@ def create_environment_factory(
             docker_training=docker_training,
             no_graphics=no_graphics,
             base_port=start_port,
+            args=unity_args,
         )
 
     return create_unity_environment
@@ -292,6 +295,8 @@ def main():
       --docker-target-name=<dt>   Docker volume to store training-specific files [default: None].
       --no-graphics               Whether to run the environment in no-graphics mode [default: False].
       --debug                     Whether to run ML-Agents in debug mode with detailed logging [default: False].
+      --spawn-env=<name>          Inform environment which SpawnableEnv to use (if supported)  [default: None].
+      --num-spawn-envs=<n>        Inform environment how many SpawnableEnv to create (if supported)  [default: None].
     """
 
     options = docopt(_USAGE)
