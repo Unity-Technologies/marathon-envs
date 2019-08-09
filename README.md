@@ -84,7 +84,12 @@ The tutorial covers:
 
 ### Requirements
  * Unity 2018.4 (Download [here](https://unity3d.com/get-unity/download)).
- * ml-agents version 0.9.0 - install via `pip install mlagents==0.9.0`
+ * **CUSTOM** ml-agents version 0.9 - install via:
+
+```
+cd ml-agents
+pip3 install -e ./
+```
 
 ### Project Organization
  * Marathon Enviroments Specific folders & files:
