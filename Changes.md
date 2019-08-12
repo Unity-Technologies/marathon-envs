@@ -2,11 +2,24 @@
 
 -----
 ### ‎⁨ml-agents/⁨mlagents⁩/trainers⁩/learn.py
-#### line 217
+line 90 add (last param for `create_environment_factory()`)
 ``` python
-      --num-agents=<n>           The number of agests to request the Unity enviroment to generate.
-      --agent-id=<name>          The name of the agent to request the Unity enviroment to instantiate.
+        list([str(x) for t in run_options.items() for x in t]), # NOTE passes all arguments to Unity
 ```
+line 210 add (last param for `create_environment_factory()`)
+``` python
+    unity_args={},
+```
+line 246 add (last param for `UnityEnvironment()`)
+``` python
+            args=unity_args,
+```
+line 298 add (two new options for `_USAGE`)
+``` 
+      --spawn-env=<name>          Inform environment which SpawnableEnv to use (if supported)  [default: None].
+      --num-spawn-envs=<n>        Inform environment how many SpawnableEnv to create (if supported)  [default: None].
+```
+
 -----
 ## Editor - Add Files
 ### ‎UnitySDK/Assets/ML-Agents/Editor/EnvSpawnerDrawer.cs
@@ -14,18 +27,10 @@
 ## Scripts - Add Files
 ### UnitySDK/Assets/ML-Agents/Scripts/EnvSpawner.cs
 ### UnitySDK/Assets/ML-Agents/Scripts/SpawnableEnv.cs
+### UnitySDK/Assets/ML-Agents/Scripts/SelectEnvToSpawn.cs
 -----
 ## Scripts - Edits
 ### UnitySDK/Assets/ML-Agents/Scripts/Academy.cs
-line 91, add
-```csharp
-        public EnvSpawner agentSpawner = new EnvSpawner();
-```
-(only if syncing with python) line 199, add 
-```csharp
-        /// The parameters passed from python
-        CommunicatorObjects.UnityRLInitializationInput pythonParameters;
-```
 line 240, replace
 ```csharp
         void Awake()
@@ -51,7 +56,7 @@ then add
         }
         public bool ShouldInitalizeOnAwake()
         {
-            if (agentSpawner != null && agentSpawner.trainingMode)
+            if (agentSpawner != null && IsTrainingMode())
                 return true;
             if (GetComponent<SelectEnvToSpawn>() == null)
                 return true;
@@ -85,7 +90,7 @@ with
                 spawnerEnabled ? spawnAgentPrefabBrains : hubBrains;
             IEnumerable<Brain> controlledBrains = hubControlledBrains;
             if (spawnerEnabled)
-                controlledBrains = agentSpawner.trainingMode 
+                controlledBrains = IsTrainingMode()
                     ? spawnAgentPrefabBrains 
                     : new List<Brain>();
 ```
@@ -95,14 +100,6 @@ line 336, add
             {
                 brain.SetToControlledExternally();
             }
-```
-line 371, replace
-```csharp
-                var pythonParameters = brainBatcher.SendAcademyParameters(academyParameters);
-```
-with
-```csharp
-                pythonParameters = brainBatcher.SendAcademyParameters(academyParameters);
 ```
 line 398, add
 ```python
@@ -116,9 +113,14 @@ line 441, add
         /// </summary>
         public int GetNumAgents()
         {
-            // // TODO - re-enable python coms
-            // if (pythonParameters != null && pythonParameters.NumAgents != 0)
-            //     return pythonParameters.NumAgents;
+            // try get from command line
+            List<string> commandLineArgs = new List<string>(System.Environment.GetCommandLineArgs());
+            int index = commandLineArgs.IndexOf("--num-spawn-envs");
+            if(index != -1) {
+                int numEnvs;
+                if (int.TryParse(commandLineArgs[index + 1], out numEnvs))
+                    return numEnvs;
+            }
             return isInference ? agentSpawner.inferenceNumEnvsDefault : agentSpawner.trainingNumEnvsDefault;
         }
 
@@ -127,10 +129,26 @@ line 441, add
         /// </summary>
         public string GetAgentId()
         {
-            // // TODO - re-enable python coms
-            // if (pythonParameters != null && !string.IsNullOrWhiteSpace(pythonParameters?.AgentId))
-            //     return pythonParameters.AgentId;
+            // try get from command line
+            List<string> commandLineArgs = new List<string>(System.Environment.GetCommandLineArgs());
+            int index = commandLineArgs.IndexOf("--spawn-env");
+            if(index != -1) {
+                return commandLineArgs[index + 1];
+            }
             return agentSpawner.envIdDefault;
+        }
+
+        /// <summary>
+        /// Return if training mode.
+        /// </summary>
+        bool IsTrainingMode()
+        {
+            if (agentSpawner != null && agentSpawner.trainingMode)
+                return true;
+            List<string> commandLineArgs = new List<string>(System.Environment.GetCommandLineArgs());
+            int index = commandLineArgs.IndexOf("--train");
+            bool trainingMode = index != -1;
+            return trainingMode;
         }
 ```
 line 688, add to `FixedUpdate()`

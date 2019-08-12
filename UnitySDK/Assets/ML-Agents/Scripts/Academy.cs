@@ -97,7 +97,7 @@ namespace MLAgents
         public EnvSpawner agentSpawner = new EnvSpawner();
         
 
-        private const string kApiVersion = "API-8";
+        private const string kApiVersion = "API-9";
 
         /// Temporary storage for global gravity value
         /// Used to restore oringal value when deriving Academy modifies it
@@ -202,8 +202,6 @@ namespace MLAgents
         /// The path to where the log should be written.
         string logPath;
 
-        /// The parameters passed from python
-        CommunicatorObjects.UnityRLInitializationInput pythonParameters;
 
         // Flag used to keep track of the first time the Academy is reset.
         bool firstAcademyReset;
@@ -263,7 +261,7 @@ namespace MLAgents
         }
         public bool ShouldInitalizeOnAwake()
         {
-            if (agentSpawner != null && agentSpawner.trainingMode)
+            if (IsTrainingMode())
                 return true;
             if (GetComponent<SelectEnvToSpawn>() == null)
                 return true;
@@ -313,7 +311,7 @@ namespace MLAgents
                 spawnerEnabled ? spawnAgentPrefabBrains : hubBrains;
             IEnumerable<Brain> controlledBrains = hubControlledBrains;
             if (spawnerEnabled)
-                controlledBrains = agentSpawner.trainingMode 
+                controlledBrains = IsTrainingMode()
                     ? spawnAgentPrefabBrains 
                     : new List<Brain>();
             
@@ -377,7 +375,7 @@ namespace MLAgents
                     );
                 }
 
-                pythonParameters = brainBatcher.SendAcademyParameters(academyParameters);
+                var pythonParameters = brainBatcher.SendAcademyParameters(academyParameters);
                 Random.InitState(pythonParameters.Seed);
                 Application.logMessageReceived += HandleLog;
                 logPath = Path.GetFullPath(".") + "/UnitySDK.log";
@@ -460,9 +458,14 @@ namespace MLAgents
         /// </summary>
         public int GetNumAgents()
         {
-            // // TODO - re-enable python coms
-            // if (pythonParameters != null && pythonParameters.NumAgents != 0)
-            //     return pythonParameters.NumAgents;
+            // try get from command line
+            List<string> commandLineArgs = new List<string>(System.Environment.GetCommandLineArgs());
+            int index = commandLineArgs.IndexOf("--num-spawn-envs");
+            if(index != -1) {
+                int numEnvs;
+                if (int.TryParse(commandLineArgs[index + 1], out numEnvs))
+                    return numEnvs;
+            }
             return isInference ? agentSpawner.inferenceNumEnvsDefault : agentSpawner.trainingNumEnvsDefault;
         }
 
@@ -471,12 +474,27 @@ namespace MLAgents
         /// </summary>
         public string GetAgentId()
         {
-            // // TODO - re-enable python coms
-            // if (pythonParameters != null && !string.IsNullOrWhiteSpace(pythonParameters?.AgentId))
-            //     return pythonParameters.AgentId;
+            // try get from command line
+            List<string> commandLineArgs = new List<string>(System.Environment.GetCommandLineArgs());
+            int index = commandLineArgs.IndexOf("--spawn-env");
+            if(index != -1) {
+                return commandLineArgs[index + 1];
+            }
             return agentSpawner.envIdDefault;
         }
 
+        /// <summary>
+        /// Return if training mode.
+        /// </summary>
+        bool IsTrainingMode()
+        {
+            if (agentSpawner != null && agentSpawner.trainingMode)
+                return true;
+            List<string> commandLineArgs = new List<string>(System.Environment.GetCommandLineArgs());
+            int index = commandLineArgs.IndexOf("--train");
+            bool trainingMode = index != -1;
+            return trainingMode;
+        }
 
         /// <summary>
         /// Helper method for initializing the environment based on the provided
