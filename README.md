@@ -2,7 +2,7 @@
 
 A set of high-dimensional continuous control environments for use with Unity ML-Agents Toolkit.
 
-[Web Demo](https://marathonenvsstandard.z5.web.core.windows.net)
+[Web Demo](http://marathonenvs.joebooth.com)
 
 ![MarathonEnvs](images/MarathonEnvsBanner.gif)
 
@@ -79,7 +79,7 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 
 ### Web Demo
 
-* Preview MarathonEnvs using the [Web Demo](https://marathonenvsstandard.z5.web.core.windows.net)
+* Preview MarathonEnvs using the [Web Demo](http://marathonenvs.joebooth.com)
 
 ### Requirements
 
