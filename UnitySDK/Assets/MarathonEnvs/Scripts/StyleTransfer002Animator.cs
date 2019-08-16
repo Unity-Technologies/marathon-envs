@@ -119,9 +119,10 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		BecomeAnimated();
 	}
 	
-	void FixedUpdate () {
-		if (_academy.GetIsPhysicsOnlyFixedUpdateStep())
-			return;
+	// void FixedUpdate () {
+	// 	if (_academy.GetIsPhysicsOnlyFixedUpdateStep())
+	// 		return;
+	public void OnAgentAction() {
 			
 		if (AnimationStepsReady){
 			MimicAnimation();

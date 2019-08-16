@@ -138,19 +138,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 		_brain = FindObjectsOfType<Brain>().First(x=>x.name=="LearnFromMocapBrain");
 		_academy = FindObjectOfType<Academy>();
 		_styleAnimator = FindObjectOfType<StyleTransfer002Animator>();
-		switch (_brain.brainType)
-		{
-			case BrainType.External:
-				IsInferenceMode = false;
-				break;
-			case BrainType.Player:
-			case BrainType.Internal:
-			case BrainType.Heuristic:
-				IsInferenceMode = true;
-				break;
-			default:
-				throw new System.NotImplementedException();
-		}
+		IsInferenceMode = _academy.agentSpawner.trainingMode;
 	}
 	
 	// Update is called once per frame
@@ -172,10 +160,8 @@ public class StyleTransfer002Master : MonoBehaviour {
 		return sum;
 	}
 
-	void FixedUpdate()
+	public void OnAgentAction()
 	{
-		if (_academy.GetIsPhysicsOnlyFixedUpdateStep())
-			return;
 		if (_waitingForAnimation && _styleAnimator.AnimationStepsReady){
 			_waitingForAnimation = false;
 			ResetPhase();

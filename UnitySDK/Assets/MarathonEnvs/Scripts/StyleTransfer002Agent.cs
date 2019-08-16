@@ -85,6 +85,8 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 
 	public override void AgentAction(float[] vectorAction, string textAction)
 	{
+		_styleAnimator.OnAgentAction();
+		_master.OnAgentAction();
 		int i = 0;
 		foreach (var muscle in _master.Muscles)
 		{
