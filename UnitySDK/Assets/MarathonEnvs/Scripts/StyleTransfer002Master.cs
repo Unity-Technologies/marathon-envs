@@ -70,7 +70,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 	private Academy _academy;
 	StyleTransfer002Animator _styleAnimator;
 	// private StyleTransfer002TrainerAgent _trainerAgent;
-	private Brain _brain;
+	// private Brain _brain;
 	public bool IsInferenceMode;
 	bool _phaseIsRunning;
 	Random _random = new Random();
@@ -135,7 +135,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 		_muscleAnimator = FindObjectOfType<StyleTransfer002Animator>();
 		_agent = GetComponent<StyleTransfer002Agent>();
 		// _trainerAgent = GetComponent<StyleTransfer002TrainerAgent>();
-		_brain = FindObjectsOfType<Brain>().First(x=>x.name=="LearnFromMocapBrain");
+		// _brain = FindObjectsOfType<Brain>().First(x=>x.name=="LearnFromMocapBrain");
 		_academy = FindObjectOfType<Academy>();
 		_styleAnimator = FindObjectOfType<StyleTransfer002Animator>();
 		IsInferenceMode = _academy.agentSpawner.trainingMode;

@@ -22,6 +22,20 @@ default:
             strength: 1.0
             gamma: 0.99
 
+StyleTransferEnv-v0:
+    normalize: true
+    num_epoch: 3
+    beta: 0.01
+    time_horizon: 100
+    max_steps: 2e6
+    batch_size: 2048
+    buffer_size: 10240
+    # buffer_size: 20480
+    summary_freq: 1000
+    num_layers: 2
+    hidden_units: 512
+
+
 MarathonManBrain-v0:
     num_epoch: 10 
     time_horizon: 100 
