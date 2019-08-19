@@ -69,6 +69,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 	private StyleTransfer002Agent _agent;
 	private Academy _academy;
 	StyleTransfer002Animator _styleAnimator;
+	StyleTransfer002Animator _localStyleAnimator;
 	// private StyleTransfer002TrainerAgent _trainerAgent;
 	// private Brain _brain;
 	public bool IsInferenceMode;
@@ -132,12 +133,15 @@ public class StyleTransfer002Master : MonoBehaviour {
 
 			Muscles.Add(muscle);			
 		}
-		_muscleAnimator = FindObjectOfType<StyleTransfer002Animator>();
+		var spawnableEnv = GetComponentInParent<SpawnableEnv>();
+		_localStyleAnimator = spawnableEnv.gameObject.GetComponentInChildren<StyleTransfer002Animator>();
+		_styleAnimator = _localStyleAnimator.GetFirstOfThisAnim();
+		// _styleAnimator = _localStyleAnimator;
+		_muscleAnimator = _styleAnimator;
 		_agent = GetComponent<StyleTransfer002Agent>();
 		// _trainerAgent = GetComponent<StyleTransfer002TrainerAgent>();
 		// _brain = FindObjectsOfType<Brain>().First(x=>x.name=="LearnFromMocapBrain");
 		_academy = FindObjectOfType<Academy>();
-		_styleAnimator = FindObjectOfType<StyleTransfer002Animator>();
 		IsInferenceMode = _academy.agentSpawner.trainingMode;
 	}
 	

@@ -35,6 +35,11 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 	private Academy _academy;
 
+	private List<Rigidbody> _rigidbodies;
+	private List<Transform> _transforms;
+
+	private bool isFirstOfThisAnim; 
+
     [System.Serializable]
 	public class AnimationStep
 	{
@@ -67,8 +72,14 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		// _master = FindObjectOfType<StyleTransfer002Master>();
 		AnimationSteps = new List<AnimationStep>();
 
+		if (_rigidbodies == null || _transforms == null)
+		{
+			_rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
+			_transforms = GetComponentsInChildren<Transform>().ToList();
+		}
+
 		_baseRotation = 
-			GetComponentsInChildren<Transform>()
+			_transforms
 			.First(x=> BodyHelper002.GetBodyPartGroup(x.name) == BodyHelper002.BodyPartGroup.Hips)
 			.rotation;
 		_academy = FindObjectOfType<Academy>();
@@ -88,7 +99,14 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 	{
 		BodyParts = new List<BodyPart002> ();
 		BodyPart002 root = null;
-		foreach (var t in GetComponentsInChildren<Transform>())
+
+		if (_rigidbodies == null || _transforms == null)
+		{
+			_rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
+			_transforms = GetComponentsInChildren<Transform>().ToList();
+		}
+
+		foreach (var t in _transforms)
 		{
 			if (BodyHelper002.GetBodyPartGroup(t.name) == BodyHelper002.BodyPartGroup.None)
 				continue;
@@ -111,12 +129,25 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		_lastPosition = Enumerable.Repeat(Vector3.zero, partCount).ToList();
 		_lastRotation = Enumerable.Repeat(Quaternion.identity, partCount).ToList();
 		_lastVelocityPosition = transform.position;
-		var anims = GetComponentsInChildren<Transform>();
-		//_bodyParts = _master.Muscles.Select(x=> anims.First(y=>y.name == x.Name).transform).ToList();
 		_initialRotations = BodyParts
 			.Select(x=> x.Transform.rotation)
 			.ToList();
 		BecomeAnimated();
+	}
+
+	public StyleTransfer002Animator GetFirstOfThisAnim()
+	{
+		if (isFirstOfThisAnim)
+			return this;
+		var anim = GetComponent<Animator>();
+		var styleAnimators = FindObjectsOfType<StyleTransfer002Animator>().ToList();
+		var firstOfThisAnim = styleAnimators
+			.Where(x=> x.GetComponent<Animator>().avatar == anim.avatar)
+			.FirstOrDefault(x=> x.isFirstOfThisAnim);
+		if (firstOfThisAnim != null)
+			return firstOfThisAnim;
+		isFirstOfThisAnim = true;
+		return this;
 	}
 	
 	// void FixedUpdate () {
@@ -206,8 +237,12 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
     }
 	public void BecomeAnimated()
 	{
-		var rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
-		foreach (var rb in rigidbodies)
+		if (_rigidbodies == null || _transforms == null)
+		{
+			_rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
+			_transforms = GetComponentsInChildren<Transform>().ToList();
+		}
+		foreach (var rb in _rigidbodies)
 		{
 			rb.isKinematic = true;
 		}
@@ -215,8 +250,12 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 	}
 	public void BecomeRagDoll()
 	{
-		var rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
-		foreach (var rb in rigidbodies)
+		if (_rigidbodies == null || _transforms == null)
+		{
+			_rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
+			_transforms = GetComponentsInChildren<Transform>().ToList();
+		}
+		foreach (var rb in _rigidbodies)
 		{
 			rb.isKinematic = false;
 			// rb.angularVelocity = Vector3.zero;
@@ -230,6 +269,10 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		anim.enabled=false;
 	}
 	protected virtual void LateUpdate() {
+		if (!isFirstOfThisAnim){
+			Destroy(this.gameObject);
+			return;
+		}
 		MimicAnimation();
 	}
 	Vector3 GetCenterOfMass()
@@ -297,11 +340,14 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 	}
 	void MimicBone(string name, string bodyPartName, Vector3 offset, Quaternion rotationOffset)
 	{
-		var rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
-		var transforms = GetComponentsInChildren<Transform>().ToList();
+		if (_rigidbodies == null || _transforms == null)
+		{
+			_rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
+			_transforms = GetComponentsInChildren<Transform>().ToList();
+		}
 
-		var bodyPart = transforms.First(x=>x.name == bodyPartName);
-		var target = rigidbodies.First(x=>x.name == name);
+		var bodyPart = _transforms.First(x=>x.name == bodyPartName);
+		var target = _rigidbodies.First(x=>x.name == name);
 
 		target.transform.position = bodyPart.transform.position + offset;
 		target.transform.rotation = bodyPart.transform.rotation * rotationOffset;
@@ -309,12 +355,16 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 	void MimicBone(string name, string animStartName, string animEndtName, Vector3 offset, Quaternion rotationOffset)
 	{
-		var rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
-		var transforms = GetComponentsInChildren<Transform>().ToList();
+		if (_rigidbodies == null || _transforms == null)
+		{
+			_rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
+			_transforms = GetComponentsInChildren<Transform>().ToList();
+		}
 
-		var animStartBone = transforms.First(x=>x.name == animStartName);
-		var animEndBone = transforms.First(x=>x.name == animEndtName);
-		var target = rigidbodies.First(x=>x.name == name);
+
+		var animStartBone = _transforms.First(x=>x.name == animStartName);
+		var animEndBone = _transforms.First(x=>x.name == animEndtName);
+		var target = _rigidbodies.First(x=>x.name == name);
 
 		var pos = (animEndBone.transform.position - animStartBone.transform.position);
 		target.transform.position = animStartBone.transform.position + (pos/2) + offset;
@@ -329,12 +379,15 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		string animStartName = "mixamorig:LeftFoot";
 		// string animEndtName = "mixamorig:LeftToeBase";
 		string animEndtName = "mixamorig:LeftToe_End";
-		var rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
-		var transforms = GetComponentsInChildren<Transform>().ToList();
+		if (_rigidbodies == null || _transforms == null)
+		{
+			_rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
+			_transforms = GetComponentsInChildren<Transform>().ToList();
+		}
 
-		var animStartBone = transforms.First(x=>x.name == animStartName);
-		var animEndBone = transforms.First(x=>x.name == animEndtName);
-		var target = rigidbodies.First(x=>x.name == name);
+		var animStartBone = _transforms.First(x=>x.name == animStartName);
+		var animEndBone = _transforms.First(x=>x.name == animEndtName);
+		var target = _rigidbodies.First(x=>x.name == name);
 
 		var rotation = Quaternion.Lerp(animStartBone.rotation, animEndBone.rotation, toeRotationOffset);
 		var skinOffset = (animEndBone.transform.position - animStartBone.transform.position);
@@ -346,12 +399,16 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		string animStartName = "mixamorig:RightFoot";
 		// string animEndtName = "mixamorig:RightToeBase";
 		string animEndtName = "mixamorig:RightToe_End";
-		var rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
-		var transforms = GetComponentsInChildren<Transform>().ToList();
+		if (_rigidbodies == null || _transforms == null)
+		{
+			_rigidbodies = GetComponentsInChildren<Rigidbody>().ToList();
+			_transforms = GetComponentsInChildren<Transform>().ToList();
+		}
 
-		var animStartBone = transforms.First(x=>x.name == animStartName);
-		var animEndBone = transforms.First(x=>x.name == animEndtName);
-		var target = rigidbodies.First(x=>x.name == name);
+
+		var animStartBone = _transforms.First(x=>x.name == animStartName);
+		var animEndBone = _transforms.First(x=>x.name == animEndtName);
+		var target = _rigidbodies.First(x=>x.name == name);
 
 		var rotation = Quaternion.Lerp(animStartBone.rotation, animEndBone.rotation, toeRotationOffset);
 		var skinOffset = (animEndBone.transform.position - animStartBone.transform.position);

@@ -11,6 +11,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 	public List<float> Rewards;
 	public List<float> SensorIsInTouch;
 	StyleTransfer002Master _master;
+	StyleTransfer002Animator _localStyleAnimator;
 	StyleTransfer002Animator _styleAnimator;
 	// StyleTransfer002TrainerAgent _trainerAgent;
 
@@ -26,8 +27,10 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 	// Use this for initialization
 	void Start () {
 		_master = GetComponent<StyleTransfer002Master>();
-		_styleAnimator = FindObjectOfType<StyleTransfer002Animator>();
-		// _trainerAgent = FindObjectOfType<StyleTransfer002TrainerAgent>();
+		var spawnableEnv = GetComponentInParent<SpawnableEnv>();
+		_localStyleAnimator = spawnableEnv.gameObject.GetComponentInChildren<StyleTransfer002Animator>();
+		_styleAnimator = _localStyleAnimator.GetFirstOfThisAnim();
+		// _styleAnimator = _localStyleAnimator;
 		_startCount++;
 	}
 	
@@ -85,7 +88,8 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 
 	public override void AgentAction(float[] vectorAction, string textAction)
 	{
-		_styleAnimator.OnAgentAction();
+		if (_styleAnimator == _localStyleAnimator)
+			_styleAnimator.OnAgentAction();
 		_master.OnAgentAction();
 		int i = 0;
 		foreach (var muscle in _master.Muscles)
