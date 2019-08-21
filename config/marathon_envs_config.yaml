@@ -22,7 +22,7 @@ default:
             strength: 1.0
             gamma: 0.99
 
-StyleTransferEnv-v0:
+StyleTransferBrain-v0:
     normalize: true
     num_epoch: 3
     beta: 0.01
