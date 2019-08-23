@@ -84,6 +84,9 @@ public class StyleTransfer002Master : MonoBehaviour {
 			if (rb.useGravity == false)
 				rb.solverVelocityIterations = 255;
 		}
+		var masters = FindObjectsOfType<StyleTransfer002Master>().ToList();
+		if (masters.Count(x=>x.CameraFollowMe) < 1)
+			CameraFollowMe = true;
 	}
 	void Start () {
 		Time.fixedDeltaTime = FixedDeltaTime;
