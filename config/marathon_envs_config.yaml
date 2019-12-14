@@ -25,12 +25,12 @@ default:
 StyleTransferBrain-v0:
     normalize: true
     num_epoch: 3
-    beta: 0.01
+    beta: .01
+    learning_rate: 1e-4
     time_horizon: 100
-    max_steps: 2e6
-    batch_size: 2048
+    max_steps: 1e6
+    batch_size: 256
     buffer_size: 10240
-    # buffer_size: 20480
     summary_freq: 1000
     num_layers: 2
     hidden_units: 512
