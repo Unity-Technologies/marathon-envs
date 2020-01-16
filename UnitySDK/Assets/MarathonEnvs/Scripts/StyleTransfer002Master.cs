@@ -145,7 +145,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 		// _trainerAgent = GetComponent<StyleTransfer002TrainerAgent>();
 		// _brain = FindObjectsOfType<Brain>().First(x=>x.name=="LearnFromMocapBrain");
 		_academy = FindObjectOfType<Academy>();
-		IsInferenceMode = _academy.agentSpawner.trainingMode;
+		IsInferenceMode = !_academy.agentSpawner.trainingMode;
 	}
 	
 	// Update is called once per frame
