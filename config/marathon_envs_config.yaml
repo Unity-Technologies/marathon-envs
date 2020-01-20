@@ -28,8 +28,8 @@ StyleTransferBrain-v0:
     beta: .01
     learning_rate: 1e-4
     time_horizon: 100
-    max_steps: 1e6
-    batch_size: 256
+    max_steps: 2e6
+    batch_size: 2048
     buffer_size: 10240
     summary_freq: 1000
     num_layers: 2
