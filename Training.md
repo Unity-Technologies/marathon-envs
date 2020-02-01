@@ -22,7 +22,7 @@ mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs
 #### Walker2d-v0
 
 ``` shell
-mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs\Unity Environment.exe" --spawn-env=Walker2d-v0 --num-spawn-envs=100 --num-envs=1 --run-id=Walker2d401
+mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs\Unity Environment.exe" --spawn-env=Walker2d-v0 --num-spawn-envs=50 --num-envs=10 --run-id=Walker2d-502
 ```
 
 #### Ant-v0
