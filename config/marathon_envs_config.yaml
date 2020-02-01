@@ -29,12 +29,11 @@ StyleTransferBrain-v0:
     learning_rate: 1e-4
     time_horizon: 100
     max_steps: 2e6
-    batch_size: 2048
-    buffer_size: 10240
-    summary_freq: 1000
+    batch_size: 768 
+    buffer_size: 21504
+    summary_freq: 10000
     num_layers: 2
     hidden_units: 512
-
 
 MarathonManBrain-v0:
     num_epoch: 10 
