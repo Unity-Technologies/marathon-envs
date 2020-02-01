@@ -22,6 +22,19 @@ default:
             strength: 1.0
             gamma: 0.99
 
+StyleTransferBrain-v0:
+    normalize: true
+    num_epoch: 3
+    beta: .01
+    learning_rate: 1e-4
+    time_horizon: 100
+    max_steps: 2e6
+    batch_size: 768 
+    buffer_size: 21504
+    summary_freq: 10000
+    num_layers: 2
+    hidden_units: 512
+
 MarathonManBrain-v0:
     num_epoch: 10 
     time_horizon: 100 
@@ -67,12 +80,13 @@ HopperBrain-v0:
     normalize: false 
     num_layers: 2
     hidden_units: 64
-    learning_rate: 3e-4
-    batch_size: 32
-    buffer_size: 512
+    learning_rate: 1e-3
+    batch_size: 24
+    buffer_size: 24
+    max_steps: 20000 # HACK for 50 agents
     beta: .003
     # max_steps: 1.e6
-    max_steps: 1.e4 # HACK for 100 agents
+    # max_steps: 1.e4 # HACK for 100 agents
 
 Walker2dBrain-v0:
     num_epoch: 10 
@@ -84,11 +98,12 @@ Walker2dBrain-v0:
     num_layers: 2
     hidden_units: 64
     learning_rate: 3e-4
-    batch_size: 32
-    buffer_size: 512
+    batch_size: 16
+    buffer_size: 16
+    max_steps: 20000 # HACK for 50 agents
     beta: .003
     # max_steps: 1.e6
-    max_steps: 1.e4 # HACK for 100 agents
+    # max_steps: 1.e4 # HACK for 100 agents
 
 AntBrain-v0:
     num_epoch: 10 

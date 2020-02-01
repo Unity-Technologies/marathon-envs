@@ -16,13 +16,13 @@ This page covers how to train using the ML-Agents toolkit
 #### Hopper-v0
 
 ``` shell
-mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs\Unity Environment.exe" --spawn-env=Hopper-v0 --num-spawn-envs=100 --num-envs=1 --run-id=Hopper401
+mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs\Unity Environment.exe" --spawn-env=Hopper-v0 --num-spawn-envs=50 --num-envs=10 --run-id=Hopper538
 ```
 
 #### Walker2d-v0
 
 ``` shell
-mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs\Unity Environment.exe" --spawn-env=Walker2d-v0 --num-spawn-envs=100 --num-envs=1 --run-id=Walker2d401
+mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs\Unity Environment.exe" --spawn-env=Walker2d-v0 --num-spawn-envs=50 --num-envs=10 --run-id=Walker2d-502
 ```
 
 #### Ant-v0
@@ -67,6 +67,12 @@ mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs
 mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs\Unity Environment.exe" --spawn-env=TerrainMarathonMan-v0 --num-spawn-envs=100 --num-envs=1 --run-id=TerrainMarathonMan401
 ```
 
+
+#### StyleTransferEnv-v0
+
+``` shell
+mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs\Unity Environment.exe" --spawn-env=StyleTransferEnv-v0 --num-spawn-envs=64 --num-envs=8 --no-graphics --run-id=StyleTransfer524
+```
 ----
 
 ## Legacy Turotial: [Getting Started With MarathonEnvs](https://towardsdatascience.com/gettingstartedwithmarathonenvs-v0-5-0a-c1054a0b540c)
