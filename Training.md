@@ -16,7 +16,7 @@ This page covers how to train using the ML-Agents toolkit
 #### Hopper-v0
 
 ``` shell
-mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs\Unity Environment.exe" --spawn-env=Hopper-v0 --num-spawn-envs=100 --num-envs=1 --run-id=Hopper401
+mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs\Unity Environment.exe" --spawn-env=Hopper-v0 --num-spawn-envs=50 --num-envs=10 --run-id=Hopper538
 ```
 
 #### Walker2d-v0

@@ -81,12 +81,13 @@ HopperBrain-v0:
     normalize: false 
     num_layers: 2
     hidden_units: 64
-    learning_rate: 3e-4
-    batch_size: 32
-    buffer_size: 512
+    learning_rate: 1e-3
+    batch_size: 24
+    buffer_size: 24
+    max_steps: 20000 # HACK for 50 agents
     beta: .003
     # max_steps: 1.e6
-    max_steps: 1.e4 # HACK for 100 agents
+    # max_steps: 1.e4 # HACK for 100 agents
 
 Walker2dBrain-v0:
     num_epoch: 10 
