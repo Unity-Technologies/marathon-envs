@@ -2108,10 +2108,11 @@ MonoBehaviour:
   brain: {fileID: 11400000, guid: 14ef212b228874b5ea289d5facb060d7, type: 2}
   agentParameters:
     agentCameras: []
-    maxStep: 5000
+    agentRenderTextures: []
+    maxStep: 1000
     resetOnDone: 1
     onDemandDecision: 0
-    numberOfActionsBetweenDecisions: 5
+    numberOfActionsBetweenDecisions: 1
     skipActionsWithDecisions: 1
 --- !u!114 &5859498862604059448
 MonoBehaviour:
@@ -2140,6 +2141,7 @@ MonoBehaviour:
   FrameReward: 0
   AverageReward: 0
   MaxDistanceTraveled: 0
+  DistanceTraveled: 0
 --- !u!54 &5286234179746182682
 Rigidbody:
   m_ObjectHideFlags: 0

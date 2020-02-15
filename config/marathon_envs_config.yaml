@@ -49,7 +49,8 @@ MarathonManBrain-v0:
     buffer_size: 10240
     beta: .003
     # max_steps: 10.e6    
-    max_steps: 10.e4
+    # max_steps: 10.e4
+    max_steps: 20.e4 # HACK for 50 agents
 
 MarathonManSparseBrain-v0:
     num_epoch: 10 
@@ -69,7 +70,8 @@ MarathonManSparseBrain-v0:
     buffer_size: 10240
     beta: .003
     # max_steps: 10.e6  
-    max_steps: 10.e4
+    # max_steps: 10.e4
+    max_steps: 20.e4 # HACK for 50 agents
 
 HopperBrain-v0:
     num_epoch: 10 
@@ -81,8 +83,8 @@ HopperBrain-v0:
     num_layers: 2
     hidden_units: 64
     learning_rate: 1e-3
-    batch_size: 24
-    buffer_size: 24
+    batch_size: 16
+    buffer_size: 5120
     max_steps: 20000 # HACK for 50 agents
     beta: .003
     # max_steps: 1.e6
@@ -97,9 +99,9 @@ Walker2dBrain-v0:
     normalize: false 
     num_layers: 2
     hidden_units: 64
-    learning_rate: 3e-4
+    learning_rate: 1e-3
     batch_size: 16
-    buffer_size: 16
+    buffer_size: 5120
     max_steps: 20000 # HACK for 50 agents
     beta: .003
     # max_steps: 1.e6
@@ -114,12 +116,13 @@ AntBrain-v0:
     normalize: false 
     num_layers: 2
     hidden_units: 64
-    learning_rate: 3e-4
+    learning_rate: 1e-3
     batch_size: 32
-    buffer_size: 512
+    buffer_size: 5120
+    max_steps: 20000 # HACK for 50 agents
     beta: .003
     # max_steps: 1.e6
-    max_steps: 1.e4 # HACK for 100 agents
+    # max_steps: 1.e4 # HACK for 100 agents
 
 TerrainHopperBrain-v0:
     num_epoch: 10 
@@ -132,10 +135,11 @@ TerrainHopperBrain-v0:
     hidden_units: 64
     learning_rate: 3e-4
     batch_size: 32
-    buffer_size: 512
+    buffer_size: 5120
     beta: .003
     # max_steps: 50e6
-    max_steps: 50e4 # HACK for 100 agents
+    # max_steps: 50e4 # HACK for 100 agents
+    max_steps: 100e4 # HACK for 50 agents
 
 TerrainWalker2dBrain-v0:
     num_epoch: 10 
@@ -148,10 +152,11 @@ TerrainWalker2dBrain-v0:
     hidden_units: 64
     learning_rate: 3e-4
     batch_size: 32
-    buffer_size: 512 
+    buffer_size: 5120
     beta: .003
     # max_steps: 50e6
-    max_steps: 50e4 # HACK for 100 agents
+    # max_steps: 50e4 # HACK for 100 agents
+    max_steps: 100e4 # HACK for 50 agents
 
 TerrainAntBrain-v0:
     num_epoch: 10 
@@ -164,10 +169,11 @@ TerrainAntBrain-v0:
     hidden_units: 64
     learning_rate: 3e-4
     batch_size: 32
-    buffer_size: 512 
+    buffer_size: 5120
     beta: .001
     # max_steps: 100e6
-    max_steps: 100e4 # HACK for 100 agents
+    # max_steps: 100e4 # HACK for 100 agents
+    max_steps: 100e4 # HACK for 50 agents
 
 TerrainMarathonManBrain-v0:
     num_epoch: 10 
@@ -180,7 +186,8 @@ TerrainMarathonManBrain-v0:
     hidden_units: 64
     learning_rate: 3e-4
     batch_size: 32
-    buffer_size: 512 
+    buffer_size: 5120
     beta: .0003
     # max_steps: 100e6
-    max_steps: 100e4 # HACK for 100 agents
+    # max_steps: 100e4 # HACK for 100 agents
+    max_steps: 100e4 # HACK for 50 agents

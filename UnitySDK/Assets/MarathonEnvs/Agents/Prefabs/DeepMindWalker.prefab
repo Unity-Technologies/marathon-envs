@@ -68,10 +68,11 @@ MonoBehaviour:
   brain: {fileID: 11400000, guid: f33be7dbe16cf47a39bc400c65845bec, type: 2}
   agentParameters:
     agentCameras: []
-    maxStep: 5000
+    agentRenderTextures: []
+    maxStep: 1000
     resetOnDone: 1
     onDemandDecision: 0
-    numberOfActionsBetweenDecisions: 5
+    numberOfActionsBetweenDecisions: 1
     skipActionsWithDecisions: 1
   CameraTarget: {fileID: 0}
   ShowMonitor: 0
@@ -81,6 +82,7 @@ MonoBehaviour:
   SensorIsInTouch: []
   FocalPoint: {fileID: 0}
   FocalRidgedBody: {fileID: 0}
+  DistanceTraveled: -3.4028235e+38
   FocalPointMaxDistanceTraveled: 0
   JointVelocity: []
   JointRotations: []

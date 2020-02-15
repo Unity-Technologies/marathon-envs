@@ -340,6 +340,7 @@ MonoBehaviour:
     trainingNumEnvsDefault: 100
     inferenceNumEnvsDefault: 3
     trainingMode: 0
+  physicsOnlySteps: 4
   maxSteps: 0
   trainingConfiguration:
     width: 480
