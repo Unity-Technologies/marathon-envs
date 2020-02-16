@@ -2529,10 +2529,10 @@ MonoBehaviour:
   agentParameters:
     agentCameras: []
     agentRenderTextures: []
-    maxStep: 5000
+    maxStep: 1000
     resetOnDone: 1
     onDemandDecision: 0
-    numberOfActionsBetweenDecisions: 5
+    numberOfActionsBetweenDecisions: 1
     skipActionsWithDecisions: 0
   FrameReward: 0
   AverageReward: 0
