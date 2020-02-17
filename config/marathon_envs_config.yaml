@@ -30,7 +30,9 @@ StyleTransferBrain-v0:
     time_horizon: 100
     max_steps: 2e6
     batch_size: 768 
-    buffer_size: 21504
+    # buffer_size: 21504 # 768 * 28
+    # buffer_size: 30720 # 768 * 40
+    buffer_size: 15360 # 768 * 20
     summary_freq: 10000
     num_layers: 2
     hidden_units: 512
