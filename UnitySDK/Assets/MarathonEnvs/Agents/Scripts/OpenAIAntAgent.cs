@@ -22,12 +22,7 @@ public class OpenAIAntAgent : MarathonAgent
         SetupBodyParts();
     }
 
-
-    public override void AgentOnDone()
-    {
-    }
-
-    void ObservationsDefault()
+    void ObservationsDefault(VectorSensor sensor)
     {
         if (ShowMonitor)
         {
@@ -35,15 +30,15 @@ public class OpenAIAntAgent : MarathonAgent
 
         var pelvis = BodyParts["pelvis"];
         Vector3 normalizedVelocity = GetNormalizedVelocity(pelvis.velocity);
-        AddVectorObs(normalizedVelocity);
-        AddVectorObs(pelvis.transform.forward); // gyroscope 
-        AddVectorObs(pelvis.transform.up);
+        sensor.AddObservation(normalizedVelocity);
+        sensor.AddObservation(pelvis.transform.forward); // gyroscope 
+        sensor.AddObservation(pelvis.transform.up);
 
-        AddVectorObs(SensorIsInTouch);
-        JointRotations.ForEach(x => AddVectorObs(x));
-        AddVectorObs(JointVelocity);
+        sensor.AddObservation(SensorIsInTouch);
+        JointRotations.ForEach(x => sensor.AddObservation(x));
+        sensor.AddObservation(JointVelocity);
         Vector3 normalizedFootPosition = this.GetNormalizedPosition(pelvis.transform.position);
-        AddVectorObs(normalizedFootPosition.y);
+        sensor.AddObservation(normalizedFootPosition.y);
 
     }
 
@@ -76,7 +71,7 @@ public class OpenAIAntAgent : MarathonAgent
         if (ShowMonitor)
         {
             var hist = new[] {reward, velocity}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.INDEPENDENT);
+            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.Independent);
         }
 
         return reward;

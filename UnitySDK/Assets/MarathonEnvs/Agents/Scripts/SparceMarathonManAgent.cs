@@ -67,34 +67,38 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 
 	static RollingAverage rollingAverage;
 
-	override public void CollectObservations()
+	bool _isDone;
+
+
+	override public void CollectObservations(VectorSensor sensor)
 	{
 		Vector3 normalizedVelocity = _bodyManager.GetNormalizedVelocity();
         var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
         var shoulders = _bodyManager.GetFirstBodyPart(BodyPartGroup.Torso);
 
-        AddVectorObs(normalizedVelocity); 
-        AddVectorObs(pelvis.Rigidbody.transform.forward); // gyroscope 
-        AddVectorObs(pelvis.Rigidbody.transform.up);
+        sensor.AddObservation(normalizedVelocity); 
+        sensor.AddObservation(pelvis.Rigidbody.transform.forward); // gyroscope 
+        sensor.AddObservation(pelvis.Rigidbody.transform.up);
 
-        AddVectorObs(shoulders.Rigidbody.transform.forward); // gyroscope 
-        AddVectorObs(shoulders.Rigidbody.transform.up);
+        sensor.AddObservation(shoulders.Rigidbody.transform.forward); // gyroscope 
+        sensor.AddObservation(shoulders.Rigidbody.transform.up);
 
-		AddVectorObs(_bodyManager.GetSensorIsInTouch());
-		AddVectorObs(_bodyManager.GetBodyPartsObservations());
-		AddVectorObs(_bodyManager.GetMusclesObservations());
-		AddVectorObs(_bodyManager.GetSensorYPositions());
-		AddVectorObs(_bodyManager.GetSensorZPositions());
+		sensor.AddObservation(_bodyManager.GetSensorIsInTouch());
+		sensor.AddObservation(_bodyManager.GetBodyPartsObservations());
+		sensor.AddObservation(_bodyManager.GetMusclesObservations());
+		sensor.AddObservation(_bodyManager.GetSensorYPositions());
+		sensor.AddObservation(_bodyManager.GetSensorZPositions());
 
-		AddVectorObs(_notAtLimitBonus);
-		AddVectorObs(_reducedPowerBonus);
-		_bodyManager.OnCollectObservationsHandleDebug(GetInfo());
+		sensor.AddObservation(_notAtLimitBonus);
+		sensor.AddObservation(_reducedPowerBonus);
+		// _bodyManager.OnCollectObservationsHandleDebug(GetInfo());
 	}
 
-	public override void AgentAction(float[] vectorAction, string textAction)
+	public override void AgentAction(float[] vectorAction)
 	{
+		_isDone = false;
 		// apply actions to body
-		_bodyManager.OnAgentAction(vectorAction, textAction);
+		_bodyManager.OnAgentAction(vectorAction);
 
 		// manage reward
 		var actionDifference = _bodyManager.GetActionDifference();
@@ -114,8 +118,8 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		_hipsForwardReward = Mathf.Clamp(_hipsForwardReward, 0f, 1f);
 
 		var stepCount = GetStepCount() > 0 ? GetStepCount() : 1;
-		if ((stepCount >= agentParameters.maxStep)
-                && (agentParameters.maxStep > 0))
+		if ((stepCount >= maxStep)
+                && (maxStep > 0))
         {
             AddEpisodeEndReward();
         }
@@ -127,11 +131,17 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		}
 	}
 
-
-	public override void AgentReset()
+	public override void InitializeAgent()
 	{
 		if (_bodyManager == null)
 			_bodyManager = GetComponent<BodyManager002>();
+		_bodyManager.OnInitializeAgent();
+		AgentReset();
+	}
+
+	public override void AgentReset()
+	{
+		_isDone = true;
 		_bodyManager.OnAgentReset();
 		_episodeMaxDistance = 0f;
 		if (rollingAverage == null)
@@ -161,7 +171,7 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 				break;
 			default:
 				// AddReward(-100f);
-				if (!IsDone()){
+				if (!_isDone){
 					AddEpisodeEndReward();
 					Done();
 				}

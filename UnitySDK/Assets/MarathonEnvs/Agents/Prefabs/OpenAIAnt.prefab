@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4132043790615226}
   - component: {fileID: 114269483692438478}
+  - component: {fileID: 114228609771559028}
   - component: {fileID: 114612892920136778}
+  - component: {fileID: 114160016438907054}
   m_Layer: 14
   m_Name: OpenAIAnt
   m_TagString: Untagged
@@ -53,6 +55,30 @@ MonoBehaviour:
   OnGenerateApplyRandom: 0.005
   DefaultDensity: 300
   MotorScale: 1
+--- !u!114 &114228609771559028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197355327420184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BrainParameters:
+    vectorObservationSize: 54
+    numStackedVectorObservations: 1
+    vectorActionSize: 08000000
+    vectorActionDescriptions: []
+    vectorActionSpaceType: 1
+  m_Model: {fileID: 11400000, guid: 0c340628b057daa48859062905b0dfeb, type: 3}
+  m_InferenceDevice: 0
+  m_BehaviorType: 0
+  m_BehaviorName: Ant-v0
+  m_TeamID: 0
+  m_UseChildSensors: 1
 --- !u!114 &114612892920136778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,15 +91,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b072f3c2a55bd48149bbbd9701c7c6af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brain: {fileID: 11400000, guid: bc7914b266edc45269ac68e42404a71e, type: 2}
   agentParameters:
-    agentCameras: []
-    agentRenderTextures: []
     maxStep: 1000
-    resetOnDone: 1
-    onDemandDecision: 0
-    numberOfActionsBetweenDecisions: 1
-    skipActionsWithDecisions: 1
+  hasUpgradedFromAgentParameters: 1
+  maxStep: 5000
   CameraTarget: {fileID: 0}
   ShowMonitor: 0
   FootHitTerrain: 0
@@ -91,3 +112,18 @@ MonoBehaviour:
   Observations: []
   ObservationNormalizedErrors: 0
   MaxObservationNormalizedErrors: 0
+--- !u!114 &114160016438907054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197355327420184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DecisionPeriod: 5
+  RepeatAction: 0
+  offsetStep: 0

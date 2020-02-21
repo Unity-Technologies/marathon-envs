@@ -33,8 +33,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
     private Vector3 _lastVelocityPosition;
 
-	private Academy _academy;
-
 	private List<Rigidbody> _rigidbodies;
 	private List<Transform> _transforms;
 
@@ -65,7 +63,8 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 	}
 
 	// Use this for initialization
-	void Start () {
+	public void OnInitializeAgent()
+    {
 		anim = GetComponent<Animator>();
 		anim.Play("Record",0, NormalizedTime);
 		anim.Update(0f);
@@ -82,7 +81,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 			_transforms
 			.First(x=> BodyHelper002.GetBodyPartGroup(x.name) == BodyHelper002.BodyPartGroup.Hips)
 			.rotation;
-		_academy = FindObjectOfType<Academy>();
 	}
 	void Awake()
     {
@@ -150,9 +148,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		return this;
 	}
 	
-	// void FixedUpdate () {
-	// 	if (_academy.GetIsPhysicsOnlyFixedUpdateStep())
-	// 		return;
 	public void OnAgentAction() {
 			
 		if (AnimationStepsReady){

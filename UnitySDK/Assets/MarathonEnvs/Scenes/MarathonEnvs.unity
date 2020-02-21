@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -258,7 +258,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1574236049}
-  - component: {fileID: 1574236048}
   - component: {fileID: 1574236050}
   m_Layer: 0
   m_Name: Academy
@@ -267,7 +266,21 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1574236048
+--- !u!4 &1574236049
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1574236047}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1574236050
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -276,37 +289,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1574236047}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4479159a705f245c3946cee6d1eb53ab, type: 3}
+  m_Script: {fileID: 11500000, guid: 722bb74bbe4594ba38a22a16caff0ebf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  broadcastHub:
-    broadcastingBrains:
-    - {fileID: 11400000, guid: 6ecfdf95a9eee4a2580de3d7224c2cdb, type: 2}
-    - {fileID: 11400000, guid: 1b23b0637158f4bf1a0a53eee29cbdac, type: 2}
-    - {fileID: 11400000, guid: f33be7dbe16cf47a39bc400c65845bec, type: 2}
-    - {fileID: 11400000, guid: bc7914b266edc45269ac68e42404a71e, type: 2}
-    - {fileID: 11400000, guid: 14ef212b228874b5ea289d5facb060d7, type: 2}
-    - {fileID: 11400000, guid: b4c68a827b3bf4e50b00de698141b8fd, type: 2}
-    - {fileID: 11400000, guid: 75fdb007db80c2348a5d26445aec749a, type: 2}
-    - {fileID: 11400000, guid: 3b4503ba684ef4845b18250ae0927eaa, type: 2}
-    - {fileID: 11400000, guid: 9dc1f4f405604c74bb668ead770430ca, type: 2}
-    - {fileID: 11400000, guid: f19b5abaefcf12b459a780c784b48030, type: 2}
-    - {fileID: 11400000, guid: 394e6a6da32ee43c7bbad8a819d82c7d, type: 2}
-    _brainsToControl:
-    - {fileID: 11400000, guid: 6ecfdf95a9eee4a2580de3d7224c2cdb, type: 2}
-    - {fileID: 11400000, guid: bc7914b266edc45269ac68e42404a71e, type: 2}
-    - {fileID: 11400000, guid: f33be7dbe16cf47a39bc400c65845bec, type: 2}
-    - {fileID: 11400000, guid: 1b23b0637158f4bf1a0a53eee29cbdac, type: 2}
-    - {fileID: 11400000, guid: 14ef212b228874b5ea289d5facb060d7, type: 2}
-    - {fileID: 11400000, guid: b4c68a827b3bf4e50b00de698141b8fd, type: 2}
-    - {fileID: 11400000, guid: 3b4503ba684ef4845b18250ae0927eaa, type: 2}
-    - {fileID: 11400000, guid: f19b5abaefcf12b459a780c784b48030, type: 2}
-    - {fileID: 11400000, guid: 75fdb007db80c2348a5d26445aec749a, type: 2}
-    - {fileID: 11400000, guid: 9dc1f4f405604c74bb668ead770430ca, type: 2}
-    - {fileID: 11400000, guid: 394e6a6da32ee43c7bbad8a819d82c7d, type: 2}
   agentSpawner:
     spawnableEnvDefinitions:
-    - envId: Hopper-v0
+    - envId: HopperEnv-v0
       envPrefab: {fileID: 6737101200792111825, guid: 562eb53b2c5eb47819b559b2afa6063c,
         type: 3}
     - envId: Walker2d-v0
@@ -336,52 +324,10 @@ MonoBehaviour:
     - envId: StyleTransferEnv-v0
       envPrefab: {fileID: 1802870815327278923, guid: c13ea8e8df87c42639b6304f70acf750,
         type: 3}
-    envIdDefault: StyleTransferEnv-v0
-    trainingNumEnvsDefault: 100
-    inferenceNumEnvsDefault: 3
+    envIdDefault: HopperEnv-v0
+    trainingNumEnvsDefault: 3
+    inferenceNumEnvsDefault: 1
     trainingMode: 0
-  physicsOnlySteps: 4
-  maxSteps: 0
-  trainingConfiguration:
-    width: 480
-    height: 300
-    qualityLevel: 0
-    timeScale: 10
-    targetFrameRate: -1
-  inferenceConfiguration:
-    width: 1280
-    height: 720
-    qualityLevel: 5
-    timeScale: 1
-    targetFrameRate: 60
-  resetParameters:
-    resetParameters: []
---- !u!4 &1574236049
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1574236047}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1574236050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1574236047}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81da6efb75e8b48e9a16347dbea069c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1715640920
 GameObject:
   m_ObjectHideFlags: 0

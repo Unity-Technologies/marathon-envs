@@ -8,59 +8,61 @@ using static BodyHelper002;
 public class MarathonManAgent : Agent, IOnTerrainCollision
 {
 	BodyManager002 _bodyManager;
+	bool _isDone;
 
-	// override public void CollectObservations()
+	// override public void CollectObservations(VectorSensor sensor)
 	// {
-	// 	// AddVectorObs(ObsPhase);
+	// 	// sensor.AddObservation(ObsPhase);
 	// 	foreach (var bodyPart in BodyParts)
 	// 	{
 	// 		bodyPart.UpdateObservations();
-	// 		AddVectorObs(bodyPart.ObsLocalPosition);
-	// 		AddVectorObs(bodyPart.ObsRotation);
-	// 		AddVectorObs(bodyPart.ObsRotationVelocity);
-	// 		AddVectorObs(bodyPart.ObsVelocity);
+	// 		sensor.AddObservation(bodyPart.ObsLocalPosition);
+	// 		sensor.AddObservation(bodyPart.ObsRotation);
+	// 		sensor.AddObservation(bodyPart.ObsRotationVelocity);
+	// 		sensor.AddObservation(bodyPart.ObsVelocity);
 	// 	}
 	// 	foreach (var muscle in Muscles)
 	// 	{
 	// 		muscle.UpdateObservations();
 	// 		if (muscle.ConfigurableJoint.angularXMotion != ConfigurableJointMotion.Locked)
-	// 			AddVectorObs(muscle.TargetNormalizedRotationX);
+	// 			sensor.AddObservation(muscle.TargetNormalizedRotationX);
 	// 		if (muscle.ConfigurableJoint.angularYMotion != ConfigurableJointMotion.Locked)
-	// 			AddVectorObs(muscle.TargetNormalizedRotationY);
+	// 			sensor.AddObservation(muscle.TargetNormalizedRotationY);
 	// 		if (muscle.ConfigurableJoint.angularZMotion != ConfigurableJointMotion.Locked)
-	// 			AddVectorObs(muscle.TargetNormalizedRotationZ);
+	// 			sensor.AddObservation(muscle.TargetNormalizedRotationZ);
 	// 	}
 
-	// 	// AddVectorObs(ObsCenterOfMass);
-	// 	// AddVectorObs(ObsVelocity);
-	// 	AddVectorObs(SensorIsInTouch);
+	// 	// sensor.AddObservation(ObsCenterOfMass);
+	// 	// sensor.AddObservation(ObsVelocity);
+	// 	sensor.AddObservation(SensorIsInTouch);
 	// }
-	override public void CollectObservations()
+	override public void CollectObservations(VectorSensor sensor)
 	{
 		Vector3 normalizedVelocity = _bodyManager.GetNormalizedVelocity();
         var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
         var shoulders = _bodyManager.GetFirstBodyPart(BodyPartGroup.Torso);
 
-        AddVectorObs(normalizedVelocity); 
-        AddVectorObs(pelvis.Rigidbody.transform.forward); // gyroscope 
-        AddVectorObs(pelvis.Rigidbody.transform.up);
+        sensor.AddObservation(normalizedVelocity); 
+        sensor.AddObservation(pelvis.Rigidbody.transform.forward); // gyroscope 
+        sensor.AddObservation(pelvis.Rigidbody.transform.up);
 
-        AddVectorObs(shoulders.Rigidbody.transform.forward); // gyroscope 
-        AddVectorObs(shoulders.Rigidbody.transform.up);
+        sensor.AddObservation(shoulders.Rigidbody.transform.forward); // gyroscope 
+        sensor.AddObservation(shoulders.Rigidbody.transform.up);
 
-		AddVectorObs(_bodyManager.GetSensorIsInTouch());
-		AddVectorObs(_bodyManager.GetBodyPartsObservations());
-		AddVectorObs(_bodyManager.GetMusclesObservations());
-		AddVectorObs(_bodyManager.GetSensorYPositions());
-		AddVectorObs(_bodyManager.GetSensorZPositions());
+		sensor.AddObservation(_bodyManager.GetSensorIsInTouch());
+		sensor.AddObservation(_bodyManager.GetBodyPartsObservations());
+		sensor.AddObservation(_bodyManager.GetMusclesObservations());
+		sensor.AddObservation(_bodyManager.GetSensorYPositions());
+		sensor.AddObservation(_bodyManager.GetSensorZPositions());
 
-		_bodyManager.OnCollectObservationsHandleDebug(GetInfo());
+		// _bodyManager.OnCollectObservationsHandleDebug(GetInfo());
 	}
 
-	public override void AgentAction(float[] vectorAction, string textAction)
+	public override void AgentAction(float[] vectorAction)
 	{
+		_isDone = false;
 		// apply actions to body
-		_bodyManager.OnAgentAction(vectorAction, textAction);
+		_bodyManager.OnAgentAction(vectorAction);
 
 		// manage reward
         float velocity = Mathf.Clamp(_bodyManager.GetNormalizedVelocity().x, 0f, 1f);
@@ -91,11 +93,17 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 		_bodyManager.SetDebugFrameReward(reward);
 	}
 
-
-	public override void AgentReset()
+	public override void InitializeAgent()
 	{
 		if (_bodyManager == null)
 			_bodyManager = GetComponent<BodyManager002>();
+		_bodyManager.OnInitializeAgent();
+		AgentReset();
+    }
+
+	public override void AgentReset()
+	{
+		_isDone = true;
 		_bodyManager.OnAgentReset();
 	}
 	public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
@@ -120,7 +128,7 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 				break;
 			default:
 				// AddReward(-100f);
-				if (!IsDone()){
+				if (!_isDone){
 					Done();
 				}
 				break;

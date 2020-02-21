@@ -37,6 +37,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 	Agent _agent;
 	SpawnableEnv _spawnableEnv;
 	TerrainGenerator _terrainGenerator;
+	DecisionRequester _decisionRequester;
 
 	static int _startCount;
 
@@ -76,16 +77,20 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
     // Start is called before the first frame update
     void Start()
     {
-		_spawnableEnv = GetComponentInParent<SpawnableEnv>();        
-		_terrainGenerator = GetComponentInParent<TerrainGenerator>();
-        SetupBody();
-		DistanceTraveled = float.MinValue;
     }
 
     // Update is called once per frame
     void Update()
     {
     }
+
+    public void OnInitializeAgent()
+    {
+		_spawnableEnv = GetComponentInParent<SpawnableEnv>();
+		_terrainGenerator = GetComponentInParent<TerrainGenerator>();
+		SetupBody();
+		DistanceTraveled = float.MinValue;
+	}
 
 	public void OnAgentReset()
 	{
@@ -118,7 +123,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		mphBuffer = new List<Vector3>();
 	}
 
-	public void OnAgentAction(float[] vectorAction, string textAction)
+	public void OnAgentAction(float[] vectorAction)
 	{
 		if (lastVectorAction == null){
 			lastVectorAction = vectorAction.Select(x=>0f).ToArray();
@@ -148,7 +153,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
         if (ShowMonitor)
         {
             // var hist = new[] {velocity, uprightBonus, heightPenality, effort}.ToList();
-            // Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.INDEPENDENT);
+            // Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.Independent);
         }
 	}
 
@@ -177,6 +182,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
     void SetupBody()
     {
         _agent = GetComponent<Agent>();
+		_decisionRequester = GetComponent<DecisionRequester>();
 		Time.fixedDeltaTime = FixedDeltaTime;
 
 		BodyParts = new List<BodyPart002> ();
@@ -399,8 +405,8 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 	{
 		FrameReward = reward;
 		var stepCount = _agent.GetStepCount() > 0 ? _agent.GetStepCount() : 1;
-		if (_agent.agentParameters.skipActionsWithDecisions && _agent.agentParameters.numberOfActionsBetweenDecisions > 1)
-			stepCount /= _agent.agentParameters.numberOfActionsBetweenDecisions;
+		if (_decisionRequester?.DecisionPeriod > 1)
+			stepCount /= _decisionRequester.DecisionPeriod;
 		AverageReward = _agent.GetCumulativeReward() / (float) stepCount;		
 	}
 
@@ -415,18 +421,18 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		foreach (var bodyPart in BodyParts)
 		{
 			bodyPart.UpdateObservations();
-			// _agent.AddVectorObs(bodyPart.ObsRotation);
+			// _agent.sensor.AddObservation(bodyPart.ObsRotation);
             vectorObservation.Add(bodyPart.ObsRotation.x);
             vectorObservation.Add(bodyPart.ObsRotation.y);
             vectorObservation.Add(bodyPart.ObsRotation.z);
             vectorObservation.Add(bodyPart.ObsRotation.w);
 
-			// _agent.AddVectorObs(bodyPart.ObsRotationVelocity);
+			// _agent.sensor.AddObservation(bodyPart.ObsRotationVelocity);
             vectorObservation.Add(bodyPart.ObsRotationVelocity.x);
             vectorObservation.Add(bodyPart.ObsRotationVelocity.y);
             vectorObservation.Add(bodyPart.ObsRotationVelocity.z);
 
-			// _agent.AddVectorObs(GetNormalizedVelocity(bodyPart.ObsVelocity));
+			// _agent.sensor.AddObservation(GetNormalizedVelocity(bodyPart.ObsVelocity));
             var normalizedVelocity = GetNormalizedVelocity(bodyPart.ObsVelocity);
             vectorObservation.Add(normalizedVelocity.x);
             vectorObservation.Add(normalizedVelocity.y);
@@ -498,44 +504,43 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		return observations;
 	}
 
-    public void OnCollectObservationsHandleDebug(AgentInfo info)
-    {
-		if (Observations?.Count != info.vectorObservation.Count)
-			Observations = Enumerable.Range(0, info.vectorObservation.Count).Select(x => 0f).ToList();
-		ObservationNormalizedErrors = 0;
-		for (int i = 0; i < Observations.Count; i++)
-		{
-			Observations[i] = info.vectorObservation[i];
-			var x = Mathf.Abs(Observations[i]);
-			var e = Mathf.Epsilon;
-			bool is1 = Mathf.Approximately(x, 1f);
-			if ((x > 1f + e) && !is1)
-				ObservationNormalizedErrors++;
-		}
-		if (ObservationNormalizedErrors > MaxObservationNormalizedErrors)
-			MaxObservationNormalizedErrors = ObservationNormalizedErrors;  
+    // public void OnCollectObservationsHandleDebug(AgentInfo info)
+    // {
+	// 	if (Observations?.Count != info.vectorObservation.Count)
+	// 		Observations = Enumerable.Range(0, info.vectorObservation.Count).Select(x => 0f).ToList();
+	// 	ObservationNormalizedErrors = 0;
+	// 	for (int i = 0; i < Observations.Count; i++)
+	// 	{
+	// 		Observations[i] = info.vectorObservation[i];
+	// 		var x = Mathf.Abs(Observations[i]);
+	// 		var e = Mathf.Epsilon;
+	// 		bool is1 = Mathf.Approximately(x, 1f);
+	// 		if ((x > 1f + e) && !is1)
+	// 			ObservationNormalizedErrors++;
+	// 	}
+	// 	if (ObservationNormalizedErrors > MaxObservationNormalizedErrors)
+	// 		MaxObservationNormalizedErrors = ObservationNormalizedErrors;  
 
-        var pelvis = GetFirstBodyPart(BodyPartGroup.Hips);
-		DistanceTraveled = pelvis.Transform.position.x;
-		MaxDistanceTraveled = Mathf.Max(MaxDistanceTraveled, DistanceTraveled);
-        Vector3 metersPerSecond = pelvis.Rigidbody.velocity;
-		Vector3 mph = metersPerSecond * 2.236936f;
-		mphBuffer.Add(mph);
-		if (mphBuffer.Count > 100)
-			mphBuffer.RemoveAt(0);
-		var aveMph = new Vector3(
-			mphBuffer.Select(x=>x.x).Average(),
-			mphBuffer.Select(x=>x.y).Average(),
-			mphBuffer.Select(x=>x.z).Average()
-		);
-		if (ShowMonitor)
-		{
-			Monitor.Log("MaxDistance", MaxDistanceTraveled.ToString());
-			Monitor.Log("NormalizedPos", GetNormalizedPosition().ToString());
-			Monitor.Log("MPH: ", (aveMph).ToString());
-		}            
-
-    }  
+    //     var pelvis = GetFirstBodyPart(BodyPartGroup.Hips);
+	// 	DistanceTraveled = pelvis.Transform.position.x;
+	// 	MaxDistanceTraveled = Mathf.Max(MaxDistanceTraveled, DistanceTraveled);
+    //     Vector3 metersPerSecond = pelvis.Rigidbody.velocity;
+	// 	Vector3 mph = metersPerSecond * 2.236936f;
+	// 	mphBuffer.Add(mph);
+	// 	if (mphBuffer.Count > 100)
+	// 		mphBuffer.RemoveAt(0);
+	// 	var aveMph = new Vector3(
+	// 		mphBuffer.Select(x=>x.x).Average(),
+	// 		mphBuffer.Select(x=>x.y).Average(),
+	// 		mphBuffer.Select(x=>x.z).Average()
+	// 	);
+	// 	if (ShowMonitor)
+	// 	{
+	// 		Monitor.Log("MaxDistance", MaxDistanceTraveled.ToString());
+	// 		Monitor.Log("NormalizedPos", GetNormalizedPosition().ToString());
+	// 		Monitor.Log("MPH: ", (aveMph).ToString());
+	// 	}            
+    // }  
 
 	float NextGaussian(float mu = 0, float sigma = 1)
 	{
@@ -552,7 +557,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 	public Vector3 GetNormalizedVelocity(Vector3 metersPerSecond)
 	{
 		var maxMetersPerSecond = _spawnableEnv.bounds.size
-			/ _agent.agentParameters.maxStep
+			/ _agent.maxStep
 			/ Time.fixedDeltaTime;
 		var maxXZ = Mathf.Max(maxMetersPerSecond.x, maxMetersPerSecond.z);
 		maxMetersPerSecond.x = maxXZ;

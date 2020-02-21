@@ -10,6 +10,7 @@ public class TerrainGenerator : MonoBehaviour
 
     Terrain terrain;
 	Agent _agent;
+	DecisionRequester _decisionRequester;
 	public int posXInTerrain;
 	public int posYInTerrain;
 	float[,] _heights;
@@ -64,10 +65,13 @@ public class TerrainGenerator : MonoBehaviour
 			_rowHeight = new float[terrain.terrainData.heightmapResolution,1];
 		}
 		if (this._agent == null)
+		{
 			_agent = GetComponent<Agent>();
-        //print($"HeightMap {this.terrain.terrainData.heightmapWidth}, {this.terrain.terrainData.heightmapHeight}. 
+			_decisionRequester = GetComponent<DecisionRequester>();
+		}
+		//print($"HeightMap {this.terrain.terrainData.heightmapWidth}, {this.terrain.terrainData.heightmapHeight}. 
 		// Scale {this.terrain.terrainData.heightmapScale}. Resolution {this.terrain.terrainData.heightmapResolution}");
-        _mapScaleY = this.terrain.terrainData.heightmapScale.y;
+		_mapScaleY = this.terrain.terrainData.heightmapScale.y;
 		// get the normalized position of this game object relative to the terrain
         Vector3 tempCoord = (transform.position - terrain.gameObject.transform.position);
         Vector3 coord;
@@ -200,8 +204,9 @@ public class TerrainGenerator : MonoBehaviour
             var view = distances.Skip(10).Take(20).Select(x=>x).ToList();
             Monitor.Log("distances", view.ToArray());
             var time = Time.deltaTime;
-            time *= _agent.agentParameters.numberOfActionsBetweenDecisions;
-            for (int i = 0; i < rays.Count; i++)
+			if (_decisionRequester?.DecisionPeriod > 1)
+				time *= _decisionRequester.DecisionPeriod;
+			for (int i = 0; i < rays.Count; i++)
             {
                 var distance = distances[i];
                 var origin = new Vector3(rays[i].origin.x, ypos,0f);

@@ -38,12 +38,7 @@ public class DeepMindHumanoidAgent : MarathonAgent
         PhaseBonusInitalize();
     }
 
-
-    public override void AgentOnDone()
-    {
-    }
-
-    void ObservationsHumanoid()
+    void ObservationsHumanoid(VectorSensor sensor)
     {
         if (ShowMonitor)
         {
@@ -53,17 +48,17 @@ public class DeepMindHumanoidAgent : MarathonAgent
         var shoulders = BodyParts["shoulders"];
 
         Vector3 normalizedVelocity = this.GetNormalizedVelocity(pelvis.velocity);
-        AddVectorObs(normalizedVelocity);
-        AddVectorObs(pelvis.transform.forward); // gyroscope 
-        AddVectorObs(pelvis.transform.up);
+        sensor.AddObservation(normalizedVelocity);
+        sensor.AddObservation(pelvis.transform.forward); // gyroscope 
+        sensor.AddObservation(pelvis.transform.up);
 
-        AddVectorObs(shoulders.transform.forward); // gyroscope 
-        AddVectorObs(shoulders.transform.up);
+        sensor.AddObservation(shoulders.transform.forward); // gyroscope 
+        sensor.AddObservation(shoulders.transform.up);
 
-        AddVectorObs(SensorIsInTouch);
-        JointRotations.ForEach(x => AddVectorObs(x));
-        AddVectorObs(JointVelocity);
-        AddVectorObs(new []{
+        sensor.AddObservation(SensorIsInTouch);
+        JointRotations.ForEach(x => sensor.AddObservation(x));
+        sensor.AddObservation(JointVelocity);
+        sensor.AddObservation(new []{
             this.GetNormalizedPosition(BodyParts["left_foot_left"].transform.position).y,
             this.GetNormalizedPosition(BodyParts["left_foot_right"].transform.position).y,
             this.GetNormalizedPosition(BodyParts["right_foot_left"].transform.position).y,
@@ -146,7 +141,7 @@ public class DeepMindHumanoidAgent : MarathonAgent
                 _limbBonus,
                 _effort
             }.ToList();
-            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.INDEPENDENT);
+            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.Independent);
         }
 
         return _reward;

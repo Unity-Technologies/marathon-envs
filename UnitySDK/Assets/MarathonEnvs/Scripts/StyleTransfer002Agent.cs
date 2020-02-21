@@ -13,6 +13,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 	StyleTransfer002Master _master;
 	StyleTransfer002Animator _localStyleAnimator;
 	StyleTransfer002Animator _styleAnimator;
+	DecisionRequester _decisionRequester;
 	// StyleTransfer002TrainerAgent _trainerAgent;
 
 	List<GameObject> _sensors;
@@ -23,71 +24,62 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 	static ScoreHistogramData _scoreHistogramData;
 	int _totalAnimFrames;
 	bool _ignorScoreForThisFrame;
+	bool _isDone;
 
 	// Use this for initialization
 	void Start () {
-		_master = GetComponent<StyleTransfer002Master>();
-		var spawnableEnv = GetComponentInParent<SpawnableEnv>();
-		_localStyleAnimator = spawnableEnv.gameObject.GetComponentInChildren<StyleTransfer002Animator>();
-		_styleAnimator = _localStyleAnimator.GetFirstOfThisAnim();
-		// _styleAnimator = _localStyleAnimator;
-		_startCount++;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	}
 
-	override public void InitializeAgent()
-	{
-
-	}
-
-	override public void CollectObservations()
+	override public void CollectObservations(VectorSensor sensor)
 	{
 		// for (int i = 0; i < 255; i++)
-		// 	AddVectorObs(0f);
+		// 	sensor.AddObservation(0f);
 		// return;
-		AddVectorObs(_master.ObsPhase);
+		sensor.AddObservation(_master.ObsPhase);
 
 		// if (false){
 		// 	// temp hack to support old models
 		// 	if (SensorIsInTouch?.Count>0){
-		// 		AddVectorObs(SensorIsInTouch[0]);
-		// 		AddVectorObs(0f);
-		// 		AddVectorObs(SensorIsInTouch[1]);
-		// 		AddVectorObs(0f);
+		// 		sensor.AddObservation(SensorIsInTouch[0]);
+		// 		sensor.AddObservation(0f);
+		// 		sensor.AddObservation(SensorIsInTouch[1]);
+		// 		sensor.AddObservation(0f);
 		// 	}
 		// } else {
-		// 	AddVectorObs(_master.ObsCenterOfMass);
-		// 	AddVectorObs(_master.ObsVelocity);
-		// 	AddVectorObs(SensorIsInTouch);	
+		// 	sensor.AddObservation(_master.ObsCenterOfMass);
+		// 	sensor.AddObservation(_master.ObsVelocity);
+		// 	sensor.AddObservation(SensorIsInTouch);	
 		// }
 
 		foreach (var bodyPart in _master.BodyParts)
 		{
-			AddVectorObs(bodyPart.ObsLocalPosition);
-			AddVectorObs(bodyPart.ObsRotation);
-			AddVectorObs(bodyPart.ObsRotationVelocity);
-			AddVectorObs(bodyPart.ObsVelocity);
+			sensor.AddObservation(bodyPart.ObsLocalPosition);
+			sensor.AddObservation(bodyPart.ObsRotation);
+			sensor.AddObservation(bodyPart.ObsRotationVelocity);
+			sensor.AddObservation(bodyPart.ObsVelocity);
 		}
 		foreach (var muscle in _master.Muscles)
 		{
 			if (muscle.ConfigurableJoint.angularXMotion != ConfigurableJointMotion.Locked)
-				AddVectorObs(muscle.TargetNormalizedRotationX);
+				sensor.AddObservation(muscle.TargetNormalizedRotationX);
 			if (muscle.ConfigurableJoint.angularYMotion != ConfigurableJointMotion.Locked)
-				AddVectorObs(muscle.TargetNormalizedRotationY);
+				sensor.AddObservation(muscle.TargetNormalizedRotationY);
 			if (muscle.ConfigurableJoint.angularZMotion != ConfigurableJointMotion.Locked)
-				AddVectorObs(muscle.TargetNormalizedRotationZ);
+				sensor.AddObservation(muscle.TargetNormalizedRotationZ);
 		}
 
-		AddVectorObs(_master.ObsCenterOfMass);
-		AddVectorObs(_master.ObsVelocity);
-		AddVectorObs(SensorIsInTouch);	
+		sensor.AddObservation(_master.ObsCenterOfMass);
+		sensor.AddObservation(_master.ObsVelocity);
+		sensor.AddObservation(SensorIsInTouch);	
 	}
 
-	public override void AgentAction(float[] vectorAction, string textAction)
+	public override void AgentAction(float[] vectorAction)
 	{
+		_isDone = false;
 		if (_styleAnimator == _localStyleAnimator)
 			_styleAnimator.OnAgentAction();
 		_master.OnAgentAction();
@@ -203,7 +195,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		// if (GetStepCount() >= 50 && _master.IsInferenceMode == false)
 		if (distanceReward < 0.334f && _master.IsInferenceMode == false)
 			Done();
-		if (!IsDone()){
+		if (!_isDone){
 			// // if (distanceReward < _master.ErrorCutoff && !_master.DebugShowWithOffset) {
 			// if (shouldTerminate && !_master.DebugShowWithOffset) {
 			// 	AddReward(-10f);
@@ -272,14 +264,31 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 	{
 		_totalAnimFrames = totalAnimFrames;
 		if (_scoreHistogramData == null) {
-			var columns = _totalAnimFrames / agentParameters.numberOfActionsBetweenDecisions;
+			var columns = _totalAnimFrames;
+			if (_decisionRequester?.DecisionPeriod > 1)
+				columns /= _decisionRequester.DecisionPeriod;
 			_scoreHistogramData = new ScoreHistogramData(columns, 30);
 		}
 			Rewards = _scoreHistogramData.GetAverages().Select(x=>(float)x).ToList();
 	}
 
+	public override void InitializeAgent()
+	{
+		_master = GetComponent<StyleTransfer002Master>();
+		_master.OnInitializeAgent();
+		_decisionRequester = GetComponent<DecisionRequester>();
+		var spawnableEnv = GetComponentInParent<SpawnableEnv>();
+		_localStyleAnimator = spawnableEnv.gameObject.GetComponentInChildren<StyleTransfer002Animator>();
+		_styleAnimator = _localStyleAnimator.GetFirstOfThisAnim();
+		_styleAnimator.OnInitializeAgent();
+		// _styleAnimator = _localStyleAnimator;
+		_startCount++;
+		AgentReset();
+	}
+
 	public override void AgentReset()
 	{
+		_isDone = true;
 		_ignorScoreForThisFrame = true;
 		_master.ResetPhase();
 		_sensors = GetComponentsInChildren<SensorBehavior>()
@@ -287,7 +296,9 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 			.ToList();
 		SensorIsInTouch = Enumerable.Range(0,_sensors.Count).Select(x=>0f).ToList();
 		if (_scoreHistogramData != null) {
-			var column = _master.StartAnimationIndex / agentParameters.numberOfActionsBetweenDecisions;
+			var column = _master.StartAnimationIndex;
+			if (_decisionRequester?.DecisionPeriod > 1)
+				column /= _decisionRequester.DecisionPeriod;
 			if (_ignorScoreForThisFrame)
 				_ignorScoreForThisFrame = false;
 			else

@@ -65,6 +65,7 @@ Terrain:
   m_MaterialTemplate: {fileID: 0}
   m_BakeLightProbesForTrees: 0
   m_PreserveTreePrototypeLayers: 0
+  m_DeringLightProbesForTrees: 0
   m_ScaleInLightmap: 0.4
   m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
   m_GroupingID: 0
@@ -157,6 +158,7 @@ Terrain:
   m_MaterialTemplate: {fileID: 0}
   m_BakeLightProbesForTrees: 0
   m_PreserveTreePrototypeLayers: 0
+  m_DeringLightProbesForTrees: 0
   m_ScaleInLightmap: 0.0512
   m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
   m_GroupingID: 0
@@ -249,6 +251,7 @@ Terrain:
   m_MaterialTemplate: {fileID: 0}
   m_BakeLightProbesForTrees: 0
   m_PreserveTreePrototypeLayers: 0
+  m_DeringLightProbesForTrees: 0
   m_ScaleInLightmap: 0.4
   m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
   m_GroupingID: 0
@@ -341,6 +344,7 @@ Terrain:
   m_MaterialTemplate: {fileID: 0}
   m_BakeLightProbesForTrees: 0
   m_PreserveTreePrototypeLayers: 0
+  m_DeringLightProbesForTrees: 0
   m_ScaleInLightmap: 0.4
   m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
   m_GroupingID: 0
@@ -413,7 +417,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8081357739622870871}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02be315647cca42b5b2aed218b092e5d, type: 3}
+  m_Script: {fileID: 11500000, guid: a5ee228c95df445dfb46077fb9d6a66d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   paddingBetweenEnvs: 1
@@ -486,6 +490,7 @@ Terrain:
   m_MaterialTemplate: {fileID: 0}
   m_BakeLightProbesForTrees: 0
   m_PreserveTreePrototypeLayers: 0
+  m_DeringLightProbesForTrees: 0
   m_ScaleInLightmap: 0.0512
   m_LightmapParameters: {fileID: 15203, guid: 0000000000000000f000000000000000, type: 0}
   m_GroupingID: 0

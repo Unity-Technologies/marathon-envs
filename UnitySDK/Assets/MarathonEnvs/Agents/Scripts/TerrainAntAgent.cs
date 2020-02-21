@@ -89,31 +89,27 @@ public class TerrainAntAgent : MarathonAgent {
                 break;
         }
     }
-
-
-    public override void AgentOnDone()
-    {
-    }    
-    void ObservationsDefault()
+  
+    void ObservationsDefault(VectorSensor sensor)
     {
         var pelvis = BodyParts["pelvis"];
         Vector3 normalizedVelocity = GetNormalizedVelocity(pelvis.velocity);
-        AddVectorObs(normalizedVelocity);
-        AddVectorObs(pelvis.transform.forward); // gyroscope 
-        AddVectorObs(pelvis.transform.up);
+        sensor.AddObservation(normalizedVelocity);
+        sensor.AddObservation(pelvis.transform.forward); // gyroscope 
+        sensor.AddObservation(pelvis.transform.up);
 
-        AddVectorObs(SensorIsInTouch);
-        JointRotations.ForEach(x => AddVectorObs(x));
-        AddVectorObs(JointVelocity);
+        sensor.AddObservation(SensorIsInTouch);
+        JointRotations.ForEach(x => sensor.AddObservation(x));
+        sensor.AddObservation(JointVelocity);
         // Vector3 normalizedFootPosition = this.GetNormalizedPosition(pelvis.transform.position);
-        // AddVectorObs(normalizedFootPosition.y);
+        // sensor.AddObservation(normalizedFootPosition.y);
 
         (List<float> distances, float fraction) = 
             _terrainGenerator.GetDistances2d(
                 pelvis.transform.position, ShowMonitor);
    
-        AddVectorObs(distances);
-        AddVectorObs(fraction);
+        sensor.AddObservation(distances);
+        sensor.AddObservation(fraction);
     }
 
 
@@ -147,7 +143,7 @@ public class TerrainAntAgent : MarathonAgent {
         // if (ShowMonitor)
         // {
         //     var hist = new[] {reward, velocity, effort};
-        //     Monitor.Log("rewardHist", hist, displayType: Monitor.DisplayType.INDEPENDENT);
+        //     Monitor.Log("rewardHist", hist, displayType: Monitor.DisplayType.Independent);
         // }
         _pain = 0f;
         var reward = velocity;

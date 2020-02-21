@@ -94,6 +94,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8087028546548217645, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
+      propertyPath: bounds.m_Center.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8087028546548217645, guid: c7f549aabbce548e7aae2b2101ae3062,
+        type: 3}
+      propertyPath: bounds.m_Center.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8087028546548217645, guid: c7f549aabbce548e7aae2b2101ae3062,
+        type: 3}
+      propertyPath: bounds.m_Extent.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8087028546548217645, guid: c7f549aabbce548e7aae2b2101ae3062,
+        type: 3}
+      propertyPath: bounds.m_Extent.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8087028546548217645, guid: c7f549aabbce548e7aae2b2101ae3062,
+        type: 3}
+      propertyPath: bounds.m_Extent.z
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8087028546548217645, guid: c7f549aabbce548e7aae2b2101ae3062,
+        type: 3}
       propertyPath: CreateUniquePhysicsScene
       value: 1
       objectReference: {fileID: 0}

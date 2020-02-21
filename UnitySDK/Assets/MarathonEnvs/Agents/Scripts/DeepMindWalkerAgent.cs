@@ -26,12 +26,7 @@ public class DeepMindWalkerAgent : MarathonAgent
         SetupBodyParts();
     }
 
-
-    public override void AgentOnDone()
-    {
-    }
-
-    void ObservationsDefault()
+    void ObservationsDefault(VectorSensor sensor)
     {
         if (ShowMonitor)
         {
@@ -39,14 +34,14 @@ public class DeepMindWalkerAgent : MarathonAgent
 
         var pelvis = BodyParts["pelvis"];
         Vector3 normalizedVelocity = this.GetNormalizedVelocity(pelvis.velocity);
-        AddVectorObs(normalizedVelocity);
-        AddVectorObs(pelvis.transform.forward); // gyroscope 
-        AddVectorObs(pelvis.transform.up);
+        sensor.AddObservation(normalizedVelocity);
+        sensor.AddObservation(pelvis.transform.forward); // gyroscope 
+        sensor.AddObservation(pelvis.transform.up);
 
-        AddVectorObs(SensorIsInTouch);
-        JointRotations.ForEach(x => AddVectorObs(x));
-        AddVectorObs(JointVelocity);
-        AddVectorObs(new []{
+        sensor.AddObservation(SensorIsInTouch);
+        JointRotations.ForEach(x => sensor.AddObservation(x));
+        sensor.AddObservation(JointVelocity);
+        sensor.AddObservation(new []{
             this.GetNormalizedPosition(BodyParts["left_foot"].transform.position).y,
             this.GetNormalizedPosition(BodyParts["right_foot"].transform.position).y
         });
@@ -64,7 +59,7 @@ public class DeepMindWalkerAgent : MarathonAgent
         if (ShowMonitor)
         {
             var hist = new[] {velocity, uprightBonus, heightPenality, effort}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.INDEPENDENT);
+            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.Independent);
         }
 
         heightPenality *= 0.05f;

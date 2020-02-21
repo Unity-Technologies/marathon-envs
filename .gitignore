@@ -96,3 +96,4 @@ dist/
 build/
 old_summaries/StyleTransfer401-0_StyleTransferBrain-v0/events.out.tfevents.1566084646.ML2
 old_summaries/
+mono_crash.*

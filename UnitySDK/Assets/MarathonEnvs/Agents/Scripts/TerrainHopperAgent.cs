@@ -87,43 +87,39 @@ public class TerrainHopperAgent : MarathonAgent {
                 break;
         }
     }
-
-
-    public override void AgentOnDone()
-    {
-    }    
-    void ObservationsDefault()
+  
+    void ObservationsDefault(VectorSensor sensor)
     {
         // var pelvis = BodyParts["pelvis"];
-        // AddVectorObs(pelvis.velocity);
-        // AddVectorObs(pelvis.transform.forward); // gyroscope 
-        // AddVectorObs(pelvis.transform.up);
+        // sensor.AddObservation(pelvis.velocity);
+        // sensor.AddObservation(pelvis.transform.forward); // gyroscope 
+        // sensor.AddObservation(pelvis.transform.up);
         
-        // AddVectorObs(SensorIsInTouch);
-        // JointRotations.ForEach(x=>AddVectorObs(x));
-        // AddVectorObs(JointVelocity);
+        // sensor.AddObservation(SensorIsInTouch);
+        // JointRotations.ForEach(x=>sensor.AddObservation(x));
+        // sensor.AddObservation(JointVelocity);
         // var foot = BodyParts["foot"];
-        // AddVectorObs(foot.transform.position.y);
+        // sensor.AddObservation(foot.transform.position.y);
 
         var pelvis = BodyParts["pelvis"];
         Vector3 normalizedVelocity = this.GetNormalizedVelocity(pelvis.velocity);
-        AddVectorObs(normalizedVelocity);
-        AddVectorObs(pelvis.transform.forward); // gyroscope 
-        AddVectorObs(pelvis.transform.up);
+        sensor.AddObservation(normalizedVelocity);
+        sensor.AddObservation(pelvis.transform.forward); // gyroscope 
+        sensor.AddObservation(pelvis.transform.up);
 
-        AddVectorObs(SensorIsInTouch);
-        JointRotations.ForEach(x => AddVectorObs(x));
-        AddVectorObs(JointVelocity);
+        sensor.AddObservation(SensorIsInTouch);
+        JointRotations.ForEach(x => sensor.AddObservation(x));
+        sensor.AddObservation(JointVelocity);
         var foot = BodyParts["foot"];
         Vector3 normalizedFootPosition = this.GetNormalizedPosition(foot.transform.position);
-        AddVectorObs(normalizedFootPosition.y);        
+        sensor.AddObservation(normalizedFootPosition.y);        
 
         (List<float> distances, float fraction) = 
             _terrainGenerator.GetDistances2d(
                 pelvis.transform.position, ShowMonitor);
    
-        AddVectorObs(distances);
-        AddVectorObs(fraction);
+        sensor.AddObservation(distances);
+        sensor.AddObservation(fraction);
     }
 
 
@@ -162,7 +158,7 @@ public class TerrainHopperAgent : MarathonAgent {
         // if (ShowMonitor)
         // {
         //     var hist = new[] {reward, velocity, uprightBonus, effort};
-        //     Monitor.Log("rewardHist", hist, displayType: Monitor.DisplayType.INDEPENDENT);
+        //     Monitor.Log("rewardHist", hist, displayType: Monitor.DisplayType.Independent);
         // }
         var reward = velocity;
 

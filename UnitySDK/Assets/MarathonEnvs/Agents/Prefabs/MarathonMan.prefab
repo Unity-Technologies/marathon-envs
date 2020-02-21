@@ -2013,10 +2013,12 @@ GameObject:
   m_Component:
   - component: {fileID: 8719875636317608491}
   - component: {fileID: 8690789666678175709}
+  - component: {fileID: 114263248370519032}
   - component: {fileID: 6637013144633364566}
   - component: {fileID: 5859498862604059448}
   - component: {fileID: 5286234179746182682}
   - component: {fileID: 7060837598392239166}
+  - component: {fileID: 114275564199513312}
   m_Layer: 14
   m_Name: MarathonMan
   m_TagString: Untagged
@@ -2093,6 +2095,30 @@ MonoBehaviour:
   - Muscle: left_larm
     PowerVector: {x: 40, y: 0, z: 0}
   MotorScale: 1
+--- !u!114 &114263248370519032
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8722076229893094739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BrainParameters:
+    vectorObservationSize: 224
+    numStackedVectorObservations: 1
+    vectorActionSize: 15000000
+    vectorActionDescriptions: []
+    vectorActionSpaceType: 1
+  m_Model: {fileID: 11400000, guid: 7df0a9d6d3be48e499c9e64d644cacc8, type: 3}
+  m_InferenceDevice: 0
+  m_BehaviorType: 0
+  m_BehaviorName: MarathonMan-v0
+  m_TeamID: 0
+  m_UseChildSensors: 1
 --- !u!114 &6637013144633364566
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2105,15 +2131,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92cfc2ffe17d245ee822312e5451327c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brain: {fileID: 11400000, guid: 14ef212b228874b5ea289d5facb060d7, type: 2}
   agentParameters:
-    agentCameras: []
-    agentRenderTextures: []
     maxStep: 1000
-    resetOnDone: 1
-    onDemandDecision: 0
-    numberOfActionsBetweenDecisions: 1
-    skipActionsWithDecisions: 1
+  hasUpgradedFromAgentParameters: 1
+  maxStep: 5000
 --- !u!114 &5859498862604059448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2142,6 +2163,7 @@ MonoBehaviour:
   AverageReward: 0
   MaxDistanceTraveled: 0
   DistanceTraveled: 0
+  numberOfActionsBetweenDecisions: 0
 --- !u!54 &5286234179746182682
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2172,6 +2194,21 @@ FixedJoint:
   m_EnablePreprocessing: 0
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &114275564199513312
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8722076229893094739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DecisionPeriod: 5
+  RepeatAction: 0
+  offsetStep: 0
 --- !u!1 &8722159205191571325
 GameObject:
   m_ObjectHideFlags: 0
