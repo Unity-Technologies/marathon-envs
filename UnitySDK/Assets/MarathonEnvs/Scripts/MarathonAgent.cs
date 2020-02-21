@@ -132,11 +132,7 @@ namespace MLAgents
     	SpawnableEnv _spawnableEnv;
     	Vector3 startPosition;
     	bool _isDone;
-
-        public override void InitializeAgent()
-        {
-            AgentReset();
-        }
+        bool _hasLazyInitialized;
 
         public override void AgentReset()
         {
@@ -239,6 +235,11 @@ namespace MLAgents
 
         public override void CollectObservations(VectorSensor sensor)
         {
+            if (!_hasLazyInitialized)
+            {
+                AgentReset();
+                _hasLazyInitialized = true;
+            }
             UpdateQ();
             ObservationsFunction(sensor);
 

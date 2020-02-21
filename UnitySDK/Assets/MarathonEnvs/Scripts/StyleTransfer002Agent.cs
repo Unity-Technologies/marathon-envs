@@ -25,17 +25,38 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 	int _totalAnimFrames;
 	bool _ignorScoreForThisFrame;
 	bool _isDone;
+	bool _hasLazyInitialized;
 
 	// Use this for initialization
 	void Start () {
+		_master = GetComponent<StyleTransfer002Master>();
+		_decisionRequester = GetComponent<DecisionRequester>();
+		var spawnableEnv = GetComponentInParent<SpawnableEnv>();
+		_localStyleAnimator = spawnableEnv.gameObject.GetComponentInChildren<StyleTransfer002Animator>();
+		_styleAnimator = _localStyleAnimator.GetFirstOfThisAnim();
+		_startCount++;
 	}
-	
+
 	// Update is called once per frame
 	void Update () {
 	}
 
 	override public void CollectObservations(VectorSensor sensor)
 	{
+		if (!_hasLazyInitialized)
+		{
+			_master = GetComponent<StyleTransfer002Master>();
+			_master.OnInitializeAgent();
+			_decisionRequester = GetComponent<DecisionRequester>();
+			var spawnableEnv = GetComponentInParent<SpawnableEnv>();
+			_localStyleAnimator = spawnableEnv.gameObject.GetComponentInChildren<StyleTransfer002Animator>();
+			_styleAnimator = _localStyleAnimator.GetFirstOfThisAnim();
+			_styleAnimator.OnInitializeAgent();
+			// _styleAnimator = _localStyleAnimator;
+			AgentReset();
+			_hasLazyInitialized = true;
+		}
+
 		// for (int i = 0; i < 255; i++)
 		// 	sensor.AddObservation(0f);
 		// return;
@@ -270,20 +291,6 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 			_scoreHistogramData = new ScoreHistogramData(columns, 30);
 		}
 			Rewards = _scoreHistogramData.GetAverages().Select(x=>(float)x).ToList();
-	}
-
-	public override void InitializeAgent()
-	{
-		_master = GetComponent<StyleTransfer002Master>();
-		_master.OnInitializeAgent();
-		_decisionRequester = GetComponent<DecisionRequester>();
-		var spawnableEnv = GetComponentInParent<SpawnableEnv>();
-		_localStyleAnimator = spawnableEnv.gameObject.GetComponentInChildren<StyleTransfer002Animator>();
-		_styleAnimator = _localStyleAnimator.GetFirstOfThisAnim();
-		_styleAnimator.OnInitializeAgent();
-		// _styleAnimator = _localStyleAnimator;
-		_startCount++;
-		AgentReset();
 	}
 
 	public override void AgentReset()

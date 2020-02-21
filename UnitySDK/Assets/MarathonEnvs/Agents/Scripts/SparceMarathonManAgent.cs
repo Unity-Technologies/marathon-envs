@@ -68,10 +68,18 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 	static RollingAverage rollingAverage;
 
 	bool _isDone;
-
+	bool _hasLazyInitialized;
 
 	override public void CollectObservations(VectorSensor sensor)
 	{
+		if (!_hasLazyInitialized)
+		{
+			_bodyManager = GetComponent<BodyManager002>();
+			_bodyManager.OnInitializeAgent();
+			AgentReset();
+			_hasLazyInitialized = true;
+		}
+
 		Vector3 normalizedVelocity = _bodyManager.GetNormalizedVelocity();
         var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
         var shoulders = _bodyManager.GetFirstBodyPart(BodyPartGroup.Torso);
@@ -129,14 +137,6 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 				Done();
 			}
 		}
-	}
-
-	public override void InitializeAgent()
-	{
-		if (_bodyManager == null)
-			_bodyManager = GetComponent<BodyManager002>();
-		_bodyManager.OnInitializeAgent();
-		AgentReset();
 	}
 
 	public override void AgentReset()

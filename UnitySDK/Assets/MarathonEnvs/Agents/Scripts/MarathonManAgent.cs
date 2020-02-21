@@ -10,34 +10,17 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 	BodyManager002 _bodyManager;
 	bool _isDone;
 
-	// override public void CollectObservations(VectorSensor sensor)
-	// {
-	// 	// sensor.AddObservation(ObsPhase);
-	// 	foreach (var bodyPart in BodyParts)
-	// 	{
-	// 		bodyPart.UpdateObservations();
-	// 		sensor.AddObservation(bodyPart.ObsLocalPosition);
-	// 		sensor.AddObservation(bodyPart.ObsRotation);
-	// 		sensor.AddObservation(bodyPart.ObsRotationVelocity);
-	// 		sensor.AddObservation(bodyPart.ObsVelocity);
-	// 	}
-	// 	foreach (var muscle in Muscles)
-	// 	{
-	// 		muscle.UpdateObservations();
-	// 		if (muscle.ConfigurableJoint.angularXMotion != ConfigurableJointMotion.Locked)
-	// 			sensor.AddObservation(muscle.TargetNormalizedRotationX);
-	// 		if (muscle.ConfigurableJoint.angularYMotion != ConfigurableJointMotion.Locked)
-	// 			sensor.AddObservation(muscle.TargetNormalizedRotationY);
-	// 		if (muscle.ConfigurableJoint.angularZMotion != ConfigurableJointMotion.Locked)
-	// 			sensor.AddObservation(muscle.TargetNormalizedRotationZ);
-	// 	}
+	public override void InitializeAgent()
+	{
+		if (_bodyManager == null)
+			_bodyManager = GetComponent<BodyManager002>();
+		_bodyManager.OnInitializeAgent();
+		AgentReset();
+	}
 
-	// 	// sensor.AddObservation(ObsCenterOfMass);
-	// 	// sensor.AddObservation(ObsVelocity);
-	// 	sensor.AddObservation(SensorIsInTouch);
-	// }
 	override public void CollectObservations(VectorSensor sensor)
 	{
+
 		Vector3 normalizedVelocity = _bodyManager.GetNormalizedVelocity();
         var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
         var shoulders = _bodyManager.GetFirstBodyPart(BodyPartGroup.Torso);
@@ -85,21 +68,12 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 		if (pelvis.Transform.position.y<0){
 			Done();
 		}
-		
 
         var reward = velocity;
 
 		AddReward(reward);
 		_bodyManager.SetDebugFrameReward(reward);
 	}
-
-	public override void InitializeAgent()
-	{
-		if (_bodyManager == null)
-			_bodyManager = GetComponent<BodyManager002>();
-		_bodyManager.OnInitializeAgent();
-		AgentReset();
-    }
 
 	public override void AgentReset()
 	{

@@ -268,7 +268,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 			Destroy(this.gameObject);
 			return;
 		}
-		MimicAnimation();
+		//MimicAnimation();
 	}
 	Vector3 GetCenterOfMass()
 	{
