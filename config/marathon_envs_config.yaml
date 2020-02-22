@@ -35,7 +35,7 @@ MarathonManBackflip-v0:
     num_layers: 2
     hidden_units: 512
 
-    MarathonManWalking-v0:
+MarathonManWalking-v0:
     normalize: true
     num_epoch: 3
     beta: .01
@@ -48,7 +48,7 @@ MarathonManBackflip-v0:
     num_layers: 2
     hidden_units: 512
 
-    MarathonManRunning-v0:
+MarathonManRunning-v0:
     normalize: true
     num_epoch: 3
     beta: .01
