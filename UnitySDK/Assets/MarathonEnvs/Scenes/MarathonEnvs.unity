@@ -294,7 +294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agentSpawner:
     spawnableEnvDefinitions:
-    - envId: HopperEnv-v0
+    - envId: Hopper-v0
       envPrefab: {fileID: 6737101200792111825, guid: 562eb53b2c5eb47819b559b2afa6063c,
         type: 3}
     - envId: Walker2d-v0
@@ -321,13 +321,21 @@ MonoBehaviour:
     - envId: TerrainMarathonMan-v0
       envPrefab: {fileID: 4916072010681759962, guid: dd522fee983368f46be78694bfb2531c,
         type: 3}
-    - envId: StyleTransferEnv-v0
-      envPrefab: {fileID: 1802870815327278923, guid: c13ea8e8df87c42639b6304f70acf750,
+    - envId: MarathonManBackflip-v0
+      envPrefab: {fileID: 4993543594474631292, guid: 6e16b77232d1f4b2d9696aa19a59513b,
         type: 3}
-    envIdDefault: HopperEnv-v0
+    - envId: MarathonManWalking-v0
+      envPrefab: {fileID: 8762153322364534832, guid: d7c9fbb45d5364c579795c900c9f1c8a,
+        type: 3}
+    - envId: MarathonManRunning-v0
+      envPrefab: {fileID: 5158136683146274678, guid: 0eb30d28e47cb4c0e8687caa8c6b6f77,
+        type: 3}
+    - envId: MarathonManJazzDancing-v0
+      envPrefab: {fileID: 8518467457834094124, guid: 387bf2f0cab8448578cc8bfd9e89f8ea,
+        type: 3}
+    envIdDefault: Walker2d-v0
     trainingNumEnvsDefault: 3
     inferenceNumEnvsDefault: 1
-    trainingMode: 0
 --- !u!1 &1715640920
 GameObject:
   m_ObjectHideFlags: 0

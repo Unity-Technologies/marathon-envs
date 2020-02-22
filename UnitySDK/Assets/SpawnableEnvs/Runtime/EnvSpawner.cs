@@ -42,8 +42,8 @@ namespace MLAgents
         public int trainingNumEnvsDefault;
         [Tooltip("The number of environments to spawn in Inference Mode if not overriden from python")]
         public int inferenceNumEnvsDefault;
-        [Tooltip("If true, enter Training Mode, else Inference Mode")]
-        public bool trainingMode;
+        //[Tooltip("If true, enter Training Mode, else Inference Mode")]
+        //public bool trainingMode;
 
 
         /// <summary>

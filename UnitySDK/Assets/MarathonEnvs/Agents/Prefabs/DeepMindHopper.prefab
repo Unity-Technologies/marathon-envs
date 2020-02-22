@@ -73,7 +73,7 @@ MonoBehaviour:
     vectorActionSize: 04000000
     vectorActionDescriptions: []
     vectorActionSpaceType: 1
-  m_Model: {fileID: 11400000, guid: b7a58caa03ac63e45a98a1d098fdbb0e, type: 3}
+  m_Model: {fileID: 11400000, guid: 683e77c7c702b4133bf16682385ae477, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: Hopper-v0

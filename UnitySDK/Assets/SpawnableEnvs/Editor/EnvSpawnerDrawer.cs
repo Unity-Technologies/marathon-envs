@@ -100,7 +100,7 @@ namespace MLAgents
                             break;
                         case nameof(_envSpawner.trainingNumEnvsDefault):
                         case nameof(_envSpawner.inferenceNumEnvsDefault):
-                        case nameof(_envSpawner.trainingMode):
+                        //case nameof(_envSpawner.trainingMode):
                             EditorGUI.PropertyField(position, subProp);
                             position.y += LineHeight;
                             break;

@@ -10,7 +10,6 @@ namespace MLAgents
     public class SelectEnvToSpawn : MonoBehaviour
     {
         public EnvSpawner agentSpawner;
-        bool isInference = true;
         bool showPopUp = false;
         static int envIdIdex = -1;
         string[] envIds;
@@ -50,9 +49,17 @@ namespace MLAgents
         {
             // try get from command line
             List<string> commandLineArgs = new List<string>(System.Environment.GetCommandLineArgs());
-            int index = commandLineArgs.IndexOf("--spawn-env");
-            if(index != -1) {
-                return commandLineArgs[index + 1];
+            var entry = commandLineArgs.FirstOrDefault(x => x.ToLowerInvariant().StartsWith("--spawn-env"));
+            if (entry != null)
+            {
+                string value = string.Empty;
+                if (entry.Contains("="))
+                    value = entry.Split('=')[1];
+                else
+                    value = commandLineArgs[commandLineArgs.IndexOf(entry) + 1];
+                print("-----------------");
+                print($"--spawn-env:{value}");
+                return value;
             }
             return agentSpawner.envIdDefault;
         }
@@ -63,13 +70,23 @@ namespace MLAgents
         {
             // try get from command line
             List<string> commandLineArgs = new List<string>(System.Environment.GetCommandLineArgs());
-            int index = commandLineArgs.IndexOf("--num-spawn-envs");
-            if(index != -1) {
+            var entry = commandLineArgs.FirstOrDefault(x => x.ToLowerInvariant().StartsWith("--num-spawn-envs"));
+            if (entry != null)
+            {
+                string value = string.Empty;
+                if (entry.Contains("="))
+                    value = entry.Split('=')[1];
+                else
+                    value = commandLineArgs[commandLineArgs.IndexOf(entry) + 1];
                 int numEnvs;
-                if (int.TryParse(commandLineArgs[index + 1], out numEnvs))
+                if (int.TryParse(value, out numEnvs))
+                {
+                    print("-----------------");
+                    print($"--num-spawn-envs:{numEnvs}");
                     return numEnvs;
+                }
             }
-            return isInference ? agentSpawner.inferenceNumEnvsDefault : agentSpawner.trainingNumEnvsDefault;
+            return !Academy.Instance.IsCommunicatorOn ? agentSpawner.inferenceNumEnvsDefault : agentSpawner.trainingNumEnvsDefault;
         }        
         bool ShouldInitalizeOnAwake()
         {
@@ -84,14 +101,13 @@ namespace MLAgents
         /// </summary>
         bool IsTrainingMode()
         {
-            if (Academy.Instance.IsCommunicatorOn)
-                return false;
-            if (agentSpawner != null && agentSpawner.trainingMode)
-                return true;
-            List<string> commandLineArgs = new List<string>(System.Environment.GetCommandLineArgs());
-            int index = commandLineArgs.IndexOf("--train");
-            bool trainingMode = index != -1;
-            return trainingMode;
+            return Academy.Instance.IsCommunicatorOn;
+            //if (agentSpawner != null && agentSpawner.trainingMode)
+            //    return true;
+            //List<string> commandLineArgs = new List<string>(System.Environment.GetCommandLineArgs());
+            //int index = commandLineArgs.IndexOf("--train");
+            //bool trainingMode = index != -1;
+            //return trainingMode;
         }
 
         // Update is called once per frame

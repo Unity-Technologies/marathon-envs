@@ -22,17 +22,54 @@ default:
             strength: 1.0
             gamma: 0.99
 
-StyleTransferBrain-v0:
+MarathonManBackflip-v0:
     normalize: true
     num_epoch: 3
     beta: .01
     learning_rate: 1e-4
     time_horizon: 100
-    max_steps: 2e6
+    max_steps: 1e8
     batch_size: 768 
-    # buffer_size: 21504 # 768 * 28
-    # buffer_size: 30720 # 768 * 40
-    buffer_size: 15360 # 768 * 20
+    buffer_size: 21504 # 768 * 28
+    summary_freq: 10000
+    num_layers: 2
+    hidden_units: 512
+
+    MarathonManWalking-v0:
+    normalize: true
+    num_epoch: 3
+    beta: .01
+    learning_rate: 1e-4
+    time_horizon: 100
+    max_steps: 5e7
+    batch_size: 768 
+    buffer_size: 21504 # 768 * 28
+    summary_freq: 10000
+    num_layers: 2
+    hidden_units: 512
+
+    MarathonManRunning-v0:
+    normalize: true
+    num_epoch: 3
+    beta: .01
+    learning_rate: 1e-4
+    time_horizon: 100
+    max_steps: 5e7
+    batch_size: 768 
+    buffer_size: 21504 # 768 * 28
+    summary_freq: 10000
+    num_layers: 2
+    hidden_units: 512
+
+MarathonManJazzDancing-v0:
+    normalize: true
+    num_epoch: 3
+    beta: .01
+    learning_rate: 1e-4
+    time_horizon: 100
+    max_steps: 5e7
+    batch_size: 768 
+    buffer_size: 21504 # 768 * 28
     summary_freq: 10000
     num_layers: 2
     hidden_units: 512
@@ -75,11 +112,10 @@ MarathonManSparseBrain-v0:
     # max_steps: 10.e4
     max_steps: 20.e4 # HACK for 50 agents
 
-HopperBrain-v0:
+Hopper-v0:
     num_epoch: 10 
     time_horizon: 100 
-    # summary_freq: 100000
-    summary_freq: 1000 # HACK for 100 agents
+    summary_freq: 10000
     use_recurrent: false
     normalize: false 
     num_layers: 2
@@ -87,7 +123,7 @@ HopperBrain-v0:
     learning_rate: 1e-3
     batch_size: 16
     buffer_size: 5120
-    max_steps: 20000 # HACK for 50 agents
+    max_steps: 1e6
     beta: .003
     # max_steps: 1.e6
     # max_steps: 1.e4 # HACK for 100 agents
