@@ -56,6 +56,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 			// _styleAnimator = _localStyleAnimator;
 			AgentReset();
 			_hasLazyInitialized = true;
+			_localStyleAnimator.DestoryIfNotFirstAnim();
 		}
 
 		// for (int i = 0; i < 255; i++)

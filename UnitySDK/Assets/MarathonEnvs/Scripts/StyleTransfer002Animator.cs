@@ -81,6 +81,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 			_transforms
 			.First(x=> BodyHelper002.GetBodyPartGroup(x.name) == BodyHelper002.BodyPartGroup.Hips)
 			.rotation;
+		SetupSensors();
 	}
 	void Awake()
     {
@@ -263,14 +264,14 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		AnimationStepsReady = true;
 		anim.enabled=false;
 	}
-	protected virtual void LateUpdate() {
+
+	public void DestoryIfNotFirstAnim()
+    {
 		if (!isFirstOfThisAnim){
 			Destroy(this.gameObject);
-			return;
-		}
-		//MimicAnimation();
-	}
-	Vector3 GetCenterOfMass()
+        }
+    }
+    Vector3 GetCenterOfMass()
 	{
 		var centerOfMass = Vector3.zero;
 		float totalMass = 0f;
