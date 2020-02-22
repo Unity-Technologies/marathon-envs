@@ -91,18 +91,19 @@ public class TerrainWalkerAgent : MarathonAgent {
         }
     }
   
-    void ObservationsDefault(VectorSensor sensor)
+    void ObservationsDefault()
     {
+        var sensor = this;
         var pelvis = BodyParts["pelvis"];
         Vector3 normalizedVelocity = this.GetNormalizedVelocity(pelvis.velocity);
-        sensor.AddObservation(normalizedVelocity);
-        sensor.AddObservation(pelvis.transform.forward); // gyroscope 
-        sensor.AddObservation(pelvis.transform.up);
+        sensor.AddVectorObs(normalizedVelocity);
+        sensor.AddVectorObs(pelvis.transform.forward); // gyroscope 
+        sensor.AddVectorObs(pelvis.transform.up);
 
-        sensor.AddObservation(SensorIsInTouch);
-        JointRotations.ForEach(x => sensor.AddObservation(x));
-        sensor.AddObservation(JointVelocity);
-        // sensor.AddObservation(new []{
+        sensor.AddVectorObs(SensorIsInTouch);
+        JointRotations.ForEach(x => sensor.AddVectorObs(x));
+        sensor.AddVectorObs(JointVelocity);
+        // sensor.AddVectorObs(new []{
         //     this.GetNormalizedPosition(BodyParts["left_foot"].transform.position).y,
         //     this.GetNormalizedPosition(BodyParts["right_foot"].transform.position).y
         // });
@@ -111,8 +112,8 @@ public class TerrainWalkerAgent : MarathonAgent {
             _terrainGenerator.GetDistances2d(
                 pelvis.transform.position, ShowMonitor);
    
-        sensor.AddObservation(distances);
-        sensor.AddObservation(fraction);
+        sensor.AddVectorObs(distances);
+        sensor.AddVectorObs(fraction);
     }
 
 

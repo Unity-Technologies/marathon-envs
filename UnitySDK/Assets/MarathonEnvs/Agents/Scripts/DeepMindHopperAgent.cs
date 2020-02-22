@@ -26,24 +26,25 @@ public class DeepMindHopperAgent : MarathonAgent
         SetupBodyParts();
     }
 
-    void ObservationsDefault(VectorSensor sensor)
+    void ObservationsDefault()
     {
+        var sensor = this;
         if (ShowMonitor)
         {
         }
 
         var pelvis = BodyParts["pelvis"];
         Vector3 normalizedVelocity = this.GetNormalizedVelocity(pelvis.velocity);
-        sensor.AddObservation(normalizedVelocity);
-        sensor.AddObservation(pelvis.transform.forward); // gyroscope 
-        sensor.AddObservation(pelvis.transform.up);
+        sensor.AddVectorObs(normalizedVelocity);
+        sensor.AddVectorObs(pelvis.transform.forward); // gyroscope 
+        sensor.AddVectorObs(pelvis.transform.up);
 
-        sensor.AddObservation(SensorIsInTouch);
-        JointRotations.ForEach(x => sensor.AddObservation(x));
-        sensor.AddObservation(JointVelocity);
+        sensor.AddVectorObs(SensorIsInTouch);
+        JointRotations.ForEach(x => sensor.AddVectorObs(x));
+        sensor.AddVectorObs(JointVelocity);
         var foot = BodyParts["foot"];
         Vector3 normalizedFootPosition = this.GetNormalizedPosition(foot.transform.position);
-        sensor.AddObservation(normalizedFootPosition.y);
+        sensor.AddVectorObs(normalizedFootPosition.y);
     }
 
     float GetRewardOnEpisodeComplete()

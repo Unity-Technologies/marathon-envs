@@ -88,38 +88,39 @@ public class TerrainHopperAgent : MarathonAgent {
         }
     }
   
-    void ObservationsDefault(VectorSensor sensor)
+    void ObservationsDefault()
     {
+        var sensor = this;
         // var pelvis = BodyParts["pelvis"];
-        // sensor.AddObservation(pelvis.velocity);
-        // sensor.AddObservation(pelvis.transform.forward); // gyroscope 
-        // sensor.AddObservation(pelvis.transform.up);
-        
-        // sensor.AddObservation(SensorIsInTouch);
-        // JointRotations.ForEach(x=>sensor.AddObservation(x));
-        // sensor.AddObservation(JointVelocity);
+        // sensor.AddVectorObs(pelvis.velocity);
+        // sensor.AddVectorObs(pelvis.transform.forward); // gyroscope 
+        // sensor.AddVectorObs(pelvis.transform.up);
+
+        // sensor.AddVectorObs(SensorIsInTouch);
+        // JointRotations.ForEach(x=>sensor.AddVectorObs(x));
+        // sensor.AddVectorObs(JointVelocity);
         // var foot = BodyParts["foot"];
-        // sensor.AddObservation(foot.transform.position.y);
+        // sensor.AddVectorObs(foot.transform.position.y);
 
         var pelvis = BodyParts["pelvis"];
         Vector3 normalizedVelocity = this.GetNormalizedVelocity(pelvis.velocity);
-        sensor.AddObservation(normalizedVelocity);
-        sensor.AddObservation(pelvis.transform.forward); // gyroscope 
-        sensor.AddObservation(pelvis.transform.up);
+        sensor.AddVectorObs(normalizedVelocity);
+        sensor.AddVectorObs(pelvis.transform.forward); // gyroscope 
+        sensor.AddVectorObs(pelvis.transform.up);
 
-        sensor.AddObservation(SensorIsInTouch);
-        JointRotations.ForEach(x => sensor.AddObservation(x));
-        sensor.AddObservation(JointVelocity);
+        sensor.AddVectorObs(SensorIsInTouch);
+        JointRotations.ForEach(x => sensor.AddVectorObs(x));
+        sensor.AddVectorObs(JointVelocity);
         var foot = BodyParts["foot"];
         Vector3 normalizedFootPosition = this.GetNormalizedPosition(foot.transform.position);
-        sensor.AddObservation(normalizedFootPosition.y);        
+        sensor.AddVectorObs(normalizedFootPosition.y);        
 
         (List<float> distances, float fraction) = 
             _terrainGenerator.GetDistances2d(
                 pelvis.transform.position, ShowMonitor);
    
-        sensor.AddObservation(distances);
-        sensor.AddObservation(fraction);
+        sensor.AddVectorObs(distances);
+        sensor.AddVectorObs(fraction);
     }
 
 

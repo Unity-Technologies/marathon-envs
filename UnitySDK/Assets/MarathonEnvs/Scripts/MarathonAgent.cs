@@ -37,7 +37,8 @@ namespace MLAgents
 
         [Tooltip("Function which collections observations")]
         /**< \brief Function which collections observations*/
-        protected Action<VectorSensor> ObservationsFunction;
+        protected Action ObservationsFunction;
+        //protected Action<VectorSensor> ObservationsFunction;
 
         [Tooltip("Optional Function for additional reward at end of Episode")]
         /**< \brief Optional Function for additional reward at end of Episode*/
@@ -233,15 +234,16 @@ namespace MLAgents
             }
         }
 
-        public override void CollectObservations(VectorSensor sensor)
+        public override void CollectObservations()
         {
+            var sensor = this;
             if (!_hasLazyInitialized)
             {
                 AgentReset();
                 _hasLazyInitialized = true;
             }
             UpdateQ();
-            ObservationsFunction(sensor);
+            ObservationsFunction();
 
             // var info = GetInfo();
             // if (Observations?.Count != info.vectorObservation.Count)

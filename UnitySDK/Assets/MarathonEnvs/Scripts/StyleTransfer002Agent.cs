@@ -41,8 +41,9 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 	void Update () {
 	}
 
-	override public void CollectObservations(VectorSensor sensor)
+	override public void CollectObservations()
 	{
+		var sensor = this;
 		if (!_hasLazyInitialized)
 		{
 			_master = GetComponent<StyleTransfer002Master>();
@@ -58,44 +59,44 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		}
 
 		// for (int i = 0; i < 255; i++)
-		// 	sensor.AddObservation(0f);
+		// 	sensor.AddVectorObs(0f);
 		// return;
-		sensor.AddObservation(_master.ObsPhase);
+		sensor.AddVectorObs(_master.ObsPhase);
 
 		// if (false){
 		// 	// temp hack to support old models
 		// 	if (SensorIsInTouch?.Count>0){
-		// 		sensor.AddObservation(SensorIsInTouch[0]);
-		// 		sensor.AddObservation(0f);
-		// 		sensor.AddObservation(SensorIsInTouch[1]);
-		// 		sensor.AddObservation(0f);
+		// 		sensor.AddVectorObs(SensorIsInTouch[0]);
+		// 		sensor.AddVectorObs(0f);
+		// 		sensor.AddVectorObs(SensorIsInTouch[1]);
+		// 		sensor.AddVectorObs(0f);
 		// 	}
 		// } else {
-		// 	sensor.AddObservation(_master.ObsCenterOfMass);
-		// 	sensor.AddObservation(_master.ObsVelocity);
-		// 	sensor.AddObservation(SensorIsInTouch);	
+		// 	sensor.AddVectorObs(_master.ObsCenterOfMass);
+		// 	sensor.AddVectorObs(_master.ObsVelocity);
+		// 	sensor.AddVectorObs(SensorIsInTouch);	
 		// }
 
 		foreach (var bodyPart in _master.BodyParts)
 		{
-			sensor.AddObservation(bodyPart.ObsLocalPosition);
-			sensor.AddObservation(bodyPart.ObsRotation);
-			sensor.AddObservation(bodyPart.ObsRotationVelocity);
-			sensor.AddObservation(bodyPart.ObsVelocity);
+			sensor.AddVectorObs(bodyPart.ObsLocalPosition);
+			sensor.AddVectorObs(bodyPart.ObsRotation);
+			sensor.AddVectorObs(bodyPart.ObsRotationVelocity);
+			sensor.AddVectorObs(bodyPart.ObsVelocity);
 		}
 		foreach (var muscle in _master.Muscles)
 		{
 			if (muscle.ConfigurableJoint.angularXMotion != ConfigurableJointMotion.Locked)
-				sensor.AddObservation(muscle.TargetNormalizedRotationX);
+				sensor.AddVectorObs(muscle.TargetNormalizedRotationX);
 			if (muscle.ConfigurableJoint.angularYMotion != ConfigurableJointMotion.Locked)
-				sensor.AddObservation(muscle.TargetNormalizedRotationY);
+				sensor.AddVectorObs(muscle.TargetNormalizedRotationY);
 			if (muscle.ConfigurableJoint.angularZMotion != ConfigurableJointMotion.Locked)
-				sensor.AddObservation(muscle.TargetNormalizedRotationZ);
+				sensor.AddVectorObs(muscle.TargetNormalizedRotationZ);
 		}
 
-		sensor.AddObservation(_master.ObsCenterOfMass);
-		sensor.AddObservation(_master.ObsVelocity);
-		sensor.AddObservation(SensorIsInTouch);	
+		sensor.AddVectorObs(_master.ObsCenterOfMass);
+		sensor.AddVectorObs(_master.ObsVelocity);
+		sensor.AddVectorObs(SensorIsInTouch);	
 	}
 
 	public override void AgentAction(float[] vectorAction)

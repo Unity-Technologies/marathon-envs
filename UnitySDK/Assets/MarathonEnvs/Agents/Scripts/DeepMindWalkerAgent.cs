@@ -26,22 +26,23 @@ public class DeepMindWalkerAgent : MarathonAgent
         SetupBodyParts();
     }
 
-    void ObservationsDefault(VectorSensor sensor)
+    void ObservationsDefault()
     {
+        var sensor = this;
         if (ShowMonitor)
         {
         }
 
         var pelvis = BodyParts["pelvis"];
         Vector3 normalizedVelocity = this.GetNormalizedVelocity(pelvis.velocity);
-        sensor.AddObservation(normalizedVelocity);
-        sensor.AddObservation(pelvis.transform.forward); // gyroscope 
-        sensor.AddObservation(pelvis.transform.up);
+        sensor.AddVectorObs(normalizedVelocity);
+        sensor.AddVectorObs(pelvis.transform.forward); // gyroscope 
+        sensor.AddVectorObs(pelvis.transform.up);
 
-        sensor.AddObservation(SensorIsInTouch);
-        JointRotations.ForEach(x => sensor.AddObservation(x));
-        sensor.AddObservation(JointVelocity);
-        sensor.AddObservation(new []{
+        sensor.AddVectorObs(SensorIsInTouch);
+        JointRotations.ForEach(x => sensor.AddVectorObs(x));
+        sensor.AddVectorObs(JointVelocity);
+        sensor.AddVectorObs(new []{
             this.GetNormalizedPosition(BodyParts["left_foot"].transform.position).y,
             this.GetNormalizedPosition(BodyParts["right_foot"].transform.position).y
         });

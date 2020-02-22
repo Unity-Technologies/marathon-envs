@@ -18,25 +18,26 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 		AgentReset();
 	}
 
-	override public void CollectObservations(VectorSensor sensor)
+	override public void CollectObservations()
 	{
+		var sensor = this;
 
 		Vector3 normalizedVelocity = _bodyManager.GetNormalizedVelocity();
         var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
         var shoulders = _bodyManager.GetFirstBodyPart(BodyPartGroup.Torso);
 
-        sensor.AddObservation(normalizedVelocity); 
-        sensor.AddObservation(pelvis.Rigidbody.transform.forward); // gyroscope 
-        sensor.AddObservation(pelvis.Rigidbody.transform.up);
+        sensor.AddVectorObs(normalizedVelocity); 
+        sensor.AddVectorObs(pelvis.Rigidbody.transform.forward); // gyroscope 
+        sensor.AddVectorObs(pelvis.Rigidbody.transform.up);
 
-        sensor.AddObservation(shoulders.Rigidbody.transform.forward); // gyroscope 
-        sensor.AddObservation(shoulders.Rigidbody.transform.up);
+        sensor.AddVectorObs(shoulders.Rigidbody.transform.forward); // gyroscope 
+        sensor.AddVectorObs(shoulders.Rigidbody.transform.up);
 
-		sensor.AddObservation(_bodyManager.GetSensorIsInTouch());
-		sensor.AddObservation(_bodyManager.GetBodyPartsObservations());
-		sensor.AddObservation(_bodyManager.GetMusclesObservations());
-		sensor.AddObservation(_bodyManager.GetSensorYPositions());
-		sensor.AddObservation(_bodyManager.GetSensorZPositions());
+		sensor.AddVectorObs(_bodyManager.GetSensorIsInTouch());
+		sensor.AddVectorObs(_bodyManager.GetBodyPartsObservations());
+		sensor.AddVectorObs(_bodyManager.GetMusclesObservations());
+		sensor.AddVectorObs(_bodyManager.GetSensorYPositions());
+		sensor.AddVectorObs(_bodyManager.GetSensorZPositions());
 
 		// _bodyManager.OnCollectObservationsHandleDebug(GetInfo());
 	}

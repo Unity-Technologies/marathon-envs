@@ -90,26 +90,27 @@ public class TerrainAntAgent : MarathonAgent {
         }
     }
   
-    void ObservationsDefault(VectorSensor sensor)
+    void ObservationsDefault()
     {
+        var sensor = this;
         var pelvis = BodyParts["pelvis"];
         Vector3 normalizedVelocity = GetNormalizedVelocity(pelvis.velocity);
-        sensor.AddObservation(normalizedVelocity);
-        sensor.AddObservation(pelvis.transform.forward); // gyroscope 
-        sensor.AddObservation(pelvis.transform.up);
+        sensor.AddVectorObs(normalizedVelocity);
+        sensor.AddVectorObs(pelvis.transform.forward); // gyroscope 
+        sensor.AddVectorObs(pelvis.transform.up);
 
-        sensor.AddObservation(SensorIsInTouch);
-        JointRotations.ForEach(x => sensor.AddObservation(x));
-        sensor.AddObservation(JointVelocity);
+        sensor.AddVectorObs(SensorIsInTouch);
+        JointRotations.ForEach(x => sensor.AddVectorObs(x));
+        sensor.AddVectorObs(JointVelocity);
         // Vector3 normalizedFootPosition = this.GetNormalizedPosition(pelvis.transform.position);
-        // sensor.AddObservation(normalizedFootPosition.y);
+        // sensor.AddVectorObs(normalizedFootPosition.y);
 
         (List<float> distances, float fraction) = 
             _terrainGenerator.GetDistances2d(
                 pelvis.transform.position, ShowMonitor);
    
-        sensor.AddObservation(distances);
-        sensor.AddObservation(fraction);
+        sensor.AddVectorObs(distances);
+        sensor.AddVectorObs(fraction);
     }
 
 

@@ -70,8 +70,9 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 	bool _isDone;
 	bool _hasLazyInitialized;
 
-	override public void CollectObservations(VectorSensor sensor)
+	override public void CollectObservations()
 	{
+		var sensor = this;
 		if (!_hasLazyInitialized)
 		{
 			_bodyManager = GetComponent<BodyManager002>();
@@ -84,21 +85,21 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
         var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
         var shoulders = _bodyManager.GetFirstBodyPart(BodyPartGroup.Torso);
 
-        sensor.AddObservation(normalizedVelocity); 
-        sensor.AddObservation(pelvis.Rigidbody.transform.forward); // gyroscope 
-        sensor.AddObservation(pelvis.Rigidbody.transform.up);
+        sensor.AddVectorObs(normalizedVelocity); 
+        sensor.AddVectorObs(pelvis.Rigidbody.transform.forward); // gyroscope 
+        sensor.AddVectorObs(pelvis.Rigidbody.transform.up);
 
-        sensor.AddObservation(shoulders.Rigidbody.transform.forward); // gyroscope 
-        sensor.AddObservation(shoulders.Rigidbody.transform.up);
+        sensor.AddVectorObs(shoulders.Rigidbody.transform.forward); // gyroscope 
+        sensor.AddVectorObs(shoulders.Rigidbody.transform.up);
 
-		sensor.AddObservation(_bodyManager.GetSensorIsInTouch());
-		sensor.AddObservation(_bodyManager.GetBodyPartsObservations());
-		sensor.AddObservation(_bodyManager.GetMusclesObservations());
-		sensor.AddObservation(_bodyManager.GetSensorYPositions());
-		sensor.AddObservation(_bodyManager.GetSensorZPositions());
+		sensor.AddVectorObs(_bodyManager.GetSensorIsInTouch());
+		sensor.AddVectorObs(_bodyManager.GetBodyPartsObservations());
+		sensor.AddVectorObs(_bodyManager.GetMusclesObservations());
+		sensor.AddVectorObs(_bodyManager.GetSensorYPositions());
+		sensor.AddVectorObs(_bodyManager.GetSensorZPositions());
 
-		sensor.AddObservation(_notAtLimitBonus);
-		sensor.AddObservation(_reducedPowerBonus);
+		sensor.AddVectorObs(_notAtLimitBonus);
+		sensor.AddVectorObs(_reducedPowerBonus);
 		// _bodyManager.OnCollectObservationsHandleDebug(GetInfo());
 	}
 
