@@ -2113,7 +2113,7 @@ MonoBehaviour:
     vectorActionSize: 15000000
     vectorActionDescriptions: []
     vectorActionSpaceType: 1
-  m_Model: {fileID: 11400000, guid: 7df0a9d6d3be48e499c9e64d644cacc8, type: 3}
+  m_Model: {fileID: 11400000, guid: 1b26305970efa4044a58f2c5b9ae7f13, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
   m_BehaviorName: MarathonMan-v0
@@ -2163,7 +2163,6 @@ MonoBehaviour:
   AverageReward: 0
   MaxDistanceTraveled: 0
   DistanceTraveled: 0
-  numberOfActionsBetweenDecisions: 0
 --- !u!54 &5286234179746182682
 Rigidbody:
   m_ObjectHideFlags: 0

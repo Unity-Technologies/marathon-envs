@@ -335,7 +335,7 @@ MonoBehaviour:
         type: 3}
     envIdDefault: Walker2d-v0
     trainingNumEnvsDefault: 3
-    inferenceNumEnvsDefault: 1
+    inferenceNumEnvsDefault: 2
 --- !u!1 &1715640920
 GameObject:
   m_ObjectHideFlags: 0
