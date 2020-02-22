@@ -18,6 +18,12 @@ namespace MLAgents
         Scene _spawnedScene;
         PhysicsScene _spawnedPhysicsScene;
 
+        private void FixedUpdate()
+        {
+            if (CreateUniquePhysicsScene)
+                _spawnedPhysicsScene.Simulate(Time.fixedDeltaTime);
+        }
+
         public void UpdateBounds()
         {
             bounds.size = Vector3.zero; // reset
