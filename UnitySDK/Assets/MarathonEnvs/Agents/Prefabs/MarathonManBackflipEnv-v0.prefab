@@ -72,5 +72,11 @@ PrefabInstance:
       propertyPath: m_BehaviorName
       value: MarathonManBackflip-v0
       objectReference: {fileID: 0}
+    - target: {fileID: 7287095565751321531, guid: c13ea8e8df87c42639b6304f70acf750,
+        type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 11400000, guid: b7a674254088b4148881ff08b5fe1261,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c13ea8e8df87c42639b6304f70acf750, type: 3}
