@@ -33,7 +33,7 @@ MarathonManBackflip-v0:
     buffer_size: 21504 # 768 * 28
     summary_freq: 10000
     num_layers: 2
-    hidden_units: 512
+    hidden_units: 256
 
 MarathonManWalking-v0:
     normalize: true
@@ -46,7 +46,7 @@ MarathonManWalking-v0:
     buffer_size: 21504 # 768 * 28
     summary_freq: 10000
     num_layers: 2
-    hidden_units: 512
+    hidden_units: 256
 
 MarathonManRunning-v0:
     normalize: true
@@ -59,7 +59,7 @@ MarathonManRunning-v0:
     buffer_size: 21504 # 768 * 28
     summary_freq: 10000
     num_layers: 2
-    hidden_units: 512
+    hidden_units: 256
 
 MarathonManJazzDancing-v0:
     normalize: true
@@ -72,7 +72,7 @@ MarathonManJazzDancing-v0:
     buffer_size: 21504 # 768 * 28
     summary_freq: 10000
     num_layers: 2
-    hidden_units: 512
+    hidden_units: 256
 
 MarathonMan-v0:
     num_epoch: 10 

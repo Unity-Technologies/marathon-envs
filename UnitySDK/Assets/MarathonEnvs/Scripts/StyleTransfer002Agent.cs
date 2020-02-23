@@ -46,17 +46,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		var sensor = this;
 		if (!_hasLazyInitialized)
 		{
-			_master = GetComponent<StyleTransfer002Master>();
-			_master.OnInitializeAgent();
-			_decisionRequester = GetComponent<DecisionRequester>();
-			var spawnableEnv = GetComponentInParent<SpawnableEnv>();
-			_localStyleAnimator = spawnableEnv.gameObject.GetComponentInChildren<StyleTransfer002Animator>();
-			_styleAnimator = _localStyleAnimator.GetFirstOfThisAnim();
-			_styleAnimator.OnInitializeAgent();
-			// _styleAnimator = _localStyleAnimator;
 			AgentReset();
-			_hasLazyInitialized = true;
-			_localStyleAnimator.DestoryIfNotFirstAnim();
 		}
 
 		// for (int i = 0; i < 255; i++)
@@ -297,6 +287,19 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 
 	public override void AgentReset()
 	{
+		if (!_hasLazyInitialized)
+		{
+			_master = GetComponent<StyleTransfer002Master>();
+			_master.OnInitializeAgent();
+			_decisionRequester = GetComponent<DecisionRequester>();
+			var spawnableEnv = GetComponentInParent<SpawnableEnv>();
+			_localStyleAnimator = spawnableEnv.gameObject.GetComponentInChildren<StyleTransfer002Animator>();
+			_styleAnimator = _localStyleAnimator.GetFirstOfThisAnim();
+			_styleAnimator.OnInitializeAgent();
+			// _styleAnimator = _localStyleAnimator;
+			_hasLazyInitialized = true;
+			_localStyleAnimator.DestoryIfNotFirstAnim();
+		}
 		_isDone = true;
 		_ignorScoreForThisFrame = true;
 		_master.ResetPhase();
