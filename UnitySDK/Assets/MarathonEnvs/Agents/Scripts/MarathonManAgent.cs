@@ -9,18 +9,15 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 {
 	BodyManager002 _bodyManager;
 	bool _isDone;
-
-	public override void InitializeAgent()
-	{
-		if (_bodyManager == null)
-			_bodyManager = GetComponent<BodyManager002>();
-		_bodyManager.OnInitializeAgent();
-		AgentReset();
-	}
+	bool _hasLazyInitialized;
 
 	override public void CollectObservations()
 	{
 		var sensor = this;
+		if (!_hasLazyInitialized)
+		{
+			AgentReset();
+		}
 
 		Vector3 normalizedVelocity = _bodyManager.GetNormalizedVelocity();
         var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
@@ -78,6 +75,12 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 
 	public override void AgentReset()
 	{
+		if (!_hasLazyInitialized)
+		{
+			_bodyManager = GetComponent<BodyManager002>();
+			_bodyManager.OnInitializeAgent();
+			_hasLazyInitialized = true;
+		}
 		_isDone = true;
 		_bodyManager.OnAgentReset();
 	}

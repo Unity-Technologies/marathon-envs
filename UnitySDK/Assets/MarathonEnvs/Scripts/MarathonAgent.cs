@@ -137,7 +137,11 @@ namespace MLAgents
 
         public override void AgentReset()
         {
-    		_isDone = true;
+            if (!_hasLazyInitialized)
+            {
+                _hasLazyInitialized = true;
+            }
+            _isDone = true;
             if (DistanceTraveled != float.MinValue)
             {
                 var scorer = FindObjectOfType<Scorer>();
@@ -240,7 +244,6 @@ namespace MLAgents
             if (!_hasLazyInitialized)
             {
                 AgentReset();
-                _hasLazyInitialized = true;
             }
             UpdateQ();
             ObservationsFunction();

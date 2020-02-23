@@ -75,10 +75,7 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		var sensor = this;
 		if (!_hasLazyInitialized)
 		{
-			_bodyManager = GetComponent<BodyManager002>();
-			_bodyManager.OnInitializeAgent();
 			AgentReset();
-			_hasLazyInitialized = true;
 		}
 
 		Vector3 normalizedVelocity = _bodyManager.GetNormalizedVelocity();
@@ -142,6 +139,12 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 
 	public override void AgentReset()
 	{
+		if (!_hasLazyInitialized)
+		{
+			_bodyManager = GetComponent<BodyManager002>();
+			_bodyManager.OnInitializeAgent();
+			_hasLazyInitialized = true;
+		}
 		_isDone = true;
 		_bodyManager.OnAgentReset();
 		_episodeMaxDistance = 0f;
