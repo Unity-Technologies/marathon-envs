@@ -185,6 +185,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114228609771559028, guid: 54ab053b5f4414ff9a8a7e81b545fe23,
+        type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 11400000, guid: 7264130bd4f8441dd99ab09d9b9c5d81,
+        type: 3}
     - target: {fileID: 114612892920136778, guid: 54ab053b5f4414ff9a8a7e81b545fe23,
         type: 3}
       propertyPath: agentParameters.agentRenderTextures.Array.size
