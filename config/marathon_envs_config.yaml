@@ -28,7 +28,7 @@ MarathonManBackflip-v0:
     beta: .01
     learning_rate: 1e-4
     time_horizon: 100
-    max_steps: 1e8
+    max_steps: 128e6
     batch_size: 768 
     buffer_size: 21504 # 768 * 28
     summary_freq: 10000
@@ -41,7 +41,7 @@ MarathonManWalking-v0:
     beta: .01
     learning_rate: 1e-4
     time_horizon: 100
-    max_steps: 5e7
+    max_steps: 64e6
     batch_size: 768 
     buffer_size: 21504 # 768 * 28
     summary_freq: 10000
@@ -54,7 +54,7 @@ MarathonManRunning-v0:
     beta: .01
     learning_rate: 1e-4
     time_horizon: 100
-    max_steps: 5e7
+    max_steps: 64e6
     batch_size: 768 
     buffer_size: 21504 # 768 * 28
     summary_freq: 10000
@@ -67,7 +67,7 @@ MarathonManJazzDancing-v0:
     beta: .01
     learning_rate: 1e-4
     time_horizon: 100
-    max_steps: 5e7
+    max_steps: 64e6
     batch_size: 768 
     buffer_size: 21504 # 768 * 28
     summary_freq: 10000
@@ -194,10 +194,10 @@ TerrainAnt-v0:
     batch_size: 32
     buffer_size: 5120
     beta: .001
-    max_steps: 100e6
+    max_steps: 50e6
 
 TerrainMarathonMan-v0:
-    num_epoch: 10 
+    num_epoch: 3 
     time_horizon: 1000 
     summary_freq: 10000
     use_recurrent: false
@@ -207,5 +207,5 @@ TerrainMarathonMan-v0:
     learning_rate: 3e-4
     batch_size: 32
     buffer_size: 5120
-    beta: .0003
-    max_steps: 100e6
+    beta: .0
+    max_steps: 50e6
