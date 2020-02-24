@@ -87,9 +87,7 @@ MarathonMan-v0:
     batch_size: 64
     buffer_size: 10240
     beta: .003
-    # max_steps: 10.e6    
-    # max_steps: 10.e4
-    max_steps: 100.e4 
+    max_steps: 1.e7 
 
 MarathonManSparse-v0:
     num_epoch: 10 
@@ -108,9 +106,7 @@ MarathonManSparse-v0:
     batch_size: 64
     buffer_size: 10240
     beta: .003
-    # max_steps: 10.e6  
-    # max_steps: 10.e4
-    max_steps: 100.e4
+    max_steps: 1.e7 
 
 Hopper-v0:
     num_epoch: 10 
