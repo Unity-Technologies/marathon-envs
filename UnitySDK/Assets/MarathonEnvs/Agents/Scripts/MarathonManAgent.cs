@@ -8,59 +8,42 @@ using static BodyHelper002;
 public class MarathonManAgent : Agent, IOnTerrainCollision
 {
 	BodyManager002 _bodyManager;
+	bool _isDone;
+	bool _hasLazyInitialized;
 
-	// override public void CollectObservations()
-	// {
-	// 	// AddVectorObs(ObsPhase);
-	// 	foreach (var bodyPart in BodyParts)
-	// 	{
-	// 		bodyPart.UpdateObservations();
-	// 		AddVectorObs(bodyPart.ObsLocalPosition);
-	// 		AddVectorObs(bodyPart.ObsRotation);
-	// 		AddVectorObs(bodyPart.ObsRotationVelocity);
-	// 		AddVectorObs(bodyPart.ObsVelocity);
-	// 	}
-	// 	foreach (var muscle in Muscles)
-	// 	{
-	// 		muscle.UpdateObservations();
-	// 		if (muscle.ConfigurableJoint.angularXMotion != ConfigurableJointMotion.Locked)
-	// 			AddVectorObs(muscle.TargetNormalizedRotationX);
-	// 		if (muscle.ConfigurableJoint.angularYMotion != ConfigurableJointMotion.Locked)
-	// 			AddVectorObs(muscle.TargetNormalizedRotationY);
-	// 		if (muscle.ConfigurableJoint.angularZMotion != ConfigurableJointMotion.Locked)
-	// 			AddVectorObs(muscle.TargetNormalizedRotationZ);
-	// 	}
-
-	// 	// AddVectorObs(ObsCenterOfMass);
-	// 	// AddVectorObs(ObsVelocity);
-	// 	AddVectorObs(SensorIsInTouch);
-	// }
 	override public void CollectObservations()
 	{
+		var sensor = this;
+		if (!_hasLazyInitialized)
+		{
+			AgentReset();
+		}
+
 		Vector3 normalizedVelocity = _bodyManager.GetNormalizedVelocity();
         var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
         var shoulders = _bodyManager.GetFirstBodyPart(BodyPartGroup.Torso);
 
-        AddVectorObs(normalizedVelocity); 
-        AddVectorObs(pelvis.Rigidbody.transform.forward); // gyroscope 
-        AddVectorObs(pelvis.Rigidbody.transform.up);
+        sensor.AddVectorObs(normalizedVelocity); 
+        sensor.AddVectorObs(pelvis.Rigidbody.transform.forward); // gyroscope 
+        sensor.AddVectorObs(pelvis.Rigidbody.transform.up);
 
-        AddVectorObs(shoulders.Rigidbody.transform.forward); // gyroscope 
-        AddVectorObs(shoulders.Rigidbody.transform.up);
+        sensor.AddVectorObs(shoulders.Rigidbody.transform.forward); // gyroscope 
+        sensor.AddVectorObs(shoulders.Rigidbody.transform.up);
 
-		AddVectorObs(_bodyManager.GetSensorIsInTouch());
-		AddVectorObs(_bodyManager.GetBodyPartsObservations());
-		AddVectorObs(_bodyManager.GetMusclesObservations());
-		AddVectorObs(_bodyManager.GetSensorYPositions());
-		AddVectorObs(_bodyManager.GetSensorZPositions());
+		sensor.AddVectorObs(_bodyManager.GetSensorIsInTouch());
+		sensor.AddVectorObs(_bodyManager.GetBodyPartsObservations());
+		sensor.AddVectorObs(_bodyManager.GetMusclesObservations());
+		sensor.AddVectorObs(_bodyManager.GetSensorYPositions());
+		sensor.AddVectorObs(_bodyManager.GetSensorZPositions());
 
-		_bodyManager.OnCollectObservationsHandleDebug(GetInfo());
+		// _bodyManager.OnCollectObservationsHandleDebug(GetInfo());
 	}
 
-	public override void AgentAction(float[] vectorAction, string textAction)
+	public override void AgentAction(float[] vectorAction)
 	{
+		_isDone = false;
 		// apply actions to body
-		_bodyManager.OnAgentAction(vectorAction, textAction);
+		_bodyManager.OnAgentAction(vectorAction);
 
 		// manage reward
         float velocity = Mathf.Clamp(_bodyManager.GetNormalizedVelocity().x, 0f, 1f);
@@ -83,7 +66,6 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 		if (pelvis.Transform.position.y<0){
 			Done();
 		}
-		
 
         var reward = velocity;
 
@@ -91,11 +73,15 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 		_bodyManager.SetDebugFrameReward(reward);
 	}
 
-
 	public override void AgentReset()
 	{
-		if (_bodyManager == null)
+		if (!_hasLazyInitialized)
+		{
 			_bodyManager = GetComponent<BodyManager002>();
+			_bodyManager.OnInitializeAgent();
+			_hasLazyInitialized = true;
+		}
+		_isDone = true;
 		_bodyManager.OnAgentReset();
 	}
 	public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
@@ -120,7 +106,7 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 				break;
 			default:
 				// AddReward(-100f);
-				if (!IsDone()){
+				if (!_isDone){
 					Done();
 				}
 				break;

@@ -67,9 +67,9 @@ public class StyleTransfer002Master : MonoBehaviour {
 
 	private StyleTransfer002Animator _muscleAnimator;
 	private StyleTransfer002Agent _agent;
-	private Academy _academy;
 	StyleTransfer002Animator _styleAnimator;
 	StyleTransfer002Animator _localStyleAnimator;
+	DecisionRequester _decisionRequester;
 	// private StyleTransfer002TrainerAgent _trainerAgent;
 	// private Brain _brain;
 	public bool IsInferenceMode;
@@ -88,9 +88,12 @@ public class StyleTransfer002Master : MonoBehaviour {
 		if (masters.Count(x=>x.CameraFollowMe) < 1)
 			CameraFollowMe = true;
 	}
-	void Start () {
+
+	public void OnInitializeAgent()
+    {
 		Time.fixedDeltaTime = FixedDeltaTime;
 		_waitingForAnimation = true;
+		_decisionRequester = GetComponent<DecisionRequester>();
 
 		BodyParts = new List<BodyPart002> ();
 		BodyPart002 root = null;
@@ -144,8 +147,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 		_agent = GetComponent<StyleTransfer002Agent>();
 		// _trainerAgent = GetComponent<StyleTransfer002TrainerAgent>();
 		// _brain = FindObjectsOfType<Brain>().First(x=>x.name=="LearnFromMocapBrain");
-		_academy = FindObjectOfType<Academy>();
-		IsInferenceMode = !_academy.agentSpawner.trainingMode;
+		IsInferenceMode = !Academy.Instance.IsCommunicatorOn;
 	}
 	
 	// Update is called once per frame
@@ -360,7 +362,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 	{
 		if (_waitingForAnimation)
 			return;
-		_agent.agentParameters.onDemandDecision = true;
+		_decisionRequester.enabled = true;
 		// _trainerAgent.SetBrainParams(_muscleAnimator.AnimationSteps.Count);
 		_agent.SetTotalAnimFrames(_muscleAnimator.AnimationSteps.Count);
 		// _trainerAgent.RequestDecision(_agent.AverageReward);
@@ -370,7 +372,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 
 	public void SetStartIndex(int startIdx)
 	{
-		_agent.agentParameters.onDemandDecision = false;
+		_decisionRequester.enabled = false;
 
 		// _animationIndex =  UnityEngine.Random.Range(0, _muscleAnimator.AnimationSteps.Count);
 		if (!_phaseIsRunning){
@@ -414,8 +416,10 @@ public class StyleTransfer002Master : MonoBehaviour {
 		// 	AnimationIndex = (int)idx;
 		// }
 		// // AnimationIndex = StartAnimationIndex;
-		
-		AnimationIndex = startIdx * this._agent.agentParameters.numberOfActionsBetweenDecisions;
+
+		AnimationIndex = startIdx;
+		if (_decisionRequester?.DecisionPeriod > 1)
+			AnimationIndex *= this._decisionRequester.DecisionPeriod;
 		StartAnimationIndex = AnimationIndex;
 		EpisodeAnimationIndex = AnimationIndex;
 		_phaseIsRunning = true;

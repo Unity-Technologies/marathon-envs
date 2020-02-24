@@ -12,14 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 152acbc2f18ab45f7a82449fec55784e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brain: {fileID: 11400000, guid: 75fdb007db80c2348a5d26445aec749a, type: 2}
   agentParameters:
-    agentCameras: []
     maxStep: 5000
-    resetOnDone: 1
-    onDemandDecision: 0
-    numberOfActionsBetweenDecisions: 5
-    skipActionsWithDecisions: 1
+  hasUpgradedFromAgentParameters: 1
+  maxStep: 5000
   CameraTarget: {fileID: 0}
   ShowMonitor: 0
   FootHitTerrain: 0
@@ -28,6 +24,7 @@ MonoBehaviour:
   SensorIsInTouch: []
   FocalPoint: {fileID: 0}
   FocalRidgedBody: {fileID: 0}
+  DistanceTraveled: -3.4028235e+38
   FocalPointMaxDistanceTraveled: 0
   JointVelocity: []
   JointRotations: []
@@ -115,6 +112,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 216875611294172504, guid: bdcc45df97881475799c1dfff10a437e,
+        type: 3}
+      propertyPath: m_BehaviorName
+      value: TerrainHopper-v0
+      objectReference: {fileID: 0}
+    - target: {fileID: 216875611294172504, guid: bdcc45df97881475799c1dfff10a437e,
+        type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 11400000, guid: b1e33c87340e9426f91043f85e849d2d,
+        type: 3}
+    - target: {fileID: 216875611294172504, guid: bdcc45df97881475799c1dfff10a437e,
+        type: 3}
+      propertyPath: m_BrainParameters.vectorObservationSize
+      value: 67
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114957047460082758, guid: bdcc45df97881475799c1dfff10a437e, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: bdcc45df97881475799c1dfff10a437e, type: 3}
@@ -131,10 +144,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 8081357739622870871, guid: c7f549aabbce548e7aae2b2101ae3062,
+    - target: {fileID: 371211994496726598, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
-      propertyPath: m_Name
-      value: TerrainHopperEnv-v0
+      propertyPath: m_RootOrder
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2608565721708774061, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
@@ -191,25 +204,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4475872956784911638, guid: c7f549aabbce548e7aae2b2101ae3062,
+    - target: {fileID: 3499865627114767964, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
-      propertyPath: m_RootOrder
-      value: 3
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3617279857455892011, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3499865627114767964, guid: c7f549aabbce548e7aae2b2101ae3062,
+    - target: {fileID: 4475872956784911638, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
-      propertyPath: m_IsActive
-      value: 0
+      propertyPath: m_RootOrder
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5965315998760433598, guid: c7f549aabbce548e7aae2b2101ae3062,
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8081357739622870871, guid: c7f549aabbce548e7aae2b2101ae3062,
+        type: 3}
+      propertyPath: m_Name
+      value: TerrainHopperEnv-v0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c7f549aabbce548e7aae2b2101ae3062, type: 3}

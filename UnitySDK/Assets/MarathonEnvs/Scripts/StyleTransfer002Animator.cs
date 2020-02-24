@@ -33,8 +33,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
     private Vector3 _lastVelocityPosition;
 
-	private Academy _academy;
-
 	private List<Rigidbody> _rigidbodies;
 	private List<Transform> _transforms;
 
@@ -65,7 +63,8 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 	}
 
 	// Use this for initialization
-	void Start () {
+	public void OnInitializeAgent()
+    {
 		anim = GetComponent<Animator>();
 		anim.Play("Record",0, NormalizedTime);
 		anim.Update(0f);
@@ -82,7 +81,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 			_transforms
 			.First(x=> BodyHelper002.GetBodyPartGroup(x.name) == BodyHelper002.BodyPartGroup.Hips)
 			.rotation;
-		_academy = FindObjectOfType<Academy>();
+		SetupSensors();
 	}
 	void Awake()
     {
@@ -150,9 +149,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		return this;
 	}
 	
-	// void FixedUpdate () {
-	// 	if (_academy.GetIsPhysicsOnlyFixedUpdateStep())
-	// 		return;
 	public void OnAgentAction() {
 			
 		if (AnimationStepsReady){
@@ -268,14 +264,14 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		AnimationStepsReady = true;
 		anim.enabled=false;
 	}
-	protected virtual void LateUpdate() {
+
+	public void DestoryIfNotFirstAnim()
+    {
 		if (!isFirstOfThisAnim){
 			Destroy(this.gameObject);
-			return;
-		}
-		MimicAnimation();
-	}
-	Vector3 GetCenterOfMass()
+        }
+    }
+    Vector3 GetCenterOfMass()
 	{
 		var centerOfMass = Vector3.zero;
 		float totalMass = 0f;

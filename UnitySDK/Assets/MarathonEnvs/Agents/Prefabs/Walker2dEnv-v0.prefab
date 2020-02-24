@@ -55,6 +55,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 114636601737454606, guid: 9ee161cdb876243b893d3f1a10ce8ed2,
+        type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 11400000, guid: cdd39e3b3a1904e2abce4578f340c793,
+        type: 3}
     - target: {fileID: 114968519458122122, guid: 9ee161cdb876243b893d3f1a10ce8ed2,
         type: 3}
       propertyPath: agentBoundsMinOffset.z

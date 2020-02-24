@@ -12,16 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ab14e49bdf8644ca9c2a67e85f3a11e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  brain: {fileID: 11400000, guid: b4c68a827b3bf4e50b00de698141b8fd, type: 2}
   agentParameters:
-    agentCameras: []
     maxStep: 5000
-    resetOnDone: 1
-    onDemandDecision: 0
-    numberOfActionsBetweenDecisions: 5
-    skipActionsWithDecisions: 1
-  agentBoundsMaxOffset: {x: 480, y: 2, z: 0.5}
-  agentBoundsMinOffset: {x: 0, y: 0, z: -0.5}
+  hasUpgradedFromAgentParameters: 1
+  maxStep: 5000
+  _heightReward: 0
+  _torsoUprightReward: 0
+  _torsoForwardReward: 0
+  _hipsUprightReward: 0
+  _hipsForwardReward: 0
+  _notAtLimitBonus: 0
+  _reducedPowerBonus: 0
+  _episodeMaxDistance: 0
 --- !u!1001 &1744836575310348847
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29,11 +31,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 8722076229893094739, guid: 27548cbf466924cd699685496025f534,
+    - target: {fileID: 114263248370519032, guid: 27548cbf466924cd699685496025f534,
         type: 3}
-      propertyPath: m_Name
-      value: SparseMarathonMan
+      propertyPath: m_BrainParameters.vectorObservationSize
+      value: 226
       objectReference: {fileID: 0}
+    - target: {fileID: 114263248370519032, guid: 27548cbf466924cd699685496025f534,
+        type: 3}
+      propertyPath: m_BehaviorName
+      value: MarathonManSparse-v0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114263248370519032, guid: 27548cbf466924cd699685496025f534,
+        type: 3}
+      propertyPath: m_Model
+      value: 
+      objectReference: {fileID: 11400000, guid: d383b083ae53f3349bdc52160981ac62,
+        type: 3}
     - target: {fileID: 6637013144633364566, guid: 27548cbf466924cd699685496025f534,
         type: 3}
       propertyPath: m_Enabled
@@ -93,6 +106,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8722076229893094739, guid: 27548cbf466924cd699685496025f534,
+        type: 3}
+      propertyPath: m_Name
+      value: MarathonManSparse
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6637013144633364566, guid: 27548cbf466924cd699685496025f534, type: 3}

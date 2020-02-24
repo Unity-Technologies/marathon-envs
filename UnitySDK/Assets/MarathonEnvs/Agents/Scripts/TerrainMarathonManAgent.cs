@@ -18,38 +18,45 @@ public class TerrainMarathonManAgent : Agent, IOnTerrainCollision
 
 	List<float> distances;
 	float fraction;
+	bool _hasLazyInitialized;
 
 	override public void CollectObservations()
 	{
+		var sensor = this;
+		if (!_hasLazyInitialized)
+		{
+			AgentReset();
+		}
+
 		Vector3 normalizedVelocity = _bodyManager.GetNormalizedVelocity();
         var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
         var shoulders = _bodyManager.GetFirstBodyPart(BodyPartGroup.Torso);
 
-        AddVectorObs(normalizedVelocity); 
-        AddVectorObs(pelvis.Rigidbody.transform.forward); // gyroscope 
-        AddVectorObs(pelvis.Rigidbody.transform.up);
+        sensor.AddVectorObs(normalizedVelocity); 
+        sensor.AddVectorObs(pelvis.Rigidbody.transform.forward); // gyroscope 
+        sensor.AddVectorObs(pelvis.Rigidbody.transform.up);
 
-        AddVectorObs(shoulders.Rigidbody.transform.forward); // gyroscope 
-        AddVectorObs(shoulders.Rigidbody.transform.up);
+        sensor.AddVectorObs(shoulders.Rigidbody.transform.forward); // gyroscope 
+        sensor.AddVectorObs(shoulders.Rigidbody.transform.up);
 
-		AddVectorObs(_bodyManager.GetSensorIsInTouch());
-		AddVectorObs(_bodyManager.GetBodyPartsObservations());
-		AddVectorObs(_bodyManager.GetMusclesObservations());
-		AddVectorObs(_bodyManager.GetSensorObservations());
+		sensor.AddVectorObs(_bodyManager.GetSensorIsInTouch());
+		sensor.AddVectorObs(_bodyManager.GetBodyPartsObservations());
+		sensor.AddVectorObs(_bodyManager.GetMusclesObservations());
+		sensor.AddVectorObs(_bodyManager.GetSensorObservations());
         
         (distances, fraction) = 
             _terrainGenerator.GetDistances2d(
                 pelvis.Rigidbody.transform.position, _bodyManager.ShowMonitor);
     
-        AddVectorObs(distances);
-        AddVectorObs(fraction);
-		_bodyManager.OnCollectObservationsHandleDebug(GetInfo());
+        sensor.AddVectorObs(distances);
+        sensor.AddVectorObs(fraction);
+		// _bodyManager.OnCollectObservationsHandleDebug(GetInfo());
 	}
 
-	public override void AgentAction(float[] vectorAction, string textAction)
+	public override void AgentAction(float[] vectorAction)
 	{
 		// apply actions to body
-		_bodyManager.OnAgentAction(vectorAction, textAction);
+		_bodyManager.OnAgentAction(vectorAction);
 
 		// manage reward
         float velocity = Mathf.Clamp(_bodyManager.GetNormalizedVelocity().x, 0f, 1f);
@@ -104,9 +111,15 @@ public class TerrainMarathonManAgent : Agent, IOnTerrainCollision
         _modeRecover = false;
 	}
 
-
 	public override void AgentReset()
 	{
+		if (!_hasLazyInitialized)
+		{
+			_bodyManager = GetComponent<BodyManager002>();
+			_bodyManager.OnInitializeAgent();
+			_hasLazyInitialized = true;
+		}
+
 		if (_bodyManager == null)
 			_bodyManager = GetComponent<BodyManager002>();
 		_bodyManager.OnAgentReset();

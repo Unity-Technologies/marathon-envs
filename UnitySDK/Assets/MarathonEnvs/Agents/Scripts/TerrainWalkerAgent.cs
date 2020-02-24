@@ -90,23 +90,20 @@ public class TerrainWalkerAgent : MarathonAgent {
                 break;
         }
     }
-
-
-    public override void AgentOnDone()
-    {
-    }    
+  
     void ObservationsDefault()
     {
+        var sensor = this;
         var pelvis = BodyParts["pelvis"];
         Vector3 normalizedVelocity = this.GetNormalizedVelocity(pelvis.velocity);
-        AddVectorObs(normalizedVelocity);
-        AddVectorObs(pelvis.transform.forward); // gyroscope 
-        AddVectorObs(pelvis.transform.up);
+        sensor.AddVectorObs(normalizedVelocity);
+        sensor.AddVectorObs(pelvis.transform.forward); // gyroscope 
+        sensor.AddVectorObs(pelvis.transform.up);
 
-        AddVectorObs(SensorIsInTouch);
-        JointRotations.ForEach(x => AddVectorObs(x));
-        AddVectorObs(JointVelocity);
-        // AddVectorObs(new []{
+        sensor.AddVectorObs(SensorIsInTouch);
+        JointRotations.ForEach(x => sensor.AddVectorObs(x));
+        sensor.AddVectorObs(JointVelocity);
+        // sensor.AddVectorObs(new []{
         //     this.GetNormalizedPosition(BodyParts["left_foot"].transform.position).y,
         //     this.GetNormalizedPosition(BodyParts["right_foot"].transform.position).y
         // });
@@ -115,8 +112,8 @@ public class TerrainWalkerAgent : MarathonAgent {
             _terrainGenerator.GetDistances2d(
                 pelvis.transform.position, ShowMonitor);
    
-        AddVectorObs(distances);
-        AddVectorObs(fraction);
+        sensor.AddVectorObs(distances);
+        sensor.AddVectorObs(fraction);
     }
 
 
@@ -144,7 +141,7 @@ public class TerrainWalkerAgent : MarathonAgent {
         if (ShowMonitor)
         {
             var hist = new[] {velocity, uprightBonus, effort}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.INDEPENDENT);
+            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.Independent);
         }
 
         // uprightBonus *= 0.1f;

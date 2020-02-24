@@ -38,6 +38,7 @@ namespace MLAgents
         [Tooltip("Function which collections observations")]
         /**< \brief Function which collections observations*/
         protected Action ObservationsFunction;
+        //protected Action<VectorSensor> ObservationsFunction;
 
         [Tooltip("Optional Function for additional reward at end of Episode")]
         /**< \brief Optional Function for additional reward at end of Episode*/
@@ -131,9 +132,16 @@ namespace MLAgents
         float[] vectorDifference;
     	SpawnableEnv _spawnableEnv;
     	Vector3 startPosition;
+    	bool _isDone;
+        bool _hasLazyInitialized;
 
         public override void AgentReset()
         {
+            if (!_hasLazyInitialized)
+            {
+                _hasLazyInitialized = true;
+            }
+            _isDone = true;
             if (DistanceTraveled != float.MinValue)
             {
                 var scorer = FindObjectOfType<Scorer>();
@@ -232,28 +240,34 @@ namespace MLAgents
 
         public override void CollectObservations()
         {
+            var sensor = this;
+            if (!_hasLazyInitialized)
+            {
+                AgentReset();
+            }
             UpdateQ();
             ObservationsFunction();
 
-            var info = GetInfo();
-            if (Observations?.Count != info.vectorObservation.Count)
-                Observations = Enumerable.Range(0, info.vectorObservation.Count).Select(x => 0f).ToList();
-            ObservationNormalizedErrors = 0;
-            for (int i = 0; i < Observations.Count; i++)
-            {
-                Observations[i] = info.vectorObservation[i];
-                var x = Mathf.Abs(Observations[i]);
-                var e = Mathf.Epsilon;
-                bool is1 = Mathf.Approximately(x, 1f);
-                if ((x > 1f + e) && !is1)
-                    ObservationNormalizedErrors++;
-            }
-            if (ObservationNormalizedErrors > MaxObservationNormalizedErrors)
-                MaxObservationNormalizedErrors = ObservationNormalizedErrors;
+            // var info = GetInfo();
+            // if (Observations?.Count != info.vectorObservation.Count)
+            //     Observations = Enumerable.Range(0, info.vectorObservation.Count).Select(x => 0f).ToList();
+            // ObservationNormalizedErrors = 0;
+            // for (int i = 0; i < Observations.Count; i++)
+            // {
+            //     Observations[i] = info.vectorObservation[i];
+            //     var x = Mathf.Abs(Observations[i]);
+            //     var e = Mathf.Epsilon;
+            //     bool is1 = Mathf.Approximately(x, 1f);
+            //     if ((x > 1f + e) && !is1)
+            //         ObservationNormalizedErrors++;
+            // }
+            // if (ObservationNormalizedErrors > MaxObservationNormalizedErrors)
+            //     MaxObservationNormalizedErrors = ObservationNormalizedErrors;
         }
 
-        public override void AgentAction(float[] vectorAction, string textAction)
+        public override void AgentAction(float[] vectorAction)
         {
+    		_isDone = false;
             if (lastVectorAction == null){
                 lastVectorAction = vectorAction.Select(x=>0f).ToArray();
                 vectorDifference = vectorAction.Select(x=>0f).ToArray();
@@ -271,7 +285,7 @@ namespace MLAgents
 
             UpdateQ();
 
-            if (!IsDone())
+            if (!_isDone)
             {
                 bool done = TerminateFunction();
 
@@ -285,7 +299,7 @@ namespace MLAgents
                     SetReward(StepRewardFunction());
                 }
 
-                done |= (this.GetStepCount() >= agentParameters.maxStep && agentParameters.maxStep > 0);
+                done |= (this.GetStepCount() >= maxStep && maxStep > 0);
                 if (done && OnEpisodeCompleteGetRewardFunction != null)
                     AddReward(OnEpisodeCompleteGetRewardFunction());
             }
@@ -350,7 +364,7 @@ namespace MLAgents
         internal Vector3 GetNormalizedVelocity(Vector3 metersPerSecond)
         {
             var maxMetersPerSecond = _spawnableEnv.bounds.size
-                / agentParameters.maxStep
+                / maxStep
                 / Time.fixedDeltaTime;
             var maxXZ = Mathf.Max(maxMetersPerSecond.x, maxMetersPerSecond.z);
             maxMetersPerSecond.x = maxXZ;
