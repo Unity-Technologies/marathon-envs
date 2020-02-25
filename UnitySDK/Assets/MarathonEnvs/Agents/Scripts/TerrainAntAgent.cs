@@ -27,7 +27,7 @@ public class TerrainAntAgent : MarathonAgent {
         _terrainGenerator.Reset();
 
         // set to true this to show monitor while training
-        Monitor.SetActive(true);
+        //Monitor.SetActive(true);
 
         StepRewardFunction = StepRewardAnt101;
         TerminateFunction = LocalTerminate;

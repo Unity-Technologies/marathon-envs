@@ -15,7 +15,7 @@ public class DeepMindHopperAgent : MarathonAgent
         base.AgentReset();
 
         // set to true this to show monitor while training
-        Monitor.SetActive(true);
+        //Monitor.SetActive(true);
 
         StepRewardFunction = StepRewardHopper101;
         TerminateFunction = TerminateOnNonFootHitTerrain;
@@ -90,8 +90,8 @@ public class DeepMindHopperAgent : MarathonAgent
                      + effort;
         if (ShowMonitor)
         {
-            var hist = new[] {reward, velocity, uprightBonus, effort};
-            Monitor.Log("rewardHist", hist, displayType: Monitor.DisplayType.Independent);
+            //var hist = new[] {reward, velocity, uprightBonus, effort};
+            //Monitor.Log("rewardHist", hist, displayType: Monitor.DisplayType.Independent);
         }
 
         return reward;

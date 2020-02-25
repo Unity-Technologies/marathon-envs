@@ -16,7 +16,6 @@ namespace MLAgents
         int heightRequirments;
         int fontSize;
 
-        Academy academy;
         void Awake()
         {
             // academy = GetComponent<Academy>();
@@ -133,6 +132,7 @@ namespace MLAgents
         IEnumerator ReloadScene()
         {
             var activeScene = SceneManager.GetActiveScene().buildIndex;
+            Academy.Instance.Dispose();
             yield return SceneManager.LoadSceneAsync(activeScene, LoadSceneMode.Single);
         }
 

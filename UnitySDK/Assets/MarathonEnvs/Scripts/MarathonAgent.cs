@@ -408,11 +408,11 @@ namespace MLAgents
                 mphBuffer.Select(x=>x.y).Average(),
                 mphBuffer.Select(x=>x.z).Average()
             );
-            if (ShowMonitor)
-            {
-                Monitor.Log("MaxDistance", FocalPointMaxDistanceTraveled.ToString());
-                Monitor.Log("MPH: ", (aveMph).ToString());
-            }            
+            //if (ShowMonitor)
+            //{
+            //    Monitor.Log("MaxDistance", FocalPointMaxDistanceTraveled.ToString());
+            //    Monitor.Log("MPH: ", (aveMph).ToString());
+            //}            
             return normalizedVelocity;
         }
 

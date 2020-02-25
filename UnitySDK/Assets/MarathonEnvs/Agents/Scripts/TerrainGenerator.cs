@@ -202,7 +202,7 @@ public class TerrainGenerator : MonoBehaviour
         if (Application.isEditor && showDebug)
         {
             var view = distances.Skip(10).Take(20).Select(x=>x).ToList();
-            Monitor.Log("distances", view.ToArray());
+            //Monitor.Log("distances", view.ToArray());
             var time = Time.deltaTime;
 			if (_decisionRequester?.DecisionPeriod > 1)
 				time *= _decisionRequester.DecisionPeriod;

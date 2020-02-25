@@ -33,7 +33,7 @@ public class TerrainWalkerAgent : MarathonAgent {
         _stepCountAtLastMeter = 0;
 
         // set to true this to show monitor while training
-        Monitor.SetActive(true);
+        //Monitor.SetActive(true);
 
         StepRewardFunction = StepRewardWalker106;
         TerminateFunction = LocalTerminate;
@@ -138,11 +138,11 @@ public class TerrainWalkerAgent : MarathonAgent {
         float velocity = Mathf.Clamp(GetNormalizedVelocity("pelvis").x, 0f, 1f);
         float effort = 1f - GetEffortNormalized();
 
-        if (ShowMonitor)
-        {
-            var hist = new[] {velocity, uprightBonus, effort}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.Independent);
-        }
+        //if (ShowMonitor)
+        //{
+        //    var hist = new[] {velocity, uprightBonus, effort}.ToList();
+        //    Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.Independent);
+        //}
 
         // uprightBonus *= 0.1f;
         // velocity *= 0.45f;

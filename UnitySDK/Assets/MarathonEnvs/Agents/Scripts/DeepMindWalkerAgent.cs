@@ -12,7 +12,7 @@ public class DeepMindWalkerAgent : MarathonAgent
         base.AgentReset();
 
         // set to true this to show monitor while training
-        Monitor.SetActive(true);
+        //Monitor.SetActive(true);
 
         StepRewardFunction = StepRewardWalker106;
         TerminateFunction = TerminateOnNonFootHitTerrain;
@@ -57,11 +57,11 @@ public class DeepMindWalkerAgent : MarathonAgent
         float velocity = Mathf.Clamp(GetNormalizedVelocity("pelvis").x, 0f, 1f);
         float effort = 1f - GetEffortNormalized();
 
-        if (ShowMonitor)
-        {
-            var hist = new[] {velocity, uprightBonus, heightPenality, effort}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.Independent);
-        }
+        //if (ShowMonitor)
+        //{
+        //    var hist = new[] {velocity, uprightBonus, heightPenality, effort}.ToList();
+        //    Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.Independent);
+        //}
 
         heightPenality *= 0.05f;
         uprightBonus *= 0.05f;

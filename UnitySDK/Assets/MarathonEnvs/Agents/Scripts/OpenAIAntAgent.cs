@@ -12,7 +12,7 @@ public class OpenAIAntAgent : MarathonAgent
         base.AgentReset();
 
         // set to true this to show monitor while training
-        Monitor.SetActive(true);
+        //Monitor.SetActive(true);
 
         StepRewardFunction = StepRewardAnt101;
         TerminateFunction = TerminateAnt;
@@ -69,11 +69,11 @@ public class OpenAIAntAgent : MarathonAgent
 
         var reward = velocity
                      + effort;
-        if (ShowMonitor)
-        {
-            var hist = new[] {reward, velocity}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.Independent);
-        }
+        //if (ShowMonitor)
+        //{
+        //    var hist = new[] {reward, velocity}.ToList();
+        //    Monitor.Log("rewardHist", hist.ToArray(), displayType: Monitor.DisplayType.Independent);
+        //}
 
         return reward;
     }

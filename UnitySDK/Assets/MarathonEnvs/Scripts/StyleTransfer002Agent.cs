@@ -181,22 +181,22 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 			+ (jointsNotAtLimitReward * jointsNotAtLimitRewardScale);
 
 		// HACK _startCount used as Monitor does not like reset
-        if (ShowMonitor && _startCount < 2) {
-            // Monitor.Log("start frame hist", Rewards.ToArray());
-            var hist = new []{
-                reward,
-				distanceReward,
-                (jointsNotAtLimitReward * jointsNotAtLimitRewardScale), 
-                // - effortPenality, 
-				(rotationReward * rotationRewardScale),
-				(velocityReward * velocityRewardScale),
-				(endEffectorReward * endEffectorRewardScale),
-				// (feetPoseReward * feetRewardScale),
-				(centerMassReward * centerMassRewardScale),
-				(sensorReward * sensorRewardScale),
-				}.ToList();
-            Monitor.Log("rewardHist", hist.ToArray());
-        }
+    //    if (ShowMonitor && _startCount < 2) {
+    //        // Monitor.Log("start frame hist", Rewards.ToArray());
+    //        var hist = new []{
+    //            reward,
+				//distanceReward,
+    //            (jointsNotAtLimitReward * jointsNotAtLimitRewardScale), 
+    //            // - effortPenality, 
+				//(rotationReward * rotationRewardScale),
+				//(velocityReward * velocityRewardScale),
+				//(endEffectorReward * endEffectorRewardScale),
+				//// (feetPoseReward * feetRewardScale),
+				//(centerMassReward * centerMassRewardScale),
+				//(sensorReward * sensorRewardScale),
+				//}.ToList();
+    //        Monitor.Log("rewardHist", hist.ToArray());
+    //    }
 
 		if (!_master.IgnorRewardUntilObservation)
 			AddReward(reward);

@@ -29,7 +29,7 @@ public class TerrainHopperAgent : MarathonAgent {
         _stepCountAtLastMeter = 0;
 
         // set to true this to show monitor while training
-        Monitor.SetActive(true);
+        //Monitor.SetActive(true);
 
         StepRewardFunction = StepRewardHopper101;
         TerminateFunction = LocalTerminate;
