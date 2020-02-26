@@ -324,18 +324,9 @@ MonoBehaviour:
     - envId: MarathonManBackflip-v0
       envPrefab: {fileID: 4993543594474631292, guid: 6e16b77232d1f4b2d9696aa19a59513b,
         type: 3}
-    - envId: MarathonManWalking-v0
-      envPrefab: {fileID: 8762153322364534832, guid: d7c9fbb45d5364c579795c900c9f1c8a,
-        type: 3}
-    - envId: MarathonManRunning-v0
-      envPrefab: {fileID: 5158136683146274678, guid: 0eb30d28e47cb4c0e8687caa8c6b6f77,
-        type: 3}
-    - envId: MarathonManJazzDancing-v0
-      envPrefab: {fileID: 8518467457834094124, guid: 387bf2f0cab8448578cc8bfd9e89f8ea,
-        type: 3}
     envIdDefault: Walker2d-v0
-    trainingNumEnvsDefault: 3
-    inferenceNumEnvsDefault: 2
+    trainingNumEnvsDefault: 64
+    inferenceNumEnvsDefault: 3
 --- !u!1 &1715640920
 GameObject:
   m_ObjectHideFlags: 0
