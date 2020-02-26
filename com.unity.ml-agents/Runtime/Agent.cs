@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Barracuda;
-using MLAgents.Sensor;
+//using MLAgents.Sensor;
 using UnityEngine.Serialization;
 
 namespace MLAgents
