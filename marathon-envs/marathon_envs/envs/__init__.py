@@ -8,7 +8,7 @@ from gym import error, spaces
 
 from mlagents_envs.environment import UnityEnvironment
 from mlagents_envs.base_env import BatchedStepResult
-
+import os
 
 class MarathonEnvsException(error.Error):
     """
@@ -36,12 +36,15 @@ class MarathonEnvs(gym.Env):
 
     def __init__(
         self,
-        environment_filename: str,
+        environment_name: str,
+        num_spawn_envs: int = 1,
         worker_id: int = 0,
+        marathon_envs_path: str = None,
     ):
         """
         Environment initialization
-        :param environment_filename: The UnityEnvironment path or file to be wrapped in the gym.
+        :param environment_name: The Marathon Environment 
+        :param num_spawn_envs: The number of environments to spawn per instance
         :param worker_id: Worker number for environment.
         :param use_visual: Whether to use visual observation or vector observation.
         :param uint8_visual: Return visual observations as uint8 (0-255) matrices instead of float (0.0-1.0).
@@ -51,22 +54,28 @@ class MarathonEnvs(gym.Env):
         :param no_graphics: Whether to run the Unity simulator in no-graphics mode
         :param allow_multiple_visual_obs: If True, return a list of visual observations instead of only one.
         """
-        use_visual: bool = False,
-        uint8_visual: bool = False,
-        multiagent: bool = False,
-        flatten_branched: bool = False,
-        no_graphics: bool = False,
-        allow_multiple_visual_obs: bool = False,
+        use_visual: bool = False
+        uint8_visual: bool = False
+        multiagent: bool = False if num_spawn_envs is 1 else True
+        flatten_branched: bool = False
+        no_graphics: bool = False
+        allow_multiple_visual_obs: bool = False
 
         base_port = 5005
-        if environment_filename is None:
-            base_port = UnityEnvironment.DEFAULT_EDITOR_PORT
+        # use if we want to work with Unity Editoe
+        # if marathon_envs_path is None:
+        #     base_port = UnityEnvironment.DEFAULT_EDITOR_PORT
+        if marathon_envs_path is None:
+            marathon_envs_path = os.path.join('envs', 'MarathonEnvs')
+        args = ['--spawn-env='+environment_name]
+        args.append('--num-spawn-envs='+str(num_spawn_envs))
 
         self._env = UnityEnvironment(
-            environment_filename,
+            marathon_envs_path,
             worker_id,
             base_port=base_port,
             no_graphics=no_graphics,
+            args = args,
         )
 
         # Take a single step so that the brain information will be sent over
