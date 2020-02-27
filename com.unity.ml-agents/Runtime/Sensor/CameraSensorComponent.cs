@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace MLAgents
+namespace MLAgents.Sensor
 {
     [AddComponentMenu("ML Agents/Camera Sensor", (int)MenuGroup.Sensors)]
     public class CameraSensorComponent : SensorComponent

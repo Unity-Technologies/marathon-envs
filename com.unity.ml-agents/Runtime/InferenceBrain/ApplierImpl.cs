@@ -31,6 +31,7 @@ namespace MLAgents.InferenceBrain
                     {
                         actionValue[j] = tensorProxy.data[agentIndex, j];
                     }
+
                 }
                 agentIndex++;
             }
@@ -113,6 +114,7 @@ namespace MLAgents.InferenceBrain
                     {
                         actionVal[j] = actionValues[agentIndex, j];
                     }
+
                 }
                 agentIndex++;
             }

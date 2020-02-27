@@ -8,7 +8,7 @@ namespace MLAgents
     */
     [CustomEditor(typeof(Agent), true)]
     [CanEditMultipleObjects]
-    internal class AgentEditor : Editor
+    public class AgentEditor : Editor
     {
         public override void OnInspectorGUI()
         {

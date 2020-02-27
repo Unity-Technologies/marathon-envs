@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using MLAgents.Sensor;
 using System;
 
 namespace MLAgents
@@ -10,6 +11,7 @@ namespace MLAgents
     /// </summary>
     internal class RemotePolicy : IPolicy
     {
+
         int m_AgentId;
         string m_FullyQualifiedBehaviorName;
 
@@ -37,6 +39,7 @@ namespace MLAgents
         {
             m_Communicator?.DecideBatch();
             return m_Communicator?.GetActions(m_FullyQualifiedBehaviorName, m_AgentId);
+
         }
 
         public void Dispose()

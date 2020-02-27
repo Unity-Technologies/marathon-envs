@@ -7,7 +7,7 @@ using UnityEditor;
 /// </summary>
 [CustomEditor(typeof(Demonstration))]
 [CanEditMultipleObjects]
-internal class DemonstrationEditor : Editor
+public class DemonstrationEditor : Editor
 {
     SerializedProperty m_BrainParameters;
     SerializedProperty m_DemoMetaData;

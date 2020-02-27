@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace MLAgents
+namespace MLAgents.Sensor
 {
     public class RenderTextureSensor : ISensor
     {

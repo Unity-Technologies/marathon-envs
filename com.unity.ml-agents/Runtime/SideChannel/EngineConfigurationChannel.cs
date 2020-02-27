@@ -1,15 +1,13 @@
 using System.IO;
-using System;
 using UnityEngine;
 
 namespace MLAgents
 {
     public class EngineConfigurationChannel : SideChannel
     {
-        private const string k_EngineConfigId = "e951342c-4f7e-11ea-b238-784f4387d1f7";
-        public EngineConfigurationChannel()
+        public override int ChannelType()
         {
-            ChannelId = new Guid(k_EngineConfigId);
+            return (int)SideChannelType.EngineSettings;
         }
 
         public override void OnMessageReceived(byte[] data)

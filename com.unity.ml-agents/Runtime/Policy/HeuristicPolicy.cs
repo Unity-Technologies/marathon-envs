@@ -1,3 +1,4 @@
+using MLAgents.Sensor;
 using System.Collections.Generic;
 using System;
 

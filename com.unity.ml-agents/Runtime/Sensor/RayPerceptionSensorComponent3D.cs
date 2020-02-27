@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace MLAgents
+namespace MLAgents.Sensor
 {
     [AddComponentMenu("ML Agents/Ray Perception Sensor 3D", (int)MenuGroup.Sensors)]
     public class RayPerceptionSensorComponent3D : RayPerceptionSensorComponentBase

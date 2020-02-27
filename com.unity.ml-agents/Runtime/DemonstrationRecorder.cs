@@ -2,6 +2,7 @@ using System.IO.Abstractions;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using System.Collections.Generic;
+using MLAgents.Sensor;
 
 namespace MLAgents
 {
@@ -14,6 +15,7 @@ namespace MLAgents
     {
         public bool record;
         public string demonstrationName;
+        Agent m_RecordingAgent;
         string m_FilePath;
         DemonstrationStore m_DemoStore;
         public const int MaxNameLength = 16;
@@ -39,6 +41,7 @@ namespace MLAgents
         /// </summary>
         public void InitializeDemoStore(IFileSystem fileSystem = null)
         {
+            m_RecordingAgent = GetComponent<Agent>();
             m_DemoStore = new DemonstrationStore(fileSystem);
             var behaviorParams = GetComponent<BehaviorParameters>();
             demonstrationName = SanitizeName(demonstrationName, MaxNameLength);
@@ -46,6 +49,7 @@ namespace MLAgents
                 demonstrationName,
                 behaviorParams.brainParameters,
                 behaviorParams.fullyQualifiedBehaviorName);
+            Monitor.Log("Recording Demonstration of Agent: ", m_RecordingAgent.name);
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MLAgents
+namespace MLAgents.Sensor
 {
     public class VectorSensor : ISensor
     {
@@ -84,7 +84,10 @@ namespace MLAgents
         void AddFloatObs(float obs)
         {
 #if DEBUG
-            Utilities.DebugCheckNanAndInfinity(obs, nameof(obs), nameof(AddFloatObs));
+            if (float.IsNaN(obs))
+            {
+                throw new System.ArgumentException("NaN value passed to observation.");
+            }
 #endif
             m_Observations.Add(obs);
         }

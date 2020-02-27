@@ -1,4 +1,4 @@
-namespace MLAgents
+namespace MLAgents.Sensor
 {
     public enum SensorCompressionType
     {

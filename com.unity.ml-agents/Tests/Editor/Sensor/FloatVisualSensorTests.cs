@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using UnityEngine;
+using MLAgents.Sensor;
 
 namespace MLAgents.Tests
 {

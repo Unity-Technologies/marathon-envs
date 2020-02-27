@@ -8,7 +8,7 @@ namespace MLAgents.InferenceBrain.Utils
     /// entry[i] = P(x \le i), NOT P(i - 1 \le x \lt i).
     /// (\le stands for less than or equal to while \lt is strictly less than).
     /// </summary>
-    internal class Multinomial
+    public class Multinomial
     {
         readonly System.Random m_Random;
 

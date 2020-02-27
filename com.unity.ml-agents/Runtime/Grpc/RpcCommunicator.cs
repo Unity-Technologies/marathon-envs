@@ -11,6 +11,7 @@ using UnityEngine;
 using MLAgents.CommunicatorObjects;
 using System.IO;
 using Google.Protobuf;
+using MLAgents.Sensor;
 
 namespace MLAgents
 {
@@ -48,7 +49,7 @@ namespace MLAgents
         /// The communicator parameters sent at construction
         CommunicatorInitParameters m_CommunicatorInitParameters;
 
-        Dictionary<Guid, SideChannel> m_SideChannels = new Dictionary<Guid, SideChannel>();
+        Dictionary<int, SideChannel> m_SideChannels = new Dictionary<int, SideChannel>();
 
         /// <summary>
         /// Initializes a new instance of the RPCCommunicator class.
@@ -465,26 +466,14 @@ namespace MLAgents
         /// <param name="sideChannel"> The side channel to be registered.</param>
         public void RegisterSideChannel(SideChannel sideChannel)
         {
-            var channelId = sideChannel.ChannelId;
-            if (m_SideChannels.ContainsKey(channelId))
+            var channelType = sideChannel.ChannelType();
+            if (m_SideChannels.ContainsKey(channelType))
             {
                 throw new UnityAgentsException(string.Format(
                     "A side channel with type index {0} is already registered. You cannot register multiple " +
-                    "side channels of the same id.", channelId));
+                    "side channels of the same type.", channelType));
             }
-            m_SideChannels.Add(channelId, sideChannel);
-        }
-
-        /// <summary>
-        /// Unregisters a side channel from the communicator.
-        /// </summary>
-        /// <param name="sideChannel"> The side channel to be unregistered.</param>
-        public void UnregisterSideChannel(SideChannel sideChannel)
-        {
-            if (m_SideChannels.ContainsKey(sideChannel.ChannelId))
-            {
-                m_SideChannels.Remove(sideChannel.ChannelId);
-            }
+            m_SideChannels.Add(channelType, sideChannel);
         }
 
         /// <summary>
@@ -493,7 +482,7 @@ namespace MLAgents
         /// </summary>
         /// <param name="sideChannels"> A dictionary of channel type to channel.</param>
         /// <returns></returns>
-        public static byte[] GetSideChannelMessage(Dictionary<Guid, SideChannel> sideChannels)
+        public static byte[] GetSideChannelMessage(Dictionary<int, SideChannel> sideChannels)
         {
             using (var memStream = new MemoryStream())
             {
@@ -504,7 +493,7 @@ namespace MLAgents
                         var messageList = sideChannel.MessageQueue;
                         foreach (var message in messageList)
                         {
-                            binaryWriter.Write(sideChannel.ChannelId.ToByteArray());
+                            binaryWriter.Write(sideChannel.ChannelType());
                             binaryWriter.Write(message.Count());
                             binaryWriter.Write(message);
                         }
@@ -520,7 +509,7 @@ namespace MLAgents
         /// </summary>
         /// <param name="sideChannels">A dictionary of channel type to channel.</param>
         /// <param name="dataReceived">The byte array of data received from Python.</param>
-        public static void ProcessSideChannelData(Dictionary<Guid, SideChannel> sideChannels, byte[] dataReceived)
+        public static void ProcessSideChannelData(Dictionary<int, SideChannel> sideChannels, byte[] dataReceived)
         {
             if (dataReceived.Length == 0)
             {
@@ -532,11 +521,11 @@ namespace MLAgents
                 {
                     while (memStream.Position < memStream.Length)
                     {
-                        Guid channelId = Guid.Empty;
+                        int channelType = 0;
                         byte[] message = null;
                         try
                         {
-                            channelId = new Guid(binaryReader.ReadBytes(16));
+                            channelType = binaryReader.ReadInt32();
                             var messageLength = binaryReader.ReadInt32();
                             message = binaryReader.ReadBytes(messageLength);
                         }
@@ -547,15 +536,15 @@ namespace MLAgents
                                 "version of MLAgents in Unity is compatible with the Python version. Original error : "
                                 + ex.Message);
                         }
-                        if (sideChannels.ContainsKey(channelId))
+                        if (sideChannels.ContainsKey(channelType))
                         {
-                            sideChannels[channelId].OnMessageReceived(message);
+                            sideChannels[channelType].OnMessageReceived(message);
                         }
                         else
                         {
                             Debug.Log(string.Format(
-                                "Unknown side channel data received. Channel Id is "
-                                + ": {0}", channelId));
+                                "Unknown side channel data received. Channel type "
+                                + ": {0}", channelType));
                         }
                     }
                 }

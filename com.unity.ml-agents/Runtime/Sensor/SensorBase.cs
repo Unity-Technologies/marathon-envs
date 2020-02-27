@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MLAgents
+namespace MLAgents.Sensor
 {
     public abstract class SensorBase : ISensor
     {

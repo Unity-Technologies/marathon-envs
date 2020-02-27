@@ -11,7 +11,7 @@ namespace MLAgents
     /// Asset Importer used to parse demonstration files.
     /// </summary>
     [ScriptedImporter(1, new[] {"demo"})]
-    internal class DemonstrationImporter : ScriptedImporter
+    public class DemonstrationImporter : ScriptedImporter
     {
         const string k_IconPath = "Assets/ML-Agents/Resources/DemoIcon.png";
 
