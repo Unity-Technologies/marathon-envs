@@ -25,52 +25,52 @@ default:
 MarathonManBackflip-v0:
     normalize: true
     num_epoch: 3
-    beta: .01
+    beta: .00001
     learning_rate: 1e-4
     time_horizon: 100
     max_steps: 128e6
     batch_size: 768 
     buffer_size: 21504 # 768 * 28
-    summary_freq: 10000
+    summary_freq: 100000
     num_layers: 2
     hidden_units: 256
 
 MarathonManWalking-v0:
     normalize: true
     num_epoch: 3
-    beta: .01
+    beta: .00001
     learning_rate: 1e-4
     time_horizon: 100
     max_steps: 64e6
     batch_size: 768 
     buffer_size: 21504 # 768 * 28
-    summary_freq: 10000
+    summary_freq: 100000
     num_layers: 2
     hidden_units: 256
 
 MarathonManRunning-v0:
     normalize: true
     num_epoch: 3
-    beta: .01
+    beta: .00001
     learning_rate: 1e-4
     time_horizon: 100
     max_steps: 64e6
     batch_size: 768 
     buffer_size: 21504 # 768 * 28
-    summary_freq: 10000
+    summary_freq: 100000
     num_layers: 2
     hidden_units: 256
 
 MarathonManJazzDancing-v0:
     normalize: true
     num_epoch: 3
-    beta: .01
+    beta: .00001
     learning_rate: 1e-4
     time_horizon: 100
     max_steps: 64e6
     batch_size: 768 
     buffer_size: 21504 # 768 * 28
-    summary_freq: 10000
+    summary_freq: 100000
     num_layers: 2
     hidden_units: 256
 
