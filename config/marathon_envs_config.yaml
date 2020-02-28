@@ -151,7 +151,7 @@ Ant-v0:
     beta: .003
 
 TerrainHopper-v0:
-    num_epoch: 10 
+    num_epoch: 3 
     time_horizon: 1000 
     summary_freq: 10000
     use_recurrent: false
@@ -161,11 +161,11 @@ TerrainHopper-v0:
     learning_rate: 3e-4
     batch_size: 32
     buffer_size: 5120
-    beta: .003
+    beta: .1
     max_steps: 50e6
 
 TerrainWalker2d-v0:
-    num_epoch: 10 
+    num_epoch: 3 
     time_horizon: 1000 
     summary_freq: 10000
     use_recurrent: false
@@ -175,11 +175,11 @@ TerrainWalker2d-v0:
     learning_rate: 3e-4
     batch_size: 32
     buffer_size: 5120
-    beta: .003
+    beta: .1
     max_steps: 50e6
 
 TerrainAnt-v0:
-    num_epoch: 10 
+    num_epoch: 3
     time_horizon: 1000 
     summary_freq: 10000
     use_recurrent: false
@@ -189,7 +189,7 @@ TerrainAnt-v0:
     learning_rate: 3e-4
     batch_size: 32
     buffer_size: 5120
-    beta: .001
+    beta: .1
     max_steps: 50e6
 
 TerrainMarathonMan-v0:
@@ -203,5 +203,5 @@ TerrainMarathonMan-v0:
     learning_rate: 3e-4
     batch_size: 32
     buffer_size: 5120
-    beta: .0
+    beta: .1
     max_steps: 50e6
