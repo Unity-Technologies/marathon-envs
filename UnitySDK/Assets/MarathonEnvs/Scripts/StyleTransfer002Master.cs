@@ -78,8 +78,7 @@ public class StyleTransfer002Master : MonoBehaviour {
     UnityEngine.Random _random = new UnityEngine.Random();
 	Vector3 _lastCenterOfMass;
 
-	public Func<string, BodyHelper002.BodyPartGroup> GetBodyPartGroup;
-	public Func<string, BodyHelper002.MuscleGroup> GetMuscleGroup;
+	public BodyConfig BodyConfig;
 
 	// Use this for initialization
 	void Awake () {
@@ -103,14 +102,14 @@ public class StyleTransfer002Master : MonoBehaviour {
 		BodyPart002 root = null;
 		foreach (var t in GetComponentsInChildren<Transform>())
 		{
-			if (GetBodyPartGroup(t.name) == BodyHelper002.BodyPartGroup.None)
+			if (BodyConfig.GetBodyPartGroup(t.name) == BodyHelper002.BodyPartGroup.None)
 				continue;
 			
 			var bodyPart = new BodyPart002{
 				Rigidbody = t.GetComponent<Rigidbody>(),
 				Transform = t,
 				Name = t.name,
-				Group = GetBodyPartGroup(t.name), 
+				Group = BodyConfig.GetBodyPartGroup(t.name), 
 			};
 			if (bodyPart.Group == BodyHelper002.BodyPartGroup.Hips)
 				root = bodyPart;
@@ -133,7 +132,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 				Transform = m.GetComponent<Transform>(),
 				ConfigurableJoint = m,
 				Name = m.name,
-				Group = GetMuscleGroup(m.name),
+				Group = BodyConfig.GetMuscleGroup(m.name),
 				MaximumForce = maximumForce
 			};
 			if (muscle.Group == BodyHelper002.MuscleGroup.Hips)

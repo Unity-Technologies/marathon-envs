@@ -142,8 +142,7 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		if (!_hasLazyInitialized)
 		{
 			_bodyManager = GetComponent<BodyManager002>();
-			_bodyManager.GetBodyPartGroup = MarathonManAgent.GetBodyPartGroup;
-			_bodyManager.GetMuscleGroup = MarathonManAgent.GetMuscleGroup;
+			_bodyManager.BodyConfig = MarathonManAgent.BodyConfig;
 			_bodyManager.OnInitializeAgent();
 			_hasLazyInitialized = true;
 		}
