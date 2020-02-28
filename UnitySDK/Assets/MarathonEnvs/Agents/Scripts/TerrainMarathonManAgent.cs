@@ -13,7 +13,8 @@ public class TerrainMarathonManAgent : Agent, IOnTerrainCollision
 	SpawnableEnv _spawnableEnv;
     int _stepCountAtLastMeter;
     public int lastXPosInMeters;
-    float _pain;
+    public int maxXPosInMeters;
+	float _pain;
     bool _modeRecover;
 
 	List<float> distances;
@@ -88,7 +89,9 @@ public class TerrainMarathonManAgent : Agent, IOnTerrainCollision
             lastXPosInMeters = newXPosInMeters;
             _stepCountAtLastMeter = this.GetStepCount();
         }
-        var terminate = false;
+		if (newXPosInMeters > maxXPosInMeters)
+			maxXPosInMeters = newXPosInMeters;
+		var terminate = false;
 		// bool isInBounds = _spawnableEnv.IsPointWithinBoundsInWorldSpace(pelvis.Transform.position);
 		// if (!isInBounds)
         // if (pelvis.Rigidbody.transform.position.y < 0f)
