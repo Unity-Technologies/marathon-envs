@@ -198,7 +198,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 				Name = t.name,
 				Group = BodyConfig.GetBodyPartGroup(t.name), 
 			};
-			if (bodyPart.Group == BodyHelper002.BodyPartGroup.Hips)
+			if (bodyPart.Group == BodyConfig.GetRootBodyPart())
 				root = bodyPart;
 			bodyPart.Root = root;
 			bodyPart.Init();
@@ -222,7 +222,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 				Group = BodyConfig.GetMuscleGroup(m.name),
 				MaximumForce = maximumForce
 			};
-			if (muscle.Group == BodyHelper002.MuscleGroup.Hips)
+			if (muscle.Group == BodyConfig.GetRootMuscle())
 				rootConfigurableJoint = muscle.ConfigurableJoint;
 			muscle.RootConfigurableJoint = rootConfigurableJoint;
 			muscle.Init();
@@ -387,7 +387,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 
     public Vector3 GetNormalizedVelocity()
     {
-        var pelvis = GetFirstBodyPart(BodyPartGroup.Hips); 
+        var pelvis = GetFirstBodyPart(BodyConfig.GetRootBodyPart()); 
         Vector3 metersPerSecond = pelvis.Rigidbody.velocity;
         var n = GetNormalizedVelocity(metersPerSecond);
         return n;
@@ -396,7 +396,7 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
     public Vector3 GetNormalizedPosition()
     {
 		// var position = GetCenterOfMass();
-        var pelvis = GetFirstBodyPart(BodyPartGroup.Hips); 
+        var pelvis = GetFirstBodyPart(BodyConfig.GetRootBodyPart()); 
 		var position = pelvis.Transform.position;
 		var normalizedPosition = GetNormalizedPosition(position - startPosition);
         return normalizedPosition;

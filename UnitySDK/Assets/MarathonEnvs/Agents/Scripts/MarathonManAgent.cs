@@ -71,7 +71,8 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 
 			return MuscleGroup.None;
 		},
-        GetRootBodyPart = () => BodyPartGroup.Hips
+        GetRootBodyPart = () => BodyPartGroup.Hips,
+        GetRootMuscle = () => MuscleGroup.Hips
     };
 
 

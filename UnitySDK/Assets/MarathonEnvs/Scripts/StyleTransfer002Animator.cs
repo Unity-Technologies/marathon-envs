@@ -82,7 +82,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 		_baseRotation = 
 			_transforms
-			.First(x=> BodyConfig.GetBodyPartGroup(x.name) == BodyHelper002.BodyPartGroup.Hips)
+			.First(x=> BodyConfig.GetBodyPartGroup(x.name) == BodyConfig.GetRootBodyPart())
 			.rotation;
 		SetupSensors();
 	}
@@ -119,7 +119,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 				Name = t.name,
 				Group = BodyConfig.GetBodyPartGroup(t.name), 
 			};
-			if (bodyPart.Group == BodyHelper002.BodyPartGroup.Hips)
+			if (bodyPart.Group == BodyConfig.GetRootBodyPart())
 				root = bodyPart;
 			bodyPart.Root = root;
 			bodyPart.Init();

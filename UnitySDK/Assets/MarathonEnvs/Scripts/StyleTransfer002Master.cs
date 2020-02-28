@@ -111,7 +111,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 				Name = t.name,
 				Group = BodyConfig.GetBodyPartGroup(t.name), 
 			};
-			if (bodyPart.Group == BodyHelper002.BodyPartGroup.Hips)
+			if (bodyPart.Group == BodyConfig.GetRootBodyPart())
 				root = bodyPart;
 			bodyPart.Root = root;
 			bodyPart.Init();
@@ -135,7 +135,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 				Group = BodyConfig.GetMuscleGroup(m.name),
 				MaximumForce = maximumForce
 			};
-			if (muscle.Group == BodyHelper002.MuscleGroup.Hips)
+			if (muscle.Group == BodyConfig.GetRootMuscle())
 				rootConfigurableJoint = muscle.ConfigurableJoint;
 			muscle.RootConfigurableJoint = rootConfigurableJoint;
 			muscle.Init();
