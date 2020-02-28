@@ -290,11 +290,15 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		if (!_hasLazyInitialized)
 		{
 			_master = GetComponent<StyleTransfer002Master>();
+			_master.GetBodyPartGroup = MarathonManAgent.GetBodyPartGroup;
+			_master.GetMuscleGroup = MarathonManAgent.GetMuscleGroup;
 			_master.OnInitializeAgent();
 			_decisionRequester = GetComponent<DecisionRequester>();
 			var spawnableEnv = GetComponentInParent<SpawnableEnv>();
 			_localStyleAnimator = spawnableEnv.gameObject.GetComponentInChildren<StyleTransfer002Animator>();
 			_styleAnimator = _localStyleAnimator.GetFirstOfThisAnim();
+			_styleAnimator.GetBodyPartGroup = MarathonManAgent.GetBodyPartGroup;
+			_styleAnimator.GetMuscleGroup = MarathonManAgent.GetMuscleGroup;
 			_styleAnimator.OnInitializeAgent();
 			// _styleAnimator = _localStyleAnimator;
 			_hasLazyInitialized = true;

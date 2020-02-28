@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using MLAgents;
+using System;
 
 public class StyleTransfer002Master : MonoBehaviour {
 	public float FixedDeltaTime = 0.005f;
@@ -74,8 +75,11 @@ public class StyleTransfer002Master : MonoBehaviour {
 	// private Brain _brain;
 	public bool IsInferenceMode;
 	bool _phaseIsRunning;
-	Random _random = new Random();
+    UnityEngine.Random _random = new UnityEngine.Random();
 	Vector3 _lastCenterOfMass;
+
+	public Func<string, BodyHelper002.BodyPartGroup> GetBodyPartGroup;
+	public Func<string, BodyHelper002.MuscleGroup> GetMuscleGroup;
 
 	// Use this for initialization
 	void Awake () {
@@ -99,14 +103,14 @@ public class StyleTransfer002Master : MonoBehaviour {
 		BodyPart002 root = null;
 		foreach (var t in GetComponentsInChildren<Transform>())
 		{
-			if (BodyHelper002.GetBodyPartGroup(t.name) == BodyHelper002.BodyPartGroup.None)
+			if (GetBodyPartGroup(t.name) == BodyHelper002.BodyPartGroup.None)
 				continue;
 			
 			var bodyPart = new BodyPart002{
 				Rigidbody = t.GetComponent<Rigidbody>(),
 				Transform = t,
 				Name = t.name,
-				Group = BodyHelper002.GetBodyPartGroup(t.name), 
+				Group = GetBodyPartGroup(t.name), 
 			};
 			if (bodyPart.Group == BodyHelper002.BodyPartGroup.Hips)
 				root = bodyPart;
@@ -129,7 +133,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 				Transform = m.GetComponent<Transform>(),
 				ConfigurableJoint = m,
 				Name = m.name,
-				Group = BodyHelper002.GetMuscleGroup(m.name),
+				Group = GetMuscleGroup(m.name),
 				MaximumForce = maximumForce
 			};
 			if (muscle.Group == BodyHelper002.MuscleGroup.Hips)

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using MLAgents;
@@ -62,6 +63,9 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 	}
 
+	public Func<string, BodyHelper002.BodyPartGroup> GetBodyPartGroup;
+	public Func<string, BodyHelper002.MuscleGroup> GetMuscleGroup;
+
 	// Use this for initialization
 	public void OnInitializeAgent()
     {
@@ -79,7 +83,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 		_baseRotation = 
 			_transforms
-			.First(x=> BodyHelper002.GetBodyPartGroup(x.name) == BodyHelper002.BodyPartGroup.Hips)
+			.First(x=> GetBodyPartGroup(x.name) == BodyHelper002.BodyPartGroup.Hips)
 			.rotation;
 		SetupSensors();
 	}
@@ -107,14 +111,14 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 		foreach (var t in _transforms)
 		{
-			if (BodyHelper002.GetBodyPartGroup(t.name) == BodyHelper002.BodyPartGroup.None)
+			if (GetBodyPartGroup(t.name) == BodyHelper002.BodyPartGroup.None)
 				continue;
 			
 			var bodyPart = new BodyPart002{
 				Rigidbody = t.GetComponent<Rigidbody>(),
 				Transform = t,
 				Name = t.name,
-				Group = BodyHelper002.GetBodyPartGroup(t.name), 
+				Group = GetBodyPartGroup(t.name), 
 			};
 			if (bodyPart.Group == BodyHelper002.BodyPartGroup.Hips)
 				root = bodyPart;
