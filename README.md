@@ -86,11 +86,10 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 
 * Unity 2018.4 (Download [here](https://unity3d.com/get-unity/download)).
 * Cloan / Download this repro
-* Install **CUSTOM** ml-agents version 0.9 - install via:
+* Install ml-agents version 0.14.1 - install via:
 
 ``` sh
-cd ml-agents
-pip3 install -e ./
+pip3 install mlagents==0.14.1
 ```
 
 * Build or install the correct runtime for your version into the `envs\` folder
