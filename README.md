@@ -4,7 +4,7 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 
 ![MarathonEnvs](images/MarathonEnvsBanner.gif)
 
-* Preview MarathonEnvs using the [Web Demo](http://marathonenvs.joebooth.com)
+## Preview MarathonEnvs using the **[Web Demo](http://marathonenvs.joebooth.com)**
 
 **MarathonEnvs** enables the reproduction of these benchmarks within Unity ml-agents using Unity’s native physics simulator, PhysX. MarathonEnvs maybe useful for:
 
@@ -15,7 +15,11 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 
 ---
 
-## What's new in MarathonEnvs-v2.0
+## What's new in MarathonEnvs-v2.0.0-alpha.1
+
+### WebGL Demo / Support for in browser
+
+* See [Web Demo](http://marathonenvs.joebooth.com)
 
 ### marathon-envs Gym wrapper (Preview)
 
