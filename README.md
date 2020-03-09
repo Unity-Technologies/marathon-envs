@@ -29,6 +29,12 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 
 * Updated to use Unity 2018.4 LTS. Should work with later versions. However, sometimes Unity makes breaking physics changes.
 
+### MarathonManBackflip-v0
+
+* Train the agent to complete a backflip based on motion capture data
+* Merged from StyleTransfer experimental repro
+
+
 ### MarathonMan-v0
 
 * Optimized for Unity3d + fixes some bugs with the DeepMind.xml version
