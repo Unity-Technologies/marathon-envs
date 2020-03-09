@@ -4,7 +4,6 @@ default:
     beta: 5.0e-3
     buffer_size: 10240
     epsilon: 0.2
-    gamma: 0.99
     hidden_units: 128
     lambd: 0.95
     learning_rate: 3.0e-4
@@ -17,139 +16,192 @@ default:
     sequence_length: 64
     summary_freq: 1000
     use_recurrent: false
-    use_curiosity: false
-    curiosity_strength: 0.01
-    curiosity_enc_size: 128
+    vis_encode_type: simple
+    reward_signals: 
+        extrinsic:
+            strength: 1.0
+            gamma: 0.99
 
-DeepMindHumanoidBrain:
+MarathonManBackflip-v0:
     normalize: true
     num_epoch: 3
-    beta: 0.01
-    time_horizon: 1000
-    batch_size: 2048
-    buffer_size: 20480
-    gamma: 0.995
-    max_steps: 2e6
-    # max_steps: 625000
-    summary_freq: 1000
+    beta: .00001
+    learning_rate: 1e-4
+    time_horizon: 100
+    max_steps: 128e6
+    batch_size: 768 
+    buffer_size: 21504 # 768 * 28
+    summary_freq: 100000
     num_layers: 2
-    hidden_units: 512
-    # use_curiosity: true
-    # curiosity_strength: 0.01
-    # curiosity_enc_size: 256    
+    hidden_units: 256
 
-DeepMindHopperBrain:
-    beta: 1.0e-2
-    epsilon: 0.20
-    gamma: 0.99
-    lambd: 0.95
-    learning_rate: 1.0e-3
-    num_epoch: 3
-    time_horizon: 128
-    summary_freq: 1000
-    use_recurrent: false
+MarathonManWalking-v0:
     normalize: true
+    num_epoch: 3
+    beta: .00001
+    learning_rate: 1e-4
+    time_horizon: 100
+    max_steps: 64e6
+    batch_size: 768 
+    buffer_size: 21504 # 768 * 28
+    summary_freq: 100000
     num_layers: 2
-    hidden_units: 90
-    batch_size: 2048
-    buffer_size: 10240
-    max_steps: 3e5
-    use_curiosity: true
-    curiosity_strength: 0.01
-    curiosity_enc_size: 256    
+    hidden_units: 256
 
-DeepMindWalkerBrain:
-    beta: 1.0e-2
-    epsilon: 0.20
-    gamma: 0.99
-    lambd: 0.95
-    learning_rate: 1.0e-3
-    num_epoch: 3
-    time_horizon: 128
-    summary_freq: 1000
-    use_recurrent: false
+MarathonManRunning-v0:
     normalize: true
-    num_layers: 3
-    hidden_units: 41
-    batch_size: 2048
-    buffer_size: 10240
-    max_steps: 3e5
-    use_curiosity: true
-    curiosity_strength: 0.01
-    curiosity_enc_size: 256    
-
-OpenAIAntBrain:
-    # beta: 1.0e-2
-    beta: 5.0e-3
-    epsilon: 0.20
-    gamma: 0.99
-    lambd: 0.95
-    learning_rate: 1.0e-3
     num_epoch: 3
-    time_horizon: 128
-    summary_freq: 1000
-    use_recurrent: false
+    beta: .00001
+    learning_rate: 1e-4
+    time_horizon: 100
+    max_steps: 64e6
+    batch_size: 768 
+    buffer_size: 21504 # 768 * 28
+    summary_freq: 100000
+    num_layers: 2
+    hidden_units: 256
+
+MarathonManJazzDancing-v0:
     normalize: true
-    batch_size: 2048
+    num_epoch: 3
+    beta: .00001
+    learning_rate: 1e-4
+    time_horizon: 100
+    max_steps: 64e6
+    batch_size: 768 
+    buffer_size: 21504 # 768 * 28
+    summary_freq: 100000
+    num_layers: 2
+    hidden_units: 256
+
+MarathonMan-v0:
+    num_epoch: 10 
+    time_horizon: 100 
+    # summary_freq: 250000
+    summary_freq: 25000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 64
     buffer_size: 10240
-    num_layers: 3
-    hidden_units: 53
-    max_steps: 3e5
-    # use_curiosity: true
-    # curiosity_strength: 0.01
-    # curiosity_enc_size: 256    
+    beta: .003
+    max_steps: 1.e7 
 
-# DeepMindHumanoidBrain:
-#     learning_rate: 3.0e-3
-#     num_epoch: 10 
-#     time_horizon: 500 
-#     summary_freq: 1000 
-#     use_recurrent: false
-#     normalize: true 
-#     num_layers: 2
-#     hidden_units: 64 
-#     batch_size: 2048 
-#     buffer_size: 10240 
-#     # max_steps: 62500
-#     # max_steps: 625000
-#     max_steps: 2e6
+MarathonManSparse-v0:
+    num_epoch: 10 
+    time_horizon: 1000 
+    # summary_freq: 250000
+    summary_freq: 25000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    reward_signals: 
+        extrinsic:
+            strength: 1.0
+            gamma: 0.9999
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 64
+    buffer_size: 10240
+    beta: .003
+    max_steps: 1.e7 
 
-# DeepMindHopperBrain:
-#     learning_rate: 3.0e-3
-#     num_epoch: 10 
-#     time_horizon: 500 
-#     summary_freq: 1000 
-#     use_recurrent: false
-#     normalize: true 
-#     num_layers: 2
-#     hidden_units: 64 
-#     batch_size: 2048 
-#     buffer_size: 10240 
-#     max_steps: 62500
+Hopper-v0:
+    num_epoch: 10 
+    time_horizon: 100 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 1e-3
+    batch_size: 16
+    buffer_size: 5120
+    max_steps: 1e6
+    beta: .003
 
-# DeepMindWalkerBrain:
-#     learning_rate: 3.0e-3
-#     num_epoch: 10 
-#     time_horizon: 500 
-#     summary_freq: 1000 
-#     use_recurrent: false
-#     normalize: true 
-#     num_layers: 2
-#     hidden_units: 64 
-#     batch_size: 2048 
-#     buffer_size: 10240 
-#     # max_steps: 62500
-#     max_steps: 3e5
+Walker2d-v0:
+    num_epoch: 10 
+    time_horizon: 100 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 1e-3
+    batch_size: 16
+    buffer_size: 5120
+    max_steps: 1e6
+    beta: .003
 
-# OpenAIAntBrain:
-#     learning_rate: 3.0e-3
-#     num_epoch: 10 
-#     time_horizon: 500 
-#     summary_freq: 1000 
-#     use_recurrent: false
-#     normalize: true 
-#     num_layers: 2
-#     hidden_units: 64 
-#     batch_size: 2048 
-#     buffer_size: 10240 
-#     max_steps: 62500  
+Ant-v0:
+    num_epoch: 10 
+    time_horizon: 100 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 1e-3
+    batch_size: 32
+    buffer_size: 5120
+    max_steps: 1e6
+    beta: .003
+
+TerrainHopper-v0:
+    num_epoch: 3 
+    time_horizon: 1000 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 32
+    buffer_size: 5120
+    beta: .1
+    max_steps: 50e6
+
+TerrainWalker2d-v0:
+    num_epoch: 3 
+    time_horizon: 1000 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 32
+    buffer_size: 5120
+    beta: .1
+    max_steps: 50e6
+
+TerrainAnt-v0:
+    num_epoch: 3
+    time_horizon: 1000 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 32
+    buffer_size: 5120
+    beta: .1
+    max_steps: 50e6
+
+TerrainMarathonMan-v0:
+    num_epoch: 3 
+    time_horizon: 1000 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 32
+    buffer_size: 5120
+    beta: .1
+    max_steps: 50e6

@@ -38,6 +38,7 @@ namespace MLAgents
         [Tooltip("Function which collections observations")]
         /**< \brief Function which collections observations*/
         protected Action ObservationsFunction;
+        //protected Action<VectorSensor> ObservationsFunction;
 
         [Tooltip("Optional Function for additional reward at end of Episode")]
         /**< \brief Optional Function for additional reward at end of Episode*/
@@ -77,6 +78,9 @@ namespace MLAgents
         [Tooltip("Rigidbody for FocalPoint")]
         /**< \brief Rigidbody for FocalPoint*/
         public Rigidbody FocalRidgedBody;
+        [Tooltip("Distance travelled this episode")]
+        /**< \brief Distance travelled this episode*/
+        public float DistanceTraveled = float.MinValue;
 
         [Tooltip("Max distance travelled across all episodes")]
         /**< \brief Max distance travelled across all episodes*/
@@ -106,6 +110,10 @@ namespace MLAgents
         /**< \brief Sensors created by MarathonSpawner*/
         public List<MarathonSensor> MarathonSensors;
 
+        public List<float> Observations;
+        public int ObservationNormalizedErrors;
+        public int MaxObservationNormalizedErrors;
+
         //
         // local variables
         internal int NumSensors;
@@ -118,11 +126,33 @@ namespace MLAgents
         List<float> qvel;
         List<float> recentVelocity;
 
+        List <Vector3> mphBuffer;
+
+        float[] lastVectorAction;
+        float[] vectorDifference;
+    	SpawnableEnv _spawnableEnv;
+    	Vector3 startPosition;
+    	bool _isDone;
+        bool _hasLazyInitialized;
 
         public override void AgentReset()
         {
+            if (!_hasLazyInitialized)
+            {
+                _hasLazyInitialized = true;
+            }
+            _isDone = true;
+            if (DistanceTraveled != float.MinValue)
+            {
+                var scorer = FindObjectOfType<Scorer>();
+                scorer?.ReportScore(DistanceTraveled, "Distance Traveled");
+            }            
+            if (_spawnableEnv == null)
+        		_spawnableEnv = GetComponentInParent<SpawnableEnv>();
             if (marathonSpawner == null)
                 marathonSpawner = GetComponent<MarathonSpawner>();
+
+            mphBuffer = new List<Vector3>();
 
             Transform[] allChildren = GetComponentsInChildren<Transform>();
             if (_hasValidModel)
@@ -145,10 +175,17 @@ namespace MLAgents
                     }
                 }
 
-                marathonSpawner.ApplyRandom();
+                marathonSpawner?.ApplyRandom();
                 SetupMarathon();
                 UpdateQ();
                 return;
+            }
+			startPosition = transform.position;
+            // HACK first spawned marathon agent should grab the camera
+            var agentWithCamera = FindObjectsOfType<MarathonAgent>().FirstOrDefault(x=>x.CameraTarget != null);
+            if (agentWithCamera == null) {
+                CameraTarget = FindObjectOfType<SmoothFollow>()?.gameObject;
+                ShowMonitor = true;                
             }
 
             MarathonJoints = null;
@@ -162,7 +199,7 @@ namespace MLAgents
 
             Resources.UnloadUnusedAssets();
 
-            marathonSpawner.SpawnFromXml();
+            marathonSpawner?.SpawnFromXml();
             allChildren = GetComponentsInChildren<Transform>();
             transformsPosition = new Dictionary<GameObject, Vector3>();
             transformsRotation = new Dictionary<GameObject, Quaternion>();
@@ -172,7 +209,7 @@ namespace MLAgents
                 transformsRotation[child.gameObject] = child.rotation;
             }
 
-            marathonSpawner.ApplyRandom();
+            marathonSpawner?.ApplyRandom();
             SetupMarathon();
             UpdateQ();
             _hasValidModel = true;
@@ -203,12 +240,39 @@ namespace MLAgents
 
         public override void CollectObservations()
         {
+            var sensor = this;
+            if (!_hasLazyInitialized)
+            {
+                AgentReset();
+            }
             UpdateQ();
             ObservationsFunction();
+
+            // var info = GetInfo();
+            // if (Observations?.Count != info.vectorObservation.Count)
+            //     Observations = Enumerable.Range(0, info.vectorObservation.Count).Select(x => 0f).ToList();
+            // ObservationNormalizedErrors = 0;
+            // for (int i = 0; i < Observations.Count; i++)
+            // {
+            //     Observations[i] = info.vectorObservation[i];
+            //     var x = Mathf.Abs(Observations[i]);
+            //     var e = Mathf.Epsilon;
+            //     bool is1 = Mathf.Approximately(x, 1f);
+            //     if ((x > 1f + e) && !is1)
+            //         ObservationNormalizedErrors++;
+            // }
+            // if (ObservationNormalizedErrors > MaxObservationNormalizedErrors)
+            //     MaxObservationNormalizedErrors = ObservationNormalizedErrors;
         }
 
-        public override void AgentAction(float[] vectorAction, string textAction)
+        public override void AgentAction(float[] vectorAction)
         {
+    		_isDone = false;
+            if (lastVectorAction == null){
+                lastVectorAction = vectorAction.Select(x=>0f).ToArray();
+                vectorDifference = vectorAction.Select(x=>0f).ToArray();
+            }
+            
             Actions = vectorAction
                 .Select(x => x)
                 .ToList();
@@ -216,11 +280,12 @@ namespace MLAgents
             {
                 var inp = (float) Actions[i];
                 ApplyAction(MarathonJoints[i], inp);
+				vectorDifference[i] = vectorAction[i]-lastVectorAction[i];
             }
 
             UpdateQ();
 
-            if (!IsDone())
+            if (!_isDone)
             {
                 bool done = TerminateFunction();
 
@@ -234,7 +299,7 @@ namespace MLAgents
                     SetReward(StepRewardFunction());
                 }
 
-                done |= (this.GetStepCount() >= agentParameters.maxStep && agentParameters.maxStep > 0);
+                done |= (this.GetStepCount() >= maxStep && maxStep > 0);
                 if (done && OnEpisodeCompleteGetRewardFunction != null)
                     AddReward(OnEpisodeCompleteGetRewardFunction());
             }
@@ -277,24 +342,85 @@ namespace MLAgents
             return recentVelocity.Average();
         }
 
+        Vector3 GetRawVelocity(string bodyPart = null)
+        {
+            Vector3 rawVelocity;
+            if (!string.IsNullOrWhiteSpace(bodyPart))
+                rawVelocity = BodyParts[bodyPart].velocity;
+            else
+                rawVelocity = FocalRidgedBody.velocity;
+            return rawVelocity;
+        }
+
         internal float GetVelocity(string bodyPart = null)
         {
-            var dt = Time.fixedDeltaTime;
-            float rawVelocity = 0f;
-            if (!string.IsNullOrWhiteSpace(bodyPart))
-                rawVelocity = BodyParts[bodyPart].velocity.x;
-            else
-                rawVelocity = FocalRidgedBody.velocity.x;
+            float rawVelocity = GetRawVelocity().x;
 
             var maxSpeed = 4f; // meters per second
             var velocity = rawVelocity / maxSpeed;
-            if (ShowMonitor)
-            {
-                Monitor.Log("MaxDistance", FocalPointMaxDistanceTraveled.ToString());
-                Monitor.Log("MPH: ", (rawVelocity * 2.236936f).ToString());
-            }
-
             return velocity;
+        }
+
+        internal Vector3 GetNormalizedVelocity(Vector3 metersPerSecond)
+        {
+            var maxMetersPerSecond = _spawnableEnv.bounds.size
+                / maxStep
+                / Time.fixedDeltaTime;
+            var maxXZ = Mathf.Max(maxMetersPerSecond.x, maxMetersPerSecond.z);
+            maxMetersPerSecond.x = maxXZ;
+            maxMetersPerSecond.z = maxXZ;
+            maxMetersPerSecond.y = 53; // override with
+            float x = metersPerSecond.x / maxMetersPerSecond.x;
+            float y = metersPerSecond.y / maxMetersPerSecond.y;
+            float z = metersPerSecond.z / maxMetersPerSecond.z;
+            // clamp result
+            x = Mathf.Clamp(x, -1f, 1f);
+            y = Mathf.Clamp(y, -1f, 1f);
+            z = Mathf.Clamp(z, -1f, 1f);
+            Vector3 normalizedVelocity = new Vector3(x,y,z);
+            return normalizedVelocity;
+        }
+        internal Vector3 GetNormalizedPosition(Vector3 inputPos)
+        {
+            Vector3 pos = inputPos - startPosition;
+            var maxPos = _spawnableEnv.bounds.size;
+            float x = pos.x / maxPos.x;
+            float y = pos.y / maxPos.y;
+            float z = pos.z / maxPos.z;
+            // clamp result
+            x = Mathf.Clamp(x, -1f, 1f);
+            y = Mathf.Clamp(y, -1f, 1f);
+            z = Mathf.Clamp(z, -1f, 1f);
+            Vector3 normalizedPos = new Vector3(x,y,z);
+            return normalizedPos;
+        }
+
+        internal Vector3 GetNormalizedVelocity(string bodyPart = null)
+        {
+            var metersPerSecond = GetRawVelocity(bodyPart);
+            var normalizedVelocity = this.GetNormalizedVelocity(metersPerSecond);
+            Vector3 mph = metersPerSecond * 2.236936f;
+            mphBuffer.Add(mph);
+            if (mphBuffer.Count > 100)
+                mphBuffer.RemoveAt(0);
+            var aveMph = new Vector3(
+                mphBuffer.Select(x=>x.x).Average(),
+                mphBuffer.Select(x=>x.y).Average(),
+                mphBuffer.Select(x=>x.z).Average()
+            );
+            //if (ShowMonitor)
+            //{
+            //    Monitor.Log("MaxDistance", FocalPointMaxDistanceTraveled.ToString());
+            //    Monitor.Log("MPH: ", (aveMph).ToString());
+            //}            
+            return normalizedVelocity;
+        }
+
+        internal Vector3 GetNormalizedPosition(string bodyPart = null)
+        {
+            Vector3 pos = BodyParts[bodyPart].position;
+            Vector3 normalizedPos = this.GetNormalizedPosition(BodyParts[bodyPart].position);
+            return normalizedPos;
         }
 
         internal float GetUprightBonus()
@@ -304,12 +430,12 @@ namespace MLAgents
             return uprightBonus;
         }
 
-        internal float GetUprightBonus(string bodyPart)
+        internal float GetUprightBonus(string bodyPart, float maxBonus = 0.5f)
         {
             var toFocalAngle = BodyPartsToFocalRoation[bodyPart] * -BodyParts[bodyPart].transform.forward;
             var angleFromUp = Vector3.Angle(toFocalAngle, Vector3.up);
             var qpos2 = (angleFromUp % 180) / 180;
-            var uprightBonus = 0.5f * (2 - (Mathf.Abs(qpos2) * 2) - 1);
+            var uprightBonus = maxBonus * (2 - (Mathf.Abs(qpos2) * 2) - 1);
             return uprightBonus;
         }
 
@@ -335,21 +461,21 @@ namespace MLAgents
                 $"{bodyPart}: l: {angleFromLeft}, r: {angleFromRight}, f: {angleFromForward}, b: {angleFromBack}, u: {angleFromUp}, d: {angleFromDown}");
         }
 
-        internal float GetLeftBonus(string bodyPart)
+        internal float GetLeftBonus(string bodyPart, float maxBonus = 0.5f)
         {
-            var bonus = GetDirectionBonus(bodyPart, Vector3.left);
+            var bonus = GetDirectionBonus(bodyPart, Vector3.left, maxBonus);
             return bonus;
         }
 
-        internal float GetRightBonus(string bodyPart)
+        internal float GetRightBonus(string bodyPart, float maxBonus = 0.5f)
         {
-            var bonus = GetDirectionBonus(bodyPart, Vector3.right);
+            var bonus = GetDirectionBonus(bodyPart, Vector3.right, maxBonus);
             return bonus;
         }
 
-        internal float GetForwardBonus(string bodyPart)
+        internal float GetForwardBonus(string bodyPart, float maxBonus = 0.5f)
         {
-            var bonus = GetDirectionBonus(bodyPart, Vector3.forward);
+            var bonus = GetDirectionBonus(bodyPart, Vector3.forward, maxBonus);
             return bonus;
         }
 
@@ -377,6 +503,33 @@ namespace MLAgents
 
             return (float) effort;
         }
+
+        internal float GetEffortNormalized(string[] ignorJoints = null)
+        {
+            double effort = 0;
+            double joints = 0;
+            for (int i = 0; i < Actions.Count; i++)
+            {
+                if (i >= MarathonJoints.Count)
+                    continue; // handle case when to many actions
+                var name = MarathonJoints[i].JointName;
+                if (ignorJoints != null && ignorJoints.Contains(name))
+                    continue;
+                var jointEffort = Mathf.Pow(Mathf.Abs(Actions[i]), 2);
+                effort += jointEffort;
+                joints++;
+            }
+
+            return (float) (effort / joints);
+        }
+        internal float GetActionDifferenceNormalized()
+        {
+            float actionDifference = vectorDifference.Average();
+		    actionDifference = Mathf.Clamp(actionDifference, 0, 1);
+		    actionDifference = Mathf.Pow(actionDifference,2);
+            return actionDifference;
+        }
+
 
         internal float GetJointsAtLimitPenality(string[] ignorJoints = null)
         {
@@ -424,7 +577,8 @@ namespace MLAgents
 
         public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
         {
-            if (string.Compare(terrain.name, "Terrain", true) != 0)
+            // if (string.Compare(terrain.name, "Terrain", true) != 0)
+    		if (terrain.GetComponent<Terrain>() == null)
                 return;
 
             switch (other.name.ToLowerInvariant().Trim())
@@ -465,6 +619,7 @@ namespace MLAgents
 
         internal void ApplyAction(MarathonJoint mJoint, float? target = null)
         {
+            float powerMultiplier = 2.5f;
             ConfigurableJoint configurableJoint = mJoint.Joint as ConfigurableJoint;
             if (!target.HasValue) // handle random
                 target = UnityEngine.Random.value * 2 - 1;
@@ -475,7 +630,7 @@ namespace MLAgents
             angX.positionSpring = 1f;
             var scale = mJoint.MaximumForce * Mathf.Pow(Mathf.Abs(target.Value), 3);
             angX.positionDamper = Mathf.Max(1f, scale);
-            angX.maximumForce = 1f;
+            angX.maximumForce = Mathf.Max(1f, mJoint.MaximumForce * powerMultiplier);
             configurableJoint.angularXDrive = angX;
         }
 
@@ -524,7 +679,7 @@ namespace MLAgents
             var meshRenderer = curNode.GetComponent<MeshRenderer>();
             if (meshRenderer != null)
                 topmostNode = meshRenderer.gameObject;
-            var root = curNode.transform.root.gameObject;
+            var root = this;
             var meshRenderers = root.GetComponentsInChildren<MeshRenderer>();
             if (meshRenderers != null && meshRenderers.Length > 0)
                 topmostNode = meshRenderers[0].gameObject;
@@ -538,7 +693,8 @@ namespace MLAgents
                 return;
 
             float dt = Time.fixedDeltaTime;
-            FocalPointMaxDistanceTraveled = Mathf.Max(FocalPointMaxDistanceTraveled, FocalPoint.transform.position.x);
+            DistanceTraveled = FocalPoint.transform.position.x;
+            FocalPointMaxDistanceTraveled = Mathf.Max(FocalPointMaxDistanceTraveled, DistanceTraveled);
 
             var topJoint = MarathonJoints[0];
             var topTransform = topJoint.Joint.transform;
@@ -583,7 +739,10 @@ namespace MLAgents
                 qglobpos[3 + i] = globPos;
                 var vel = (qpos[3 + i] - lastPos) / (dt);
                 qvel[3 + i] = vel;
-                JointVelocity[i] = vel;
+                // JointVelocity[i] = vel;
+                var metersPerSecond = new Vector3(vel,0f,0f);
+                Vector3 normalizedVelocity = this.GetNormalizedVelocity(metersPerSecond);
+                JointVelocity[i] = normalizedVelocity.x;
             }
 
             for (int i = 0; i < _baseTargetPairs.Count; i++)
@@ -605,7 +764,8 @@ namespace MLAgents
 
         public void SensorCollisionEnter(Collider sensorCollider, Collision other)
         {
-            if (string.Compare(other.gameObject.name, "Terrain", true) != 0)
+            // if (string.Compare(other.gameObject.name, "Terrain", true) != 0)
+    		if (other.gameObject.GetComponent<Terrain>() == null)
                 return;
             var otherGameobject = other.gameObject;
             var sensor = MarathonSensors
@@ -619,7 +779,8 @@ namespace MLAgents
 
         public void SensorCollisionExit(Collider sensorCollider, Collision other)
         {
-            if (string.Compare(other.gameObject.name, "Terrain", true) != 0)
+            // if (string.Compare(other.gameObject.name, "Terrain", true) != 0)
+    		if (other.gameObject.GetComponent<Terrain>() == null)
                 return;
             var otherGameobject = other.gameObject;
             var sensor = MarathonSensors

@@ -94,3 +94,5 @@ ml-agents-protobuf/Grpc*
 # Ignore PyPi build files.
 dist/
 build/
+old_summaries/
+mono_crash.*
