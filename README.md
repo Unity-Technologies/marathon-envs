@@ -2,9 +2,9 @@
 
 A set of high-dimensional continuous control environments for use with Unity ML-Agents Toolkit.
 
-[Web Demo](http://marathonenvs.joebooth.com)
-
 ![MarathonEnvs](images/MarathonEnvsBanner.gif)
+
+* Preview MarathonEnvs using the [Web Demo](http://marathonenvs.joebooth.com)
 
 **MarathonEnvs** enables the reproduction of these benchmarks within Unity ml-agents using Unity’s native physics simulator, PhysX. MarathonEnvs maybe useful for:
 
@@ -17,9 +17,13 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 
 ## What's new in MarathonEnvs-v2.0
 
-### ml-agents 0.9 support
+### marathon-envs Gym wrapper (Preview)
 
-* Updated to work with ml-agents 0.9 / new inference engine
+* Use marathon-envs as a OpenAI Gym environment - see [documentation](marathon-envs/README.md)
+
+### ml-agents 0.14.1 support
+
+* Updated to work with ml-agents 0.14.1 / new inference engine
 
 ### Unity 2018.4 LTS
 
@@ -49,11 +53,6 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 * Unique Physics Scene per Environment (makes it easier to port envionments however runs slower)
 * SelectEnvToSpawn.cs - Optional menu to enable user to select from all agents in build
 
-### Skip setting actions
-
-* Option to not set actions when skipping steps.
-* Optimization for when running physics at high frequencey
-
 ### Scorer.cs
 
 * Score agent against 'goal' (for example, max distance) to distinguish rewards from goals
@@ -76,10 +75,6 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 ### Training speed improvements - All feet detect distance from floor
 
 ## Getting Started
-
-### Web Demo
-
-* Preview MarathonEnvs using the [Web Demo](http://marathonenvs.joebooth.com)
 
 ### Requirements
 
