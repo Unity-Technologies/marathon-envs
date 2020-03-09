@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1197355327420184
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4132043790615226}
+  - component: {fileID: 114269483692438478}
+  - component: {fileID: 114027728797193598}
+  m_Layer: 14
+  m_Name: DeepMindHumanoid
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4132043790615226
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197355327420184}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!114 &114269483692438478
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197355327420184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a532e373957504411bd01901bf361ad3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Xml: {fileID: 4900000, guid: b29737e78ad3d4c17810c68a5216d329, type: 3}
+  Material: {fileID: 2100000, guid: 9013613e105254620b29c7301046af30, type: 2}
+  PhysicMaterial: {fileID: 13400000, guid: 38b7ea504254a4fa986e42a7bb16c8df, type: 2}
+  UseXmlTimestep: 1
+  DebugOutput: 0
+  Force2D: 0
+  OnGenerateApplyRandom: 0.05
+  DefaultDensity: 1000
+  MotorScale: 1
+--- !u!114 &114027728797193598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1197355327420184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b203fe46a641ba9439d63ea366b57dee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  brain: {fileID: 11400000, guid: 1b23b0637158f4bf1a0a53eee29cbdac, type: 2}
+  agentParameters:
+    agentCameras: []
+    agentRenderTextures: []
+    maxStep: 1000
+    resetOnDone: 1
+    onDemandDecision: 0
+    numberOfActionsBetweenDecisions: 1
+    skipActionsWithDecisions: 1
+  CameraTarget: {fileID: 0}
+  ShowMonitor: 0
+  FootHitTerrain: 0
+  NonFootHitTerrain: 0
+  Actions: []
+  SensorIsInTouch: []
+  FocalPoint: {fileID: 0}
+  FocalRidgedBody: {fileID: 0}
+  DistanceTraveled: -3.4028235e+38
+  FocalPointMaxDistanceTraveled: 0
+  JointVelocity: []
+  JointRotations: []
+  MarathonJoints: []
+  MarathonSensors: []
+  Observations: []
+  ObservationNormalizedErrors: 0
+  MaxObservationNormalizedErrors: 0
+  _phaseBonus: 0
+  _phase: 0
+  _reward: 0
+  _velocity: 0
+  _uprightBonus: 0
+  _forwardBonus: 0
+  _finalPhaseBonus: 0
+  _heightBonus: 0
+  _limbBonus: 0
+  _effort: 0
+  LeftMin: 0
+  LeftMax: 0
+  RightMin: 0
+  RightMax: 0

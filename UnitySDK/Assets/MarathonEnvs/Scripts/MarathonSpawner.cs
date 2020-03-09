@@ -450,7 +450,7 @@ namespace MLAgents
                         end = MarathonHelper.ParseTo(fromto);
                     }
 
-                    geom.Geom = parent.CreateBetweenPoints(start, end, size, _useWorldSpace);
+                    geom.Geom = parent.CreateBetweenPoints(start, end, size, _useWorldSpace, this.gameObject);
                     offset = end - start;
                     geom.Lenght = offset.magnitude; //
                     geom.Size = size;
@@ -463,7 +463,7 @@ namespace MLAgents
                     size = (float)Convert.ToDouble(element.Attribute("size")?.Value, System.Globalization.CultureInfo.InvariantCulture);
                     var pos = element.Attribute("pos")?.Value ?? "0 0 0";
                     DebugPrint($"ParseGeom: Creating type:{type} pos:{pos} size:{size}");
-                    geom.Geom = parent.CreateAtPoint(MarathonHelper.ParsePosition(pos), size, _useWorldSpace);
+                    geom.Geom = parent.CreateAtPoint(MarathonHelper.ParsePosition(pos), size, _useWorldSpace, this.gameObject);
                     geom.Size = size;
                     break;
                 default:

@@ -138,7 +138,7 @@ namespace MLAgents
 
 
         public static GameObject CreateBetweenPoints(this GameObject parent, Vector3 start, Vector3 end, float width,
-            bool useWorldSpace)
+            bool useWorldSpace, GameObject root)
         {
             start = RightToLeft(start);
             end = RightToLeft(end);
@@ -156,7 +156,7 @@ namespace MLAgents
             procCap.radius = width;
             procCap.CreateMesh();
 
-            instance.transform.parent = parent.transform.root;
+            instance.transform.parent = root.transform;
             instance.transform.up = offset;
             if (useWorldSpace)
             {
@@ -173,11 +173,11 @@ namespace MLAgents
         }
 
         public static GameObject CreateAtPoint(this GameObject parent, Vector3 position, float width,
-            bool useWorldSpace)
+            bool useWorldSpace, GameObject root)
         {
             var scale = new Vector3(width, width, width);
             var instance = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            instance.transform.parent = parent.transform.root;
+            instance.transform.parent = root.transform;
             instance.transform.localScale = scale * 2;
             if (useWorldSpace)
             {
