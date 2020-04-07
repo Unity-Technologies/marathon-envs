@@ -40,6 +40,8 @@ class MarathonEnvs(gym.Env):
         num_spawn_envs: int = 1,
         worker_id: int = 0,
         marathon_envs_path: str = None,
+        force_multiagent: bool = False,
+        no_graphics: bool = False,
     ):
         """
         Environment initialization
@@ -57,8 +59,8 @@ class MarathonEnvs(gym.Env):
         use_visual: bool = False
         uint8_visual: bool = False
         multiagent: bool = False if num_spawn_envs is 1 else True
+        multiagent = True if force_multiagent else multiagent
         flatten_branched: bool = False
-        no_graphics: bool = False
         allow_multiple_visual_obs: bool = False
 
         base_port = 5005
@@ -358,11 +360,11 @@ class MarathonEnvs(gym.Env):
                 "The environment was launched as a single-agent environment, however "
                 "there is more than one agent in the scene."
             )
-        elif self._multiagent and n_agents <= 1:
-            raise MarathonEnvsException(
-                "The environment was launched as a mutli-agent environment, however "
-                "there is only one agent in the scene."
-            )
+        # elif self._multiagent and n_agents <= 1:
+        #     raise MarathonEnvsException(
+        #         "The environment was launched as a mutli-agent environment, however "
+        #         "there is only one agent in the scene."
+        #     )
         if self._n_agents == -1:
             self._n_agents = n_agents
             logger.info("{} agents within environment.".format(n_agents))
