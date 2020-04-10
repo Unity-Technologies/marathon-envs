@@ -9,6 +9,13 @@ from gym import error, spaces
 from mlagents_envs.environment import UnityEnvironment
 from mlagents_envs.base_env import BatchedStepResult
 import os
+from mlagents_envs.side_channel.engine_configuration_channel import (
+    EngineConfigurationChannel,
+)
+from sys import platform
+
+
+DEFAULT_EDITOR_PORT = 5004
 
 class MarathonEnvsException(error.Error):
     """
@@ -40,45 +47,53 @@ class MarathonEnvs(gym.Env):
         num_spawn_envs: int = 1,
         worker_id: int = 0,
         marathon_envs_path: str = None,
-        force_multiagent: bool = False,
         no_graphics: bool = False,
+        use_editor: bool = False,
+        inference: bool = False,
     ):
         """
         Environment initialization
         :param environment_name: The Marathon Environment 
         :param num_spawn_envs: The number of environments to spawn per instance
         :param worker_id: Worker number for environment.
-        :param use_visual: Whether to use visual observation or vector observation.
-        :param uint8_visual: Return visual observations as uint8 (0-255) matrices instead of float (0.0-1.0).
-        :param multiagent: Whether to run in multi-agent mode (lists of obs, reward, done).
-        :param flatten_branched: If True, turn branched discrete action spaces into a Discrete space rather than
-            MultiDiscrete.
+        :param marathon_envs_path: alternative path for environment
         :param no_graphics: Whether to run the Unity simulator in no-graphics mode
-        :param allow_multiple_visual_obs: If True, return a list of visual observations instead of only one.
+        :param use_editor: If True, assume Unity Editor is the envionment (use for debugging)
+        :param inference: If True, run in inference mode (normal framerate)
         """
         use_visual: bool = False
         uint8_visual: bool = False
-        multiagent: bool = False if num_spawn_envs is 1 else True
-        multiagent = True if force_multiagent else multiagent
+        multiagent: bool = True # force multiagent
         flatten_branched: bool = False
         allow_multiple_visual_obs: bool = False
 
         base_port = 5005
         # use if we want to work with Unity Editoe
-        # if marathon_envs_path is None:
-        #     base_port = UnityEnvironment.DEFAULT_EDITOR_PORT
-        if marathon_envs_path is None:
+        if use_editor:
+            base_port = DEFAULT_EDITOR_PORT
+            marathon_envs_path = None
+        elif marathon_envs_path is None:
             marathon_envs_path = os.path.join('envs', 'MarathonEnvs')
+            if platform == "win32":
+                marathon_envs_path = os.path.join(marathon_envs_path, 'Unity Environment.exe')
         args = ['--spawn-env='+environment_name]
         args.append('--num-spawn-envs='+str(num_spawn_envs))
 
+        engine_configuration_channel = EngineConfigurationChannel()
+        channels = [engine_configuration_channel]
+
         self._env = UnityEnvironment(
             marathon_envs_path,
-            worker_id,
+            worker_id = worker_id,
             base_port=base_port,
+            side_channels=channels,
             no_graphics=no_graphics,
             args = args,
         )
+        if not inference:
+            engine_configuration_channel.set_configuration_parameters(
+                width=160, height=160, quality_level=0, 
+                time_scale=20., target_frame_rate=-1)
 
         # Take a single step so that the brain information will be sent over
         if not self._env.get_agent_groups():
@@ -206,21 +221,28 @@ class MarathonEnvs(gym.Env):
 
         # Use random actions for all other agents in environment.
         if self._multiagent:
-            if not isinstance(action, list):
-                raise MarathonEnvsException(
-                    "The environment was expecting `action` to be a list."
-                )
-            if len(action) != self._n_agents:
-                raise MarathonEnvsException(
-                    "The environment was expecting a list of {} actions.".format(
-                        self._n_agents
+            # if not isinstance(action, list):
+            #     raise MarathonEnvsException(
+            #         "The environment was expecting `action` to be a list."
+            #     )
+            if isinstance(action, list):
+                if len(action) != self._n_agents:
+                    raise MarathonEnvsException(
+                        "The environment was expecting a list of {} actions.".format(
+                            self._n_agents
+                        )
                     )
-                )
-            else:
-                if self._flattener is not None:
-                    # Action space is discrete and flattened - we expect a list of scalars
-                    action = [self._flattener.lookup_action(_act) for _act in action]
                 action = np.array(action)
+            if isinstance(action, np.ndarray):
+                if action.shape[0] != self._n_agents:
+                    raise MarathonEnvsException(
+                        "The environment was expecting a list of {} actions.".format(
+                            self._n_agents
+                        )
+                    )
+            if self._flattener is not None:
+                # Action space is discrete and flattened - we expect a list of scalars
+                action = [self._flattener.lookup_action(_act) for _act in action]
         else:
             if self._flattener is not None:
                 # Translate action into list
@@ -285,10 +307,12 @@ class MarathonEnvs(gym.Env):
             default_observation = self.visual_obs
         else:
             default_observation = self._get_vector_obs(info)
+        done = [1 if t else 0 for t in info.done]
+        done = np.array(info.done)
         return (
-            list(default_observation),
-            list(info.reward),
-            list(info.done),
+            default_observation,
+            info.reward,
+            done,
             {"batched_step_result": info},
         )
 
