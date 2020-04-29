@@ -123,7 +123,7 @@ pip3 install mlagents==0.14.1
 ## References
 
 * [OpenAI.Gym Mujoco](https://github.com/openai/gym/tree/master/gym/envs/mujoco) implementation. Good reference for enviroment setup, reward functions and termination functions.
-* [PyBullet pybullet_envs](https://pybullet.org) - 100% open source implementation of gym environments, based on the deprecated OpenAI Roboschool. Pre-trained environments in [stable-baselines zoo](https://github.com/araffin/rl-baselines-zoo).
+* [PyBullet pybullet_envs](https://pybullet.org) - a bit harder than MuJoCo gym environments but with an open source simulator. Pre-trained environments in [stable-baselines zoo](https://github.com/araffin/rl-baselines-zoo).
 * [DeepMind Control Suite](https://github.com/deepmind/dm_control) - Set of continuous control tasks.
 * DeepMind paper [Emergence of Locomotion Behaviours in Rich Environments](https://arxiv.org/pdf/1707.02286) and [video](https://youtu.be/hx_bgoTF7bs)- see page 13 b.2 for detail of reward functions
 * [MuJoCo](http://www.mujoco.org) homepage.
