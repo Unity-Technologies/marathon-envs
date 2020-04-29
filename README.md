@@ -6,16 +6,16 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 
 ## Preview MarathonEnvs using the **[Web Demo](http://marathonenvs.joebooth.com)**
 
-**MarathonEnvs** enables the reproduction of these benchmarks within Unity ml-agents using Unity’s native physics simulator, PhysX. MarathonEnvs maybe useful for:
+**MarathonEnvs** is a set of high-dimensional continuous control benchmarks using Unity’s native physics simulator, PhysX. MarathonEnvs can be trained using Unity ML-Agents or any OpenAI Gym compatable algorthem. MarathonEnvs maybe useful for:
 
 * Video Game researchers interested in apply bleeding edge robotics research into the domain of locomotion and AI for video games.
-* Traditional academic researchers looking to leverage the strengths of Unity and ML-Agents along with the body of existing research and benchmarks provided by projects such as the [DeepMind Control Suite](https://github.com/deepmind/dm_control), or [OpenAI Mujoco](http://gym.openai.com/envs/#mujoco) environments.
+* Academic researchers looking to leverage the strengths of Unity and ML-Agents along with the body of existing research and benchmarks provided by projects such as the [DeepMind Control Suite](https://github.com/deepmind/dm_control), or [OpenAI Mujoco](http://gym.openai.com/envs/#mujoco) environments.
 
 *Note: This project is the result of a contribution from [Joe Booth (@Sohojo)](https://github.com/Sohojoe), a member of the Unity community who currently maintains the repository. As such, the contents of this repository are not officially supported by Unity Technologies.*
 
 ---
 
-## What's new in MarathonEnvs-v2.0.0-alpha.1
+## What's new in MarathonEnvs-v2.0.0-alpha.2
 
 ### WebGL Demo / Support for in browser
 
