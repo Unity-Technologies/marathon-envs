@@ -1,0 +1,207 @@
+default:
+    trainer: ppo
+    batch_size: 1024
+    beta: 5.0e-3
+    buffer_size: 10240
+    epsilon: 0.2
+    hidden_units: 128
+    lambd: 0.95
+    learning_rate: 3.0e-4
+    max_steps: 5.0e4
+    memory_size: 256
+    normalize: false
+    num_epoch: 3
+    num_layers: 2
+    time_horizon: 64
+    sequence_length: 64
+    summary_freq: 1000
+    use_recurrent: false
+    vis_encode_type: simple
+    reward_signals: 
+        extrinsic:
+            strength: 1.0
+            gamma: 0.99
+
+MarathonManBackflip-v0:
+    normalize: true
+    num_epoch: 3
+    beta: .00001
+    learning_rate: 1e-4
+    time_horizon: 100
+    max_steps: 128e6
+    batch_size: 768 
+    buffer_size: 21504 # 768 * 28
+    summary_freq: 100000
+    num_layers: 2
+    hidden_units: 256
+
+MarathonManWalking-v0:
+    normalize: true
+    num_epoch: 3
+    beta: .00001
+    learning_rate: 1e-4
+    time_horizon: 100
+    max_steps: 64e6
+    batch_size: 768 
+    buffer_size: 21504 # 768 * 28
+    summary_freq: 100000
+    num_layers: 2
+    hidden_units: 256
+
+MarathonManRunning-v0:
+    normalize: true
+    num_epoch: 3
+    beta: .00001
+    learning_rate: 1e-4
+    time_horizon: 100
+    max_steps: 64e6
+    batch_size: 768 
+    buffer_size: 21504 # 768 * 28
+    summary_freq: 100000
+    num_layers: 2
+    hidden_units: 256
+
+MarathonManJazzDancing-v0:
+    normalize: true
+    num_epoch: 3
+    beta: .00001
+    learning_rate: 1e-4
+    time_horizon: 100
+    max_steps: 64e6
+    batch_size: 768 
+    buffer_size: 21504 # 768 * 28
+    summary_freq: 100000
+    num_layers: 2
+    hidden_units: 256
+
+MarathonMan-v0:
+    num_epoch: 10 
+    time_horizon: 100 
+    # summary_freq: 250000
+    summary_freq: 25000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 64
+    buffer_size: 10240
+    beta: .003
+    max_steps: 1.e7 
+
+MarathonManSparse-v0:
+    num_epoch: 10 
+    time_horizon: 1000 
+    # summary_freq: 250000
+    summary_freq: 25000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    reward_signals: 
+        extrinsic:
+            strength: 1.0
+            gamma: 0.9999
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 64
+    buffer_size: 10240
+    beta: .003
+    max_steps: 1.e7 
+
+Hopper-v0:
+    num_epoch: 10 
+    time_horizon: 100 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 1e-3
+    batch_size: 16
+    buffer_size: 5120
+    max_steps: 1e6
+    beta: .003
+
+Walker2d-v0:
+    num_epoch: 10 
+    time_horizon: 100 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 1e-3
+    batch_size: 16
+    buffer_size: 5120
+    max_steps: 1e6
+    beta: .003
+
+Ant-v0:
+    num_epoch: 10 
+    time_horizon: 100 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 1e-3
+    batch_size: 32
+    buffer_size: 5120
+    max_steps: 1e6
+    beta: .003
+
+TerrainHopper-v0:
+    num_epoch: 3 
+    time_horizon: 1000 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 32
+    buffer_size: 5120
+    beta: .1
+    max_steps: 50e6
+
+TerrainWalker2d-v0:
+    num_epoch: 3 
+    time_horizon: 1000 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 32
+    buffer_size: 5120
+    beta: .1
+    max_steps: 50e6
+
+TerrainAnt-v0:
+    num_epoch: 3
+    time_horizon: 1000 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 32
+    buffer_size: 5120
+    beta: .1
+    max_steps: 50e6
+
+TerrainMarathonMan-v0:
+    num_epoch: 3 
+    time_horizon: 1000 
+    summary_freq: 10000
+    use_recurrent: false
+    normalize: false 
+    num_layers: 2
+    hidden_units: 64
+    learning_rate: 3e-4
+    batch_size: 32
+    buffer_size: 5120
+    beta: .1
+    max_steps: 50e6
