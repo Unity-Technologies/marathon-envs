@@ -10,6 +10,7 @@ namespace MLAgents
     public class SelectEnvToSpawn : MonoBehaviour
     {
         public EnvSpawner agentSpawner;
+        public bool DebugSkipPopUp;
         bool showPopUp = false;
         static int envIdIdex = -1;
         string[] envIds;
@@ -89,6 +90,8 @@ namespace MLAgents
         }        
         bool ShouldInitalizeOnAwake()
         {
+            if (DebugSkipPopUp)
+                return true;
             if (IsTrainingMode())
                 return true;
             if (GetComponent<SelectEnvToSpawn>() == null)
