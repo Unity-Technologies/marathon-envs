@@ -6,10 +6,13 @@ This page covers how to train using the ML-Agents toolkit
 
 * Download the correct version of MarathonEnvs for your platform and put it in the `envs\` folder
 
-### MacOS & Linux
+### Note for MacOS & Linux
 
-* Replace the path `\` with `/`
-* Replace `"envs\MarathonEnvs\Unity Environment.exe"` with `"envs\MarathonEnvs"`
+* You will need to replace the path `\` with `/`
+* On MacOS
+  * Replace `"envs\MarathonEnvs\Unity Environment.exe"` with `"envs/MarathonEnvs"`
+* On Linux
+  * Replace `"envs\MarathonEnvs\Unity Environment.exe"` with `"envs/MarathonEnvs/Unity Environment.x86_64"`
 
 ### Windows
 
