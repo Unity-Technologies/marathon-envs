@@ -71,10 +71,10 @@ mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs
 ```
 
 
-#### StyleTransferEnv-v0
+#### MarathonManBackflip-v0
 
 ``` shell
-mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs\Unity Environment.exe" --num-envs=8 --no-graphics --run-id=StyleTransfer524 --env-args --spawn-env=StyleTransferEnv-v0 --num-spawn-envs=64
+mlagents-learn config\marathon_envs_config.yaml --train --env="envs\MarathonEnvs\Unity Environment.exe" --num-envs=4 --no-graphics --run-id=MarathonManBackflip --env-args --spawn-env=MarathonManBackflip-v0 --num-spawn-envs=64
 ```
 ----
 
