@@ -69,7 +69,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 
 		sensor.AddVectorObs(_master.ObsCenterOfMass);
 		sensor.AddVectorObs(_master.ObsVelocity);
-		sensor.AddVectorObs(SensorIsInTouch);	
+		sensor.AddVectorObs(SensorIsInTouch);
 	}
 
 	public override void AgentAction(float[] vectorAction)
@@ -89,51 +89,45 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 				muscle.TargetNormalizedRotationZ = vectorAction[i++];
 		}
 
-		var rotationDistance = _master.RotationDistance;
-		Debug.Log("Velocity Distance:" + _master.VelocityDistance);
-		var velocityDistance = 0.01f * _master.VelocityDistance;
-		var endEffectorDistance = _master.EndEffectorDistance;
-		var centerOfMassDistance = _master.CenterOfMassDistance;
-		var sensorDistance = _master.SensorDistance;
+        // the scaler factors are picked empirically by calculating the MaxRotationDistance, MaxVelocityDistance achieved for an untrained agent. 
+		var rotationDistance = _master.RotationDistance / 200000f ;
+		var velocityDistance = _master.VelocityDistance / 300f ;
+		var endEffectorDistance = _master.EndEffectorDistance / 4f ;
+		var endEffectorVelocityDistance = _master.EndEffectorVelocityDistance / 100f ;
+		var endEffectorAngularVelocityDistance = _master.EndEffectorAngularVelocityDistance / 0.7e6f;
+		var centerOfMassDistance = _master.CenterOfMassDistance / 0.3f;
+		var sensorDistance = _master.SensorDistance / 0.5f;
 
 		var rotationReward = Mathf.Exp(-rotationDistance);
 		var velocityReward = Mathf.Exp(-velocityDistance);
 		var endEffectorReward = Mathf.Exp(-endEffectorDistance);
+        var endEffectorVelocityReward = Mathf.Exp(-endEffectorVelocityDistance);
+		var endEffectorAngularVelocityReward = Mathf.Exp(-endEffectorAngularVelocityDistance);
 		var centerMassReward = Mathf.Exp(-centerOfMassDistance);
 		var sensorReward = Mathf.Exp(-sensorDistance);
+        var jointsNotAtLimitReward = 0.1f * Mathf.Exp(-JointsAtLimit());
 
-		float rotationRewardScale = .65f;
-		float velocityRewardScale = .1f;
-		float endEffectorRewardScale = .15f;
-		float centerMassRewardScale = .1f;
-		float sensorRewardScale = .1f;
+        //Debug.Log("---------------");
+        //Debug.Log("rotation reward: " + rotationReward);
+        //Debug.Log("velocityReward: " + velocityReward);
+        //Debug.Log("endEffectorReward: " + endEffectorReward);
+        //Debug.Log("endEffectorVelocityReward: " + endEffectorVelocityReward);
+        //Debug.Log("endEffectorAngularVelocityReward: " + endEffectorAngularVelocityReward);
+        //Debug.Log("centerMassReward: " + centerMassReward);
+        //Debug.Log("sensorReward: " + sensorReward);
+        //Debug.Log("joints not at limit rewards:" + jointsNotAtLimitReward);
 
-        Debug.Log("---------------");
-        Debug.Log("rotation reward: " + rotationReward);
-        Debug.Log("velocityReward: " + velocityReward);
-        Debug.Log("endEffectorReward: " + endEffectorReward);
-        Debug.Log("centerMassReward: " + centerMassReward);
-        Debug.Log("sensorReward: " + sensorReward);
-
-        var jointsNotAtLimitReward = 1f - JointsAtLimit();
-		var jointsNotAtLimitRewardScale = .001f;
-
-		Debug.Log("joints not at limit rewards:" + jointsNotAtLimitReward);
-
-		float distanceReward = 
-			(rotationReward * rotationRewardScale) +
-			(velocityReward * velocityRewardScale) +
-			(endEffectorReward * endEffectorRewardScale) +
-			(centerMassReward * centerMassRewardScale) + 
-			(sensorReward * sensorRewardScale);
-		float reward = 
-			distanceReward + (jointsNotAtLimitReward * jointsNotAtLimitRewardScale);
+		float reward = rotationReward + velocityReward + endEffectorReward + endEffectorVelocityReward + endEffectorAngularVelocityReward + centerMassReward + sensorReward + jointsNotAtLimitReward;
 
 		if (!_master.IgnorRewardUntilObservation)
 			AddReward(reward);
 
-		if (distanceReward < 0.334f && _master.IsInferenceMode == false)
+		if (reward < 0.334f && _master.IsInferenceMode == false)
 			Done();
+
+		if (_master.ObsCenterOfMass.y < 0.3f)
+			Done();
+
 		if (!_isDone){
 			if (_master.IsDone()){
 				Done();

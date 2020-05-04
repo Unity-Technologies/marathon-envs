@@ -48,7 +48,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		public List<Vector3> RootAngles;
 
 		public List<Vector3> Positions;
-		public List<Quaternion> Rotaions;
+		public List<Quaternion> Rotations;
 		public List<string> Names;
 		public Vector3 CenterOfMass;
 		public Vector3 TransformPosition;
@@ -188,7 +188,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		animStep.AngularVelocities = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.RootAngles = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.Positions = Enumerable.Repeat(Vector3.zero, c).ToList();
-		animStep.Rotaions = Enumerable.Repeat(Quaternion.identity, c).ToList();
+		animStep.Rotations = Enumerable.Repeat(Quaternion.identity, c).ToList();
 		animStep.Velocity = transform.position - _lastVelocityPosition;
 		animStep.Names = BodyParts.Select(x=>x.Name).ToList();
 		animStep.SensorIsInTouch = new List<float>(SensorIsInTouch);
@@ -200,13 +200,13 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		{
 			var i = BodyParts.IndexOf(bodyPart);
 			if (i ==0) {
-				animStep.Rotaions[i] = Quaternion.Inverse(_baseRotation) * bodyPart.Transform.rotation;
+				animStep.Rotations[i] = Quaternion.Inverse(_baseRotation) * bodyPart.Transform.rotation;
 				animStep.Positions[i] =  bodyPart.Transform.position - bodyPart.InitialRootPosition;
-				animStep.RootAngles[i] = animStep.Rotaions[i].eulerAngles;
+				animStep.RootAngles[i] = animStep.Rotations[i].eulerAngles;
 			}
 			else {
-				animStep.Rotaions[i] = Quaternion.Inverse(_baseRotation) * bodyPart.Transform.rotation;
-				animStep.RootAngles[i] = animStep.Rotaions[i].eulerAngles;
+				animStep.Rotations[i] = Quaternion.Inverse(_baseRotation) * bodyPart.Transform.rotation;
+				animStep.RootAngles[i] = animStep.Rotations[i].eulerAngles;
 				animStep.Positions[i] =  bodyPart.Transform.position - rootBone.Transform.position;
 			}
 			

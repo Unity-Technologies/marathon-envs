@@ -20,16 +20,16 @@ public class StyleTransfer002Master : MonoBehaviour {
 	// i.e. model = difference between mocap and actual)
 	// ideally we dont want to generate model at inference
 	public float EndEffectorDistance; // feet, hands, head
-	public float FeetRotationDistance; 
 	public float EndEffectorVelocityDistance; // feet, hands, head
+	public float EndEffectorAngularVelocityDistance; // feet, hands, head
 	public float RotationDistance;
 	public float VelocityDistance;
 	public float CenterOfMassDistance;
 	public float SensorDistance;
 
 	public float MaxEndEffectorDistance; // feet, hands, head
-	public float MaxFeetRotationDistance; 
 	public float MaxEndEffectorVelocityDistance; // feet, hands, head
+	public float MaxEndEffectorAngularVelocityDistance;
 	public float MaxRotationDistance;
 	public float MaxVelocityDistance;
 	public float MaxCenterOfMassDistance;
@@ -188,8 +188,8 @@ public class StyleTransfer002Master : MonoBehaviour {
 			animStep = _muscleAnimator.AnimationSteps[AnimationIndex];
 		}
 		EndEffectorDistance = 0f;
-		FeetRotationDistance = 0f;
 		EndEffectorVelocityDistance = 0;
+		EndEffectorAngularVelocityDistance = 0;
 		RotationDistance = 0f;
 		VelocityDistance = 0f;
 		CenterOfMassDistance = 0f;
@@ -211,7 +211,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 		{
 			if (_phaseIsRunning){
 				bodyPart.UpdateObservations();
-				
+
 				var rotDistance = bodyPart.ObsAngleDeltaFromAnimationRotation;
 				var squareRotDistance = Mathf.Pow(rotDistance,2);
 				RotationDistance += squareRotDistance;
@@ -220,50 +220,52 @@ public class StyleTransfer002Master : MonoBehaviour {
 					|| bodyPart.Group == BodyHelper002.BodyPartGroup.Foot)
 				{
 					EndEffectorDistance += bodyPart.ObsDeltaFromAnimationPosition.sqrMagnitude;
-				}
-				if (bodyPart.Group == BodyHelper002.BodyPartGroup.Foot)
-				{
-					FeetRotationDistance += squareRotDistance;
+					EndEffectorVelocityDistance += bodyPart.ObsDeltaFromAnimationVelocity.sqrMagnitude;
+					EndEffectorAngularVelocityDistance += bodyPart.ObsDeltaFromAnimationAngularVelocity.sqrMagnitude;
 				}
 			}
 		}
 
 		ObsCenterOfMass = GetCenterOfMass();
 		if (_phaseIsRunning) {
-			Debug.Log("***********");
-			Debug.Log("animStep Center Of Mass:" + animStep.CenterOfMass);
-			Debug.Log("Obs Center Of Mass:" + ObsCenterOfMass);
 			CenterOfMassDistance = (animStep.CenterOfMass - ObsCenterOfMass).sqrMagnitude;
+			//Debug.Log("&&&&&&&&&&&&&&&&&&");
+			//Debug.Log("Obs Center of Mass:" + ObsCenterOfMass);
+			//Debug.Log("animStep Center of Mass:" + animStep.CenterOfMass);
 		}
+
 		ObsVelocity = ObsCenterOfMass - _lastCenterOfMass;
-		Debug.Log("ObsVelocity:" + ObsVelocity);
 		if (_fakeVelocity)
 			ObsVelocity = animStep.Velocity;
 		_lastCenterOfMass = ObsCenterOfMass;
+
 		if (!_resetCenterOfMassOnLastUpdate)
 			_fakeVelocity = false;
 
 		if (_phaseIsRunning){
 			var animVelocity = animStep.Velocity / Time.fixedDeltaTime;
 			ObsVelocity /= Time.fixedDeltaTime;
-			var velocityDistance = ObsVelocity - animVelocity;
+
+            var velocityDistance = ObsVelocity - animVelocity;
 			VelocityDistance = velocityDistance.sqrMagnitude;
-			var sensorDistance = 0.0;
-			var sensorDistanceStep = 1.0 / _agent.SensorIsInTouch.Count;
+
+            SensorDistance = 0.0f;
+			var sensorDistanceStep = 1.0f / _agent.SensorIsInTouch.Count;
 			for (int i = 0; i < _agent.SensorIsInTouch.Count; i++)
 			{
-				if (animStep.SensorIsInTouch[i] != _agent.SensorIsInTouch[i])
-					sensorDistance += sensorDistanceStep;
+				if (animStep.SensorIsInTouch[i] != _agent.SensorIsInTouch[i]) {
+					SensorDistance += sensorDistanceStep;
+				}
 			}
-			SensorDistance = (float) sensorDistance;
 		}
 
 		if (!IgnorRewardUntilObservation){
 			MaxEndEffectorDistance = Mathf.Max(MaxEndEffectorDistance, EndEffectorDistance);
-			MaxFeetRotationDistance = Mathf.Max(MaxFeetRotationDistance, FeetRotationDistance);
 			MaxEndEffectorVelocityDistance = Mathf.Max(MaxEndEffectorVelocityDistance, EndEffectorVelocityDistance);
 			MaxRotationDistance = Mathf.Max(MaxRotationDistance, RotationDistance);
 			MaxVelocityDistance = Mathf.Max(MaxVelocityDistance, VelocityDistance);
+			MaxEndEffectorVelocityDistance = Mathf.Max(MaxEndEffectorVelocityDistance, EndEffectorVelocityDistance);
+			MaxEndEffectorAngularVelocityDistance = Mathf.Max(MaxEndEffectorAngularVelocityDistance, EndEffectorAngularVelocityDistance);
 			MaxCenterOfMassDistance = Mathf.Max(MaxCenterOfMassDistance, CenterOfMassDistance);
 			MaxSensorDistance = Mathf.Max(MaxSensorDistance, SensorDistance);
 		}
@@ -312,10 +314,10 @@ public class StyleTransfer002Master : MonoBehaviour {
 		{
 			var i = animStep.Names.IndexOf(bodyPart.Name);
 			Vector3 animPosition = bodyPart.InitialRootPosition + animStep.Positions[0];
-            Quaternion animRotation = bodyPart.InitialRootRotation * animStep.Rotaions[0];
+            Quaternion animRotation = bodyPart.InitialRootRotation * animStep.Rotations[0];
 			if (i != 0) {
 				animPosition += animStep.Positions[i];
-				animRotation = bodyPart.InitialRootRotation * animStep.Rotaions[i];
+				animRotation = bodyPart.InitialRootRotation * animStep.Rotations[i];
 			}
 			Vector3 angularVelocity = animStep.AngularVelocities[i] / Time.fixedDeltaTime;
 			Vector3 velocity = animStep.Velocities[i] / Time.fixedDeltaTime;
@@ -325,7 +327,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 				setAnim = false;
 			if (setAnim)
 				bodyPart.MoveToAnim(animPosition, animRotation, angularVelocity, velocity);
-			bodyPart.SetAnimationPosition(animStep.Positions[i], animStep.Rotaions[i]);
+			bodyPart.SetAnimationPosition(animStep.Positions[i], animStep.Rotations[i], animStep.Velocities[i], animStep.AngularVelocities[i]);
 		}
 	}
 
@@ -384,8 +386,8 @@ public class StyleTransfer002Master : MonoBehaviour {
 		var animStep = _muscleAnimator.AnimationSteps[AnimationIndex];
 		TimeStep = animStep.TimeStep;
 		EndEffectorDistance = 0f;
-		FeetRotationDistance = 0f;
 		EndEffectorVelocityDistance = 0f;
+		EndEffectorAngularVelocityDistance = 0;
 		RotationDistance = 0f;
 		VelocityDistance = 0f;
 		IgnorRewardUntilObservation = true;
