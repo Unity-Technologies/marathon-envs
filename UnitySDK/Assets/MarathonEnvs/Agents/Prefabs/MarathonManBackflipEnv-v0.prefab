@@ -7,10 +7,55 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1274118943385134649, guid: c13ea8e8df87c42639b6304f70acf750,
+        type: 3}
+      propertyPath: m_Name
+      value: Terrain
+      objectReference: {fileID: 0}
     - target: {fileID: 1802870815327278923, guid: c13ea8e8df87c42639b6304f70acf750,
         type: 3}
       propertyPath: m_Name
       value: MarathonManBackflipEnv-v0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2980313876947868916, guid: c13ea8e8df87c42639b6304f70acf750,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 0.011999964
+      objectReference: {fileID: 0}
+    - target: {fileID: 2980958654498684380, guid: c13ea8e8df87c42639b6304f70acf750,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 0.0014792975
+      objectReference: {fileID: 0}
+    - target: {fileID: 2981300819125644312, guid: c13ea8e8df87c42639b6304f70acf750,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: -0.00000006216577
+      objectReference: {fileID: 0}
+    - target: {fileID: 2981300819125644312, guid: c13ea8e8df87c42639b6304f70acf750,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: -0.000000100582824
+      objectReference: {fileID: 0}
+    - target: {fileID: 2981326494581212636, guid: c13ea8e8df87c42639b6304f70acf750,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.x
+      value: 0.000000013620593
+      objectReference: {fileID: 0}
+    - target: {fileID: 2981326494581212636, guid: c13ea8e8df87c42639b6304f70acf750,
+        type: 3}
+      propertyPath: m_ConnectedAnchor.z
+      value: 0.00000010430813
+      objectReference: {fileID: 0}
+    - target: {fileID: 3038961438858554306, guid: c13ea8e8df87c42639b6304f70acf750,
+        type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: b1b909ee490e74bcdb043fcd491f0a8f, type: 2}
+    - target: {fileID: 3129641623802275574, guid: c13ea8e8df87c42639b6304f70acf750,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 5553125032997501617, guid: c13ea8e8df87c42639b6304f70acf750,
         type: 3}
@@ -78,5 +123,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: b7a674254088b4148881ff08b5fe1261,
         type: 3}
+    - target: {fileID: 7287095565751321531, guid: c13ea8e8df87c42639b6304f70acf750,
+        type: 3}
+      propertyPath: m_BrainParameters.vectorObservationSize
+      value: 255
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c13ea8e8df87c42639b6304f70acf750, type: 3}
