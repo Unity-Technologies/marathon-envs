@@ -29,7 +29,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 	public List<BodyPart002> BodyParts;
 
-    private Vector3 _lastVelocityPosition;
+	private Vector3 _lastVelocityPosition;
 
 	private List<Rigidbody> _rigidbodies;
 	private List<Transform> _transforms;
@@ -45,7 +45,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		public Vector3 Velocity;
 		public List<Quaternion> RotaionVelocities;
 		public List<Vector3> AngularVelocities;
-		public List<Vector3> RootAngles;
 
 		public List<Vector3> Positions;
 		public List<Quaternion> Rotations;
@@ -159,6 +158,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		NormalizedTime = stateInfo.normalizedTime;
 		IsLoopingAnimation = stateInfo.loop;
 		var timeStep = stateInfo.length * stateInfo.normalizedTime;
+
 		var endTime = 1f;
 		if (IsLoopingAnimation)
 			endTime = 3f;
@@ -186,7 +186,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		animStep.Velocities = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.RotaionVelocities = Enumerable.Repeat(Quaternion.identity, c).ToList();
 		animStep.AngularVelocities = Enumerable.Repeat(Vector3.zero, c).ToList();
-		animStep.RootAngles = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.Positions = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.Rotations = Enumerable.Repeat(Quaternion.identity, c).ToList();
 		animStep.Velocity = transform.position - _lastVelocityPosition;
@@ -202,18 +201,18 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 			if (i ==0) {
 				animStep.Rotations[i] = Quaternion.Inverse(_baseRotation) * bodyPart.Transform.rotation;
 				animStep.Positions[i] =  bodyPart.Transform.position - bodyPart.InitialRootPosition;
-				animStep.RootAngles[i] = animStep.Rotations[i].eulerAngles;
 			}
 			else {
 				animStep.Rotations[i] = Quaternion.Inverse(_baseRotation) * bodyPart.Transform.rotation;
-				animStep.RootAngles[i] = animStep.Rotations[i].eulerAngles;
 				animStep.Positions[i] =  bodyPart.Transform.position - rootBone.Transform.position;
 			}
 			
 			if (NormalizedTime != 0f) {
+                // these are difference only, the division by dt will be done in master.cs
 				animStep.Velocities[i] = bodyPart.Transform.position - _lastPosition[i];
 				animStep.RotaionVelocities[i] = JointHelper002.FromToRotation(_lastRotation[i], bodyPart.Transform.rotation);
 				animStep.AngularVelocities[i] = animStep.RotaionVelocities[i].eulerAngles;
+				animStep.AngularVelocities[i] = JointHelper002.NormalizedEulerAngles(animStep.AngularVelocities[i]);
 			}
 			_lastPosition[i] = bodyPart.Transform.position;
 			_lastRotation[i] = bodyPart.Transform.rotation;
@@ -277,6 +276,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		}
 		centerOfMass /= totalMass;
 		centerOfMass -= transform.parent.position;
+		Debug.Log("transoform parent position: " + transform.parent.position);
 		return centerOfMass;
 	}
 	public void MimicAnimation()
@@ -334,7 +334,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		var target = _rigidbodies.First(x=>x.name == name);
 
 		var pos = (animEndBone.transform.position - animStartBone.transform.position);
-		target.transform.position = animStartBone.transform.position + (pos/2) + offset;
+		target.transform.position = animStartBone.transform.position + pos/2 + offset;
 		target.transform.rotation = animStartBone.transform.rotation * rotationOffset;
 	}
 	[Range(0f,1f)]

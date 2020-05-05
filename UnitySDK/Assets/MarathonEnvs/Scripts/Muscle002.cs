@@ -25,7 +25,6 @@ public class Muscle002
     public Vector3 ObsRotationVelocity;
     public Vector3 ObsVelocity;
     public Quaternion ObsNormalizedDeltaFromAnimationRotation;
-    public float ObsAngleDeltaFromAnimationRotation;
     public Vector3 ObsDeltaFromAnimationPosition;
 
     public Vector3 DebugMaxRotationVelocity;
@@ -190,13 +189,11 @@ public class Muscle002
 
         ObsDeltaFromAnimationPosition = _animationPosition - Transform.position;
         ObsNormalizedDeltaFromAnimationRotation = _animationRotation * Quaternion.Inverse(Transform.rotation);
-        ObsAngleDeltaFromAnimationRotation = Quaternion.Angle(_animationRotation, Transform.rotation);
 
         // ObsNormalizedDeltaFromAnimationRotation = NormalizedEulerAngles(obsDeltaFromAnimationRotation.eulerAngles);
         if (_firstRunComplete == false){
             ObsDeltaFromAnimationPosition = Vector3.zero;
             ObsNormalizedDeltaFromAnimationRotation = new Quaternion(0,0,0,0);
-            ObsAngleDeltaFromAnimationRotation = 0f;
         }
 
         DebugMaxRotationVelocity = Vector3Max(DebugMaxRotationVelocity, rotationVelocity);

@@ -90,19 +90,19 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		}
 
         // the scaler factors are picked empirically by calculating the MaxRotationDistance, MaxVelocityDistance achieved for an untrained agent. 
-		var rotationDistance = _master.RotationDistance / 200000f ;
-		var velocityDistance = _master.VelocityDistance / 300f ;
-		var endEffectorDistance = _master.EndEffectorDistance / 4f ;
-		var endEffectorVelocityDistance = _master.EndEffectorVelocityDistance / 100f ;
-		var endEffectorAngularVelocityDistance = _master.EndEffectorAngularVelocityDistance / 0.7e6f;
-		var centerOfMassDistance = _master.CenterOfMassDistance / 0.3f;
-		var sensorDistance = _master.SensorDistance / 0.5f;
+		var rotationDistance = 0.65f * _master.RotationDistance / 200000f ;
+		var velocityDistance = 0f * _master.VelocityDistance / 300f ;
+		var endEffectorDistance = 0.15f * _master.EndEffectorDistance / 4f ;
+		var endEffectorVelocityDistance = 0f * _master.EndEffectorVelocityDistance / 100f ;
+		var jointAngularVelocityDistance = 0.1f * _master.JointAngularVelocityDistance / 0.7e6f;
+		var centerOfMassDistance = 0.1f * _master.CenterOfMassDistance / 0.3f;
+		var sensorDistance = 0f * _master.SensorDistance / 0.5f;
 
 		var rotationReward = Mathf.Exp(-rotationDistance);
 		var velocityReward = Mathf.Exp(-velocityDistance);
 		var endEffectorReward = Mathf.Exp(-endEffectorDistance);
         var endEffectorVelocityReward = Mathf.Exp(-endEffectorVelocityDistance);
-		var endEffectorAngularVelocityReward = Mathf.Exp(-endEffectorAngularVelocityDistance);
+		var jointAngularVelocityReward = Mathf.Exp(-jointAngularVelocityDistance);
 		var centerMassReward = Mathf.Exp(-centerOfMassDistance);
 		var sensorReward = Mathf.Exp(-sensorDistance);
         var jointsNotAtLimitReward = 0.1f * Mathf.Exp(-JointsAtLimit());
@@ -112,17 +112,17 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
         //Debug.Log("velocityReward: " + velocityReward);
         //Debug.Log("endEffectorReward: " + endEffectorReward);
         //Debug.Log("endEffectorVelocityReward: " + endEffectorVelocityReward);
-        //Debug.Log("endEffectorAngularVelocityReward: " + endEffectorAngularVelocityReward);
+        //Debug.Log("jointAngularVelocityReward: " + jointAngularVelocityReward);
         //Debug.Log("centerMassReward: " + centerMassReward);
         //Debug.Log("sensorReward: " + sensorReward);
         //Debug.Log("joints not at limit rewards:" + jointsNotAtLimitReward);
 
-		float reward = rotationReward + velocityReward + endEffectorReward + endEffectorVelocityReward + endEffectorAngularVelocityReward + centerMassReward + sensorReward + jointsNotAtLimitReward;
+		float reward = rotationReward + velocityReward + endEffectorReward + endEffectorVelocityReward + jointAngularVelocityReward + centerMassReward + sensorReward + jointsNotAtLimitReward;
 
 		if (!_master.IgnorRewardUntilObservation)
 			AddReward(reward);
 
-		if (endEffectorDistance > 0.3f)
+		if (reward < 2.5 || endEffectorDistance > 0.5)
 			Done();
 
 		if (!_isDone){
