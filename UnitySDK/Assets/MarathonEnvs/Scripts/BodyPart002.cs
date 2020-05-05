@@ -17,7 +17,6 @@ public class BodyPart002
     public Quaternion ObsRotationFromBase;
     public Vector3 ObsRotationVelocity;
     public Vector3 ObsVelocity;
-    public Quaternion ObsNormalizedDeltaFromAnimationRotation;
     public float ObsAngleDeltaFromAnimationRotation;
     public Vector3 ObsDeltaFromAnimationPosition;
 
@@ -159,11 +158,12 @@ public class BodyPart002
         _lastLocalPosition = Transform.position;
         _lastObsRotation = Transform.rotation;
 
+        Debug.Log("body part name: " + Name);
         Debug.Log("animation angular velocity:" + _animationAngularVelocity);
         Debug.Log("angular velocity:" + angularVelocity);
         Debug.Log("proper angular velocity:" + JointHelper002.NormalizedEulerAngles(rotationVelocity.eulerAngles) / dt);
-        Debug.Log("rotation:" + rotation);
-        Debug.Log("animation rotation: " + _animationRotation);
+        Debug.Log("rotation:" + rotation.eulerAngles);
+        Debug.Log("animation rotation: " + _animationRotation.eulerAngles);
         Debug.Log("velocity: " + velocity);
         Debug.Log("animation velocity:" + _animationVelocity);
         Debug.Log("dt:" + dt);
@@ -174,16 +174,15 @@ public class BodyPart002
         ObsVelocity = velocity;
 
         ObsDeltaFromAnimationPosition = _animationPosition - position;
-        ObsNormalizedDeltaFromAnimationRotation = _animationRotation * Quaternion.Inverse(Transform.rotation);
-        ObsAngleDeltaFromAnimationRotation = Quaternion.Angle(_animationRotation, Transform.rotation);
-        ObsAngleDeltaFromAnimationRotation = JointHelper002.NormalizedAngle(ObsAngleDeltaFromAnimationRotation);
+        ObsAngleDeltaFromAnimationRotation = Quaternion.Angle(_animationRotation, rotation);
+        Debug.Log("Obs Angle Delta: " + ObsAngleDeltaFromAnimationRotation);
+        ObsAngleDeltaFromAnimationRotation = JointHelper002.NormalizedAngle(ObsAngleDeltaFromAnimationRotation);  
 
         ObsDeltaFromAnimationVelocity = _animationVelocity - velocity;
         ObsDeltaFromAnimationAngularVelocity = (_animationAngularVelocity - angularVelocity);
 
         if (_firstRunComplete == false){
             ObsDeltaFromAnimationPosition = Vector3.zero;
-            ObsNormalizedDeltaFromAnimationRotation = new Quaternion(0,0,0,0);
             ObsAngleDeltaFromAnimationRotation = 0f;
         }
 

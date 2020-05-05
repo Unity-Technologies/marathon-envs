@@ -25,10 +25,10 @@ public static class JointHelper002
     }
 
     public static float NormalizedAngle(float angle) {
-        if (angle > 180) {
-            return (angle - 360) * Mathf.Deg2Rad;
-        }
-        return angle * Mathf.Deg2Rad;
+        if (angle < 180) {
+            return angle * Mathf.Deg2Rad;
+        }        
+        return (angle - 360) * Mathf.Deg2Rad;
     }
 }
 
