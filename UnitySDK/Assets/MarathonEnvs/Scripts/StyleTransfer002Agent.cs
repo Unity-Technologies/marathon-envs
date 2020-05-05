@@ -90,22 +90,22 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		}
 
         // the scaler factors are picked empirically by calculating the MaxRotationDistance, MaxVelocityDistance achieved for an untrained agent. 
-		var rotationDistance = 0.65f * _master.RotationDistance / 200000f ;
-		var velocityDistance = 0f * _master.VelocityDistance / 300f ;
-		var endEffectorDistance = 0.15f * _master.EndEffectorDistance / 4f ;
-		var endEffectorVelocityDistance = 0f * _master.EndEffectorVelocityDistance / 100f ;
-		var jointAngularVelocityDistance = 0.1f * _master.JointAngularVelocityDistance / 0.7e6f;
-		var centerOfMassDistance = 0.1f * _master.CenterOfMassDistance / 0.3f;
-		var sensorDistance = 0f * _master.SensorDistance / 0.5f;
+		var rotationDistance = _master.RotationDistance / 50f ;
+		var velocityDistance = _master.VelocityDistance / 40f ;
+		var endEffectorDistance = _master.EndEffectorDistance / 1.57f ;
+		var endEffectorVelocityDistance = _master.EndEffectorVelocityDistance / 100f ;
+		var jointAngularVelocityDistance = _master.JointAngularVelocityDistance / 40f;
+		var centerOfMassDistance = _master.CenterOfMassDistance / 2.7f;
+		var sensorDistance = _master.SensorDistance / 1f;
 
-		var rotationReward = Mathf.Exp(-rotationDistance);
-		var velocityReward = Mathf.Exp(-velocityDistance);
-		var endEffectorReward = Mathf.Exp(-endEffectorDistance);
-        var endEffectorVelocityReward = Mathf.Exp(-endEffectorVelocityDistance);
-		var jointAngularVelocityReward = Mathf.Exp(-jointAngularVelocityDistance);
-		var centerMassReward = Mathf.Exp(-centerOfMassDistance);
-		var sensorReward = Mathf.Exp(-sensorDistance);
-        var jointsNotAtLimitReward = 0.1f * Mathf.Exp(-JointsAtLimit());
+		var rotationReward = 0.65f * Mathf.Exp(-rotationDistance);
+		var velocityReward = 0f * Mathf.Exp(-velocityDistance);
+		var endEffectorReward = 0.15f * Mathf.Exp(-endEffectorDistance);
+        var endEffectorVelocityReward = 0f * Mathf.Exp(-endEffectorVelocityDistance);
+		var jointAngularVelocityReward = 0.1f * Mathf.Exp(-jointAngularVelocityDistance);
+		var centerMassReward = 0.1f * Mathf.Exp(-centerOfMassDistance);
+		var sensorReward = 0f * Mathf.Exp(-sensorDistance);
+        var jointsNotAtLimitReward = 0f * Mathf.Exp(-JointsAtLimit());
 
         //Debug.Log("---------------");
         //Debug.Log("rotation reward: " + rotationReward);
@@ -122,7 +122,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		if (!_master.IgnorRewardUntilObservation)
 			AddReward(reward);
 
-		if (reward < 2.5 || endEffectorDistance > 0.5)
+		if (reward > 100000)
 			Done();
 
 		if (!_isDone){

@@ -218,6 +218,9 @@ public class StyleTransfer002Master : MonoBehaviour {
 
 		ObsCenterOfMass = GetCenterOfMass();
 		if (_phaseIsRunning) {
+			Debug.Log("$$$$$$$$$$");
+			Debug.Log("animStep center of mass: " + animStep.CenterOfMass);
+			Debug.Log("Obs Center Of Mass:" + ObsCenterOfMass);
 			CenterOfMassDistance = (animStep.CenterOfMass - ObsCenterOfMass).sqrMagnitude;
 		}
 

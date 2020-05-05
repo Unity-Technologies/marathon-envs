@@ -276,7 +276,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		}
 		centerOfMass /= totalMass;
 		centerOfMass -= transform.parent.position;
-		Debug.Log("transoform parent position: " + transform.parent.position);
 		return centerOfMass;
 	}
 	public void MimicAnimation()
