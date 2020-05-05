@@ -144,9 +144,13 @@ public class BodyPart002
         var velocity = Transform.position - _lastLocalPosition;
 
         var rotationVelocity = JointHelper002.FromToRotation(_lastObsRotation, Transform.rotation);
-        var angularVelocity = rotationVelocity.eulerAngles;
-        angularVelocity = NormalizedEulerAngles(angularVelocity);
+        var angularVelocity = JointHelper002.NormalizedEulerAngles(rotationVelocity.eulerAngles);
+
+        // old calulation for observation vector
+        angularVelocity = NormalizedEulerAngles(rotationVelocity.eulerAngles);
         angularVelocity /= 128f;
+        // old calculation end
+
         if (dt > 0f) {
             angularVelocity /= dt;
             velocity /= dt;
@@ -159,6 +163,9 @@ public class BodyPart002
         Debug.Log("angular velocity:" + angularVelocity);
         Debug.Log("proper angular velocity:" + JointHelper002.NormalizedEulerAngles(rotationVelocity.eulerAngles) / dt);
         Debug.Log("rotation:" + rotation);
+        Debug.Log("animation rotation: " + _animationRotation);
+        Debug.Log("velocity: " + velocity);
+        Debug.Log("animation velocity:" + _animationVelocity);
         Debug.Log("dt:" + dt);
 
         ObsLocalPosition = position;
