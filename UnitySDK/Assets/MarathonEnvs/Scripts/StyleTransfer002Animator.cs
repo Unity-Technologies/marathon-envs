@@ -29,7 +29,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 	public List<BodyPart002> BodyParts;
 
-	private Vector3 _lastVelocityPosition;
+	private Vector3 _lastCenterOfMass;
 
 	private List<Rigidbody> _rigidbodies;
 	private List<Transform> _transforms;
@@ -42,7 +42,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		public float TimeStep;
 		public float NormalizedTime;
 		public List<Vector3> Velocities;
-		public Vector3 Velocity;
+		public Vector3 CenterOfMassVelocity;
 		public List<Quaternion> RotaionVelocities;
 		public List<Vector3> AngularVelocities;
 
@@ -122,7 +122,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 		_lastPosition = Enumerable.Repeat(Vector3.zero, partCount).ToList();
 		_lastRotation = Enumerable.Repeat(Quaternion.identity, partCount).ToList();
-		_lastVelocityPosition = transform.position;
+		_lastCenterOfMass = transform.position;
 		_initialRotations = BodyParts
 			.Select(x=> x.Transform.rotation)
 			.ToList();
@@ -188,10 +188,11 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		animStep.AngularVelocities = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.Positions = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.Rotations = Enumerable.Repeat(Quaternion.identity, c).ToList();
-		animStep.Velocity = transform.position - _lastVelocityPosition;
+		animStep.CenterOfMass = GetCenterOfMass();
+		animStep.CenterOfMassVelocity = animStep.CenterOfMass - _lastCenterOfMass;
 		animStep.Names = BodyParts.Select(x=>x.Name).ToList();
 		animStep.SensorIsInTouch = new List<float>(SensorIsInTouch);
-		_lastVelocityPosition = transform.position;
+		_lastCenterOfMass = animStep.CenterOfMass;
 
 		var rootBone = BodyParts[0];
 
@@ -218,7 +219,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 			_lastRotation[i] = bodyPart.Transform.rotation;
 
 		}
-		animStep.CenterOfMass = GetCenterOfMass();
 		animStep.TransformPosition = transform.position;
 		animStep.TransformRotation = transform.rotation;
 		AnimationSteps.Add(animStep);
@@ -276,6 +276,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		}
 		centerOfMass /= totalMass;
 		centerOfMass -= transform.parent.position;
+
 		return centerOfMass;
 	}
 	public void MimicAnimation()

@@ -218,22 +218,19 @@ public class StyleTransfer002Master : MonoBehaviour {
 
 		ObsCenterOfMass = GetCenterOfMass();
 		if (_phaseIsRunning) {
-			//Debug.Log("$$$$$$$$$$");
-			//Debug.Log("animStep center of mass: " + animStep.CenterOfMass);
-			//Debug.Log("Obs Center Of Mass:" + ObsCenterOfMass);
 			CenterOfMassDistance = (animStep.CenterOfMass - ObsCenterOfMass).sqrMagnitude;
 		}
 
 		ObsVelocity = ObsCenterOfMass - _lastCenterOfMass;
 		if (_fakeVelocity)
-			ObsVelocity = animStep.Velocity;
+			ObsVelocity = animStep.CenterOfMassVelocity;
 		_lastCenterOfMass = ObsCenterOfMass;
 
 		if (!_resetCenterOfMassOnLastUpdate)
 			_fakeVelocity = false;
 
 		if (_phaseIsRunning){
-			var animVelocity = animStep.Velocity / (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
+			var animVelocity = animStep.CenterOfMassVelocity / (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
 			ObsVelocity /= (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
 
             var velocityDistance = ObsVelocity - animVelocity;
