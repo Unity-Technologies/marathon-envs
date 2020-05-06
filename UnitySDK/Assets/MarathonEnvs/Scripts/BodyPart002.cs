@@ -133,21 +133,21 @@ public class BodyPart002
         if (_firstRunComplete == false){
             _lastUpdateObsTime = Time.time;
 
-            _lastObsRotation = Transform.rotation;
-            _lastLocalPosition = Transform.position;
+            _lastObsRotation = rotation;
+            _lastLocalPosition = position;
         }
 
         var dt = Time.time - _lastUpdateObsTime;
         _lastUpdateObsTime = Time.time;
 
-        var velocity = Transform.position - _lastLocalPosition;
+        var velocity = position - _lastLocalPosition;
 
-        var rotationVelocity = JointHelper002.FromToRotation(_lastObsRotation, Transform.rotation);
+        var rotationVelocity = JointHelper002.FromToRotation(_lastObsRotation, rotation);
         var angularVelocity = JointHelper002.NormalizedEulerAngles(rotationVelocity.eulerAngles);
 
         // old calulation for observation vector
-        angularVelocity = NormalizedEulerAngles(rotationVelocity.eulerAngles);
-        angularVelocity /= 128f;
+        //angularVelocity = NormalizedEulerAngles(rotationVelocity.eulerAngles);
+        //angularVelocity /= 128f;
         // old calculation end
 
         if (dt > 0f) {
@@ -155,15 +155,16 @@ public class BodyPart002
             velocity /= dt;
         }
 
-        _lastLocalPosition = Transform.position;
-        _lastObsRotation = Transform.rotation;
+        _lastLocalPosition = position;
+        _lastObsRotation = rotation;
 
+        Debug.Log("^^^^^^^^^^^^");
         Debug.Log("body part name: " + Name);
         Debug.Log("animation angular velocity:" + _animationAngularVelocity);
         Debug.Log("angular velocity:" + angularVelocity);
         Debug.Log("proper angular velocity:" + JointHelper002.NormalizedEulerAngles(rotationVelocity.eulerAngles) / dt);
-        Debug.Log("rotation:" + rotation.eulerAngles);
-        Debug.Log("animation rotation: " + _animationRotation.eulerAngles);
+        Debug.Log("rotation:" + rotation);
+        Debug.Log("animation rotation: " + _animationRotation);
         Debug.Log("velocity: " + velocity);
         Debug.Log("animation velocity:" + _animationVelocity);
         Debug.Log("dt:" + dt);
@@ -175,11 +176,12 @@ public class BodyPart002
 
         ObsDeltaFromAnimationPosition = _animationPosition - position;
         ObsAngleDeltaFromAnimationRotation = Quaternion.Angle(_animationRotation, rotation);
-        Debug.Log("Obs Angle Delta: " + ObsAngleDeltaFromAnimationRotation);
         ObsAngleDeltaFromAnimationRotation = JointHelper002.NormalizedAngle(ObsAngleDeltaFromAnimationRotation);  
 
         ObsDeltaFromAnimationVelocity = _animationVelocity - velocity;
         ObsDeltaFromAnimationAngularVelocity = (_animationAngularVelocity - angularVelocity);
+        Debug.Log("Obs Delta Angular Velocity: " + ObsDeltaFromAnimationAngularVelocity);
+
 
         if (_firstRunComplete == false){
             ObsDeltaFromAnimationPosition = Vector3.zero;
