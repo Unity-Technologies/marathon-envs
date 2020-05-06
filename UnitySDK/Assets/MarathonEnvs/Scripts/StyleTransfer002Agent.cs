@@ -91,15 +91,15 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 
         // the scaler factors are picked empirically by calculating the MaxRotationDistance, MaxVelocityDistance achieved for an untrained agent. 
 		var rotationDistance = _master.RotationDistance / 100f ;
-		var velocityDistance = _master.VelocityDistance / 9f ;
+		var velocityDistance = _master.VelocityDistance / 19f ;
 		var endEffectorDistance = _master.EndEffectorDistance / 4f ;
 		var endEffectorVelocityDistance = _master.EndEffectorVelocityDistance / 340f ;
 		var jointAngularVelocityDistance = _master.JointAngularVelocityDistance / 18000f;
-		var centerOfMassDistance = _master.CenterOfMassDistance / 1.5f;
+		var centerOfMassDistance = _master.CenterOfMassDistance / 0.5f;
 		var sensorDistance = _master.SensorDistance / 1f;
 
-		var rotationReward = 0.65f * Mathf.Exp(-rotationDistance);
-		var velocityReward = 0f * Mathf.Exp(-velocityDistance);
+		var rotationReward = 0.55f * Mathf.Exp(-rotationDistance);
+		var velocityReward = 0.1f * Mathf.Exp(-velocityDistance);
 		var endEffectorReward = 0.15f * Mathf.Exp(-endEffectorDistance);
         var endEffectorVelocityReward = 0f * Mathf.Exp(-endEffectorVelocityDistance);
 		var jointAngularVelocityReward = 0.1f * Mathf.Exp(-jointAngularVelocityDistance);
@@ -122,7 +122,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		if (!_master.IgnorRewardUntilObservation)
 			AddReward(reward);
 
-		if (reward < 0.0)
+		if (reward < 0.7)
 			Done();
 
 		if (!_isDone){
