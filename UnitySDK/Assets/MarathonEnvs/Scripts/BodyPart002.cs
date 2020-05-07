@@ -158,16 +158,20 @@ public class BodyPart002
         _lastLocalPosition = position;
         _lastObsRotation = rotation;
 
-        Debug.Log("^^^^^^^^^^^^");
-        Debug.Log("body part name: " + Name);
-        Debug.Log("animation angular velocity:" + _animationAngularVelocity);
-        Debug.Log("angular velocity:" + angularVelocity);
-        Debug.Log("proper angular velocity:" + JointHelper002.NormalizedEulerAngles(rotationVelocity.eulerAngles) / dt);
-        Debug.Log("rotation:" + rotation);
-        Debug.Log("animation rotation: " + _animationRotation);
-        Debug.Log("velocity: " + velocity);
-        Debug.Log("animation velocity:" + _animationVelocity);
-        Debug.Log("dt:" + dt);
+        //if (Name == "butt") {
+        //    Debug.Log("^^^^^^^^^^^^");
+        //    Debug.Log("body part name: " + Name);
+        //    Debug.Log("animation angular velocity:" + _animationAngularVelocity);
+        //    Debug.Log("angular velocity:" + angularVelocity);
+        //    Debug.Log("proper angular velocity:" + JointHelper002.NormalizedEulerAngles(rotationVelocity.eulerAngles) / dt);
+        //    Debug.Log("rotation:" + rotation);
+        //    Debug.Log("animation rotation: " + _animationRotation);
+        //    Debug.Log("velocity: " + velocity);
+        //    Debug.Log("animation velocity:" + _animationVelocity);
+        //    Debug.Log("position:" + position);
+        //    Debug.Log("animation position: " + _animationPosition);
+        //    Debug.Log("dt:" + dt);
+        //}
 
         ObsLocalPosition = position;
         ObsRotation = rotation;
@@ -180,7 +184,7 @@ public class BodyPart002
 
         ObsDeltaFromAnimationVelocity = _animationVelocity - velocity;
         ObsDeltaFromAnimationAngularVelocity = (_animationAngularVelocity - angularVelocity);
-        Debug.Log("Obs Delta Angular Velocity: " + ObsDeltaFromAnimationAngularVelocity);
+        //Debug.Log("Obs Delta Angular Velocity: " + ObsDeltaFromAnimationAngularVelocity);
 
 
         if (_firstRunComplete == false){
