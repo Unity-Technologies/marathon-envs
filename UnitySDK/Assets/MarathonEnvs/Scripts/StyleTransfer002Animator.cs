@@ -22,6 +22,8 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 	private List<Vector3> _lastPosition;
 	private List<Quaternion> _lastRotation;
+	private List<Vector3> _lastPositionLocal;
+	private List<Quaternion> _lastRotationLocal;
 	private bool _isRagDoll;
 
 	Quaternion _baseRotation;
@@ -43,8 +45,8 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		public float NormalizedTime;
 		public List<Vector3> Velocities;
 		public Vector3 CenterOfMassVelocity;
-		public List<Quaternion> RotaionVelocities;
 		public List<Vector3> AngularVelocities;
+		public List<Vector3> AngularVelocitiesLocal;
 
 		public List<Vector3> Positions;
 		public List<Quaternion> Rotations;
@@ -122,6 +124,8 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 		_lastPosition = Enumerable.Repeat(Vector3.zero, partCount).ToList();
 		_lastRotation = Enumerable.Repeat(Quaternion.identity, partCount).ToList();
+		_lastPositionLocal = Enumerable.Repeat(Vector3.zero, partCount).ToList();
+		_lastRotationLocal = Enumerable.Repeat(Quaternion.identity, partCount).ToList();
 		_lastCenterOfMass = transform.position;
 		_initialRotations = BodyParts
 			.Select(x=> x.Transform.rotation)
@@ -184,8 +188,8 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		animStep.TimeStep = timeStep;
 		animStep.NormalizedTime = NormalizedTime;
 		animStep.Velocities = Enumerable.Repeat(Vector3.zero, c).ToList();
-		animStep.RotaionVelocities = Enumerable.Repeat(Quaternion.identity, c).ToList();
 		animStep.AngularVelocities = Enumerable.Repeat(Vector3.zero, c).ToList();
+		animStep.AngularVelocitiesLocal = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.Positions = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.Rotations = Enumerable.Repeat(Quaternion.identity, c).ToList();
 		animStep.CenterOfMass = GetCenterOfMass();
@@ -211,12 +215,14 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 			if (NormalizedTime != 0f) {
                 // these are difference only, the division by dt will be done in master.cs
 				animStep.Velocities[i] = bodyPart.Transform.position - _lastPosition[i];
-				animStep.RotaionVelocities[i] = JointHelper002.FromToRotation(_lastRotation[i], bodyPart.Transform.rotation);
-				animStep.AngularVelocities[i] = animStep.RotaionVelocities[i].eulerAngles;
-				animStep.AngularVelocities[i] = JointHelper002.NormalizedEulerAngles(animStep.AngularVelocities[i]);
+				animStep.AngularVelocities[i] = JointHelper002.CalcDeltaRotationNormalizedEuler(_lastRotation[i], bodyPart.Transform.rotation);
+				animStep.AngularVelocitiesLocal[i] = JointHelper002.CalcDeltaRotationNormalizedEuler(_lastRotationLocal[i], animStep.Rotations[i]);
 			}
 			_lastPosition[i] = bodyPart.Transform.position;
 			_lastRotation[i] = bodyPart.Transform.rotation;
+
+			_lastPositionLocal[i] = animStep.Positions[i];
+			_lastRotationLocal[i] = animStep.Rotations[i];
 
 		}
 		animStep.TransformPosition = transform.position;

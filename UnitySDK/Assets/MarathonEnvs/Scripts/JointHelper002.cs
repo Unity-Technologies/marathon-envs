@@ -30,6 +30,13 @@ public static class JointHelper002
         }        
         return (angle - 360) * Mathf.Deg2Rad;
     }
+
+
+    public static Vector3 CalcDeltaRotationNormalizedEuler(Quaternion from, Quaternion to) {
+        var rotationVelocity = FromToRotation(from, to);
+        var angularVelocity = NormalizedEulerAngles(rotationVelocity.eulerAngles);
+        return angularVelocity;
+    }
 }
 
 

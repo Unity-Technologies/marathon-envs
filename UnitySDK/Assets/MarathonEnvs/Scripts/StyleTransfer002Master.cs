@@ -309,13 +309,15 @@ public class StyleTransfer002Master : MonoBehaviour {
 			Vector3 angularVelocity = animStep.AngularVelocities[i] / (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
 			Vector3 velocity = animStep.Velocities[i] / (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
 
+            Vector3 angularVelocityLocal = animStep.AngularVelocitiesLocal[i] / (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
+
 			bool setAnim = !onlySetAnimation;
 			if (bodyPart.Name.Contains("head") || bodyPart.Name.Contains("upper_waist"))
 				setAnim = false;
 			if (setAnim)
 				bodyPart.MoveToAnim(animPosition, animRotation, angularVelocity, velocity);
 
-			bodyPart.SetAnimationPosition(animStep.Positions[i], animStep.Rotations[i], velocity, angularVelocity);
+			bodyPart.SetAnimationPosition(animPosition, animStep.Rotations[i], velocity, angularVelocityLocal);
 		}
 	}
 
