@@ -156,7 +156,7 @@ public class BodyPart002
         _lastLocalPosition = position;
         _lastObsRotation = rotation;
 
-        if (Name == "upper_waist") {
+        if (Name == "left_hand") {
             Debug.Log("^^^^^^^^^^^^");
             Debug.Log("body part name: " + Name);
             Debug.Log("animation angular velocity:" + _animationAngularVelocity);
