@@ -156,19 +156,19 @@ public class BodyPart002
         _lastLocalPosition = position;
         _lastObsRotation = rotation;
 
-        if (Name == "left_hand") {
-            Debug.Log("^^^^^^^^^^^^");
-            Debug.Log("body part name: " + Name);
-            Debug.Log("animation angular velocity:" + _animationAngularVelocity);
-            Debug.Log("angular velocity:" + angularVelocity);
-            Debug.Log("rotation local:" + rotation.eulerAngles);
-            Debug.Log("animation rotation local: " + _animationRotation.eulerAngles);
-            Debug.Log("velocity: " + velocity);
-            Debug.Log("animation velocity:" + _animationVelocity);
-            Debug.Log("transform position:" + Transform.position);
-            Debug.Log("animation position world: " + _animationPositionWorld);
-            Debug.Log("dt:" + dt);
-        }
+        //if (Name == "left_hand") {
+        //    Debug.Log("^^^^^^^^^^^^");
+        //    Debug.Log("body part name: " + Name);
+        //    Debug.Log("animation angular velocity:" + _animationAngularVelocity);
+        //    Debug.Log("angular velocity:" + angularVelocity);
+        //    Debug.Log("rotation local:" + rotation.eulerAngles);
+        //    Debug.Log("animation rotation local: " + _animationRotation.eulerAngles);
+        //    Debug.Log("velocity: " + velocity);
+        //    Debug.Log("animation velocity:" + _animationVelocity);
+        //    Debug.Log("transform position:" + Transform.position);
+        //    Debug.Log("animation position world: " + _animationPositionWorld);
+        //    Debug.Log("dt:" + dt);
+        //}
 
         ObsLocalPosition = position;
         ObsRotation = rotation;
