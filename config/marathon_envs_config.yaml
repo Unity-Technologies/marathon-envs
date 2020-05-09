@@ -2,7 +2,7 @@ default:
     trainer: ppo
     batch_size: 1024
     beta: 1e-5
-    epsilon: 0.02
+    epsilon: 0.2
     hidden_units: 128
     lambd: 0.95
     learning_rate: 5e-4
