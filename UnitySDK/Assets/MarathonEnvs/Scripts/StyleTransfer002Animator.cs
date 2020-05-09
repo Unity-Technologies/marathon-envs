@@ -44,6 +44,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		public float TimeStep;
 		public float NormalizedTime;
 		public List<Vector3> Velocities;
+		public List<Vector3> VelocitiesLocal;
 		public Vector3 CenterOfMassVelocity;
 		public List<Vector3> AngularVelocities;
 		public List<Vector3> AngularVelocitiesLocal;
@@ -188,6 +189,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		animStep.TimeStep = timeStep;
 		animStep.NormalizedTime = NormalizedTime;
 		animStep.Velocities = Enumerable.Repeat(Vector3.zero, c).ToList();
+		animStep.VelocitiesLocal = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.AngularVelocities = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.AngularVelocitiesLocal = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.Positions = Enumerable.Repeat(Vector3.zero, c).ToList();
@@ -216,7 +218,8 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
                 // these are difference only, the division by dt will be done in master.cs
 				animStep.Velocities[i] = bodyPart.Transform.position - _lastPosition[i];
 				animStep.AngularVelocities[i] = JointHelper002.CalcDeltaRotationNormalizedEuler(_lastRotation[i], bodyPart.Transform.rotation);
-				animStep.AngularVelocitiesLocal[i] = JointHelper002.CalcDeltaRotationNormalizedEuler(_lastRotationLocal[i], animStep.Rotations[i]);
+				animStep.VelocitiesLocal[i] = animStep.Positions[i] - _lastPositionLocal[i];
+				animStep.AngularVelocitiesLocal[i] = JointHelper002.CalcDeltaRotationNormalizedEuler(_lastRotationLocal[i], animStep.Rotations[i]);				
 			}
 			_lastPosition[i] = bodyPart.Transform.position;
 			_lastRotation[i] = bodyPart.Transform.rotation;

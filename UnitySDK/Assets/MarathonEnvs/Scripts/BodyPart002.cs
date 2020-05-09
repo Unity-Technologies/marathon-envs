@@ -46,8 +46,9 @@ public class BodyPart002
 
     Quaternion _lastObsRotation;
     Vector3 _lastLocalPosition;
+    Vector3 _lastWorldPosition;
     Vector3 _animationAngularVelocity;
-    Vector3 _animationVelocity;
+    Vector3 _animationVelocityWorld;
 
     float _lastUpdateObsTime;
     bool _firstRunComplete;
@@ -135,12 +136,14 @@ public class BodyPart002
 
             _lastObsRotation = rotation;
             _lastLocalPosition = position;
+            _lastWorldPosition = Transform.position;
         }
 
         var dt = Time.time - _lastUpdateObsTime;
         _lastUpdateObsTime = Time.time;
 
         var velocity = position - _lastLocalPosition;
+        var velocityWorld = Transform.position - _lastWorldPosition;
         var angularVelocity = JointHelper002.CalcDeltaRotationNormalizedEuler(_lastObsRotation, rotation);
 
         // old calulation for observation vector
@@ -151,9 +154,11 @@ public class BodyPart002
         if (dt > 0f) {
             angularVelocity /= dt;
             velocity /= dt;
+            velocityWorld /= dt;
         }
 
         _lastLocalPosition = position;
+        _lastWorldPosition = Transform.position;
         _lastObsRotation = rotation;
 
         //if (Name == "left_hand") {
@@ -163,8 +168,8 @@ public class BodyPart002
         //    Debug.Log("angular velocity:" + angularVelocity);
         //    Debug.Log("rotation local:" + rotation.eulerAngles);
         //    Debug.Log("animation rotation local: " + _animationRotation.eulerAngles);
-        //    Debug.Log("velocity: " + velocity);
-        //    Debug.Log("animation velocity:" + _animationVelocity);
+        //    Debug.Log("velocity world: " + velocityWorld);
+        //    Debug.Log("animation velocity world:" + _animationVelocityWorld);
         //    Debug.Log("transform position:" + Transform.position);
         //    Debug.Log("animation position world: " + _animationPositionWorld);
         //    Debug.Log("dt:" + dt);
@@ -180,7 +185,7 @@ public class BodyPart002
         ObsAngleDeltaFromAnimationRotation = Quaternion.Angle(_animationRotation, rotation);
         ObsAngleDeltaFromAnimationRotation = JointHelper002.NormalizedAngle(ObsAngleDeltaFromAnimationRotation);  
 
-        ObsDeltaFromAnimationVelocity = _animationVelocity - velocity;
+        ObsDeltaFromAnimationVelocity = _animationVelocityWorld - velocityWorld;
         ObsDeltaFromAnimationAngularVelocity = (_animationAngularVelocity - angularVelocity);
         //Debug.Log("Obs Delta Angular Velocity: " + ObsDeltaFromAnimationAngularVelocity);
 
@@ -225,12 +230,12 @@ public class BodyPart002
             Rigidbody.velocity = velocity;
         }
     }
-    public void SetAnimationPosition(Vector3 animPositionWorld, Quaternion animRotationLocal, Vector3 animVelocity, Vector3 animAngularVelocityLocal)
+    public void SetAnimationPosition(Vector3 animPositionWorld, Quaternion animRotationLocal, Vector3 animVelocityWorld, Vector3 animAngularVelocityLocal)
     {
         _animationPositionWorld = animPositionWorld;
         _animationRotation = animRotationLocal;
 
-        _animationVelocity = animVelocity;
+        _animationVelocityWorld = animVelocityWorld;
         _animationAngularVelocity = animAngularVelocityLocal;
     }
 }

@@ -93,15 +93,15 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		var rotationDistance = _master.RotationDistance / 16f ;
 		var velocityDistance = _master.VelocityDistance / 6f ;
 		var endEffectorDistance = _master.EndEffectorDistance / 1f ;
-		var endEffectorVelocityDistance = _master.EndEffectorVelocityDistance / 60f;
+		var endEffectorVelocityDistance = _master.EndEffectorVelocityDistance / 170f;
 		var jointAngularVelocityDistance = _master.JointAngularVelocityDistance / 7000f;
 		var centerOfMassDistance = _master.CenterOfMassDistance / 0.3f;
 		var sensorDistance = _master.SensorDistance / 1f;
 
-		var rotationReward = 0.65f * Mathf.Exp(-rotationDistance);
-		var velocityReward = 0.00f * Mathf.Exp(-velocityDistance);
+		var rotationReward = 0.5f * Mathf.Exp(-rotationDistance);
+		var velocityReward = 0.0f * Mathf.Exp(-velocityDistance);
 		var endEffectorReward = 0.15f * Mathf.Exp(-endEffectorDistance);
-        var endEffectorVelocityReward = 0.0f * Mathf.Exp(-endEffectorVelocityDistance);
+        var endEffectorVelocityReward = 0.15f * Mathf.Exp(-endEffectorVelocityDistance);
 		var jointAngularVelocityReward = 0.1f * Mathf.Exp(-jointAngularVelocityDistance);
 		var centerMassReward = 0.1f * Mathf.Exp(-centerOfMassDistance);
 		var sensorReward = 0f * Mathf.Exp(-sensorDistance);
@@ -122,7 +122,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		if (!_master.IgnorRewardUntilObservation)
 			AddReward(reward);
 
-		if (reward < 0.1)
+		if (reward < 0.3)
 			Done();
 
 		if (!_isDone){
