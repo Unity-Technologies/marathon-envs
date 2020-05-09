@@ -15,6 +15,7 @@ default:
     summary_freq: 100000
     vis_encode_type: simple
     save_replay_buffer: true
+    use_recurrent: false
     reward_signals: 
         extrinsic:
             strength: 1.0
