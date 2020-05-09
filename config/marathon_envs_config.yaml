@@ -13,6 +13,7 @@ default:
     time_horizon: 64
     summary_freq: 100000
     vis_encode_type: simple
+    use_recurrent: false
     save_replay_buffer: true
     reward_signals: 
         extrinsic:
