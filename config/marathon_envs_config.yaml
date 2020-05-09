@@ -1,16 +1,15 @@
 default:
     trainer: ppo
-    batch_size: 64
-    beta: 5.0e-3
-    epsilon: 0.1
+    batch_size: 1024
+    beta: 1e-4
+    epsilon: 0.02
     hidden_units: 128
     lambd: 0.95
-    learning_rate: 1e-3
+    learning_rate: 5e-4
     max_steps: 5.0e4
     normalize: false
     num_epoch: 20
     num_layers: 2
-    time_horizon: 64
     summary_freq: 100000
     vis_encode_type: simple
     use_recurrent: false
@@ -25,7 +24,7 @@ default:
 MarathonManBackflip-v0:
     time_horizon: 86 # animation length
     max_steps: 128e6
-    buffer_size: 5504 # batch_size * time_horizon
+    buffer_size: 88064 # batch_size * time_horizon
 
 MarathonManWalking-v0:
     normalize: true
