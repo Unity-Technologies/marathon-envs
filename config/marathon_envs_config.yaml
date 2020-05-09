@@ -14,6 +14,8 @@ default:
     summary_freq: 100000
     vis_encode_type: simple
     use_recurrent: false
+    sequence_length: 64 # not used
+    memory_size: 64 # not used
     save_replay_buffer: true
     reward_signals: 
         extrinsic:
