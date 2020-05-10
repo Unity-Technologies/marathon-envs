@@ -17,7 +17,7 @@ default:
     reward_signals: 
         extrinsic:
             strength: 1.0
-            gamma: 0.99
+            gamma: 0.997
 
 MarathonManBackflip-v0:
     normalize: true
