@@ -25,16 +25,18 @@ public class StyleTransfer002Master : MonoBehaviour {
 	public float EndEffectorDistance; // feet, hands, head
 	public float EndEffectorVelocityDistance; // feet, hands, head
 	public float JointAngularVelocityDistance;
+	public float JointAngularVelocityDistanceWorld;
 	public float RotationDistance;
-	public float VelocityDistance;
+	public float CenterOfMassVelocityDistance;
 	public float CenterOfMassDistance;
 	public float SensorDistance;
 
 	public float MaxEndEffectorDistance; // feet, hands, head
 	public float MaxEndEffectorVelocityDistance; // feet, hands, head
 	public float MaxJointAngularVelocityDistance;
+	public float MaxJointAngularVelocityDistanceWorld;
 	public float MaxRotationDistance;
-	public float MaxVelocityDistance;
+	public float MaxCenterOfMassVelocityDistance;
 	public float MaxCenterOfMassDistance;
 	public float MaxSensorDistance;
 
@@ -178,8 +180,9 @@ public class StyleTransfer002Master : MonoBehaviour {
 		EndEffectorDistance = 0f;
 		EndEffectorVelocityDistance = 0;
 		JointAngularVelocityDistance = 0;
+		JointAngularVelocityDistanceWorld = 0;
 		RotationDistance = 0f;
-		VelocityDistance = 0f;
+		CenterOfMassVelocityDistance = 0f;
 		CenterOfMassDistance = 0f;
 		SensorDistance = 0f;
 		if (_phaseIsRunning && DebugShowWithOffset)
@@ -205,6 +208,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 				RotationDistance += squareRotDistance;
 
 				JointAngularVelocityDistance += bodyPart.ObsDeltaFromAnimationAngularVelocity.sqrMagnitude;
+				JointAngularVelocityDistanceWorld += bodyPart.ObsDeltaFromAnimationAngularVelocityWorld.sqrMagnitude;
 
 				if (bodyPart.Group == BodyHelper002.BodyPartGroup.Hand
 					|| bodyPart.Group == BodyHelper002.BodyPartGroup.Torso
@@ -233,8 +237,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 			var animVelocity = animStep.CenterOfMassVelocity / (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
 			ObsVelocity /= (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
 
-            var velocityDistance = ObsVelocity - animVelocity;
-			VelocityDistance = velocityDistance.sqrMagnitude;
+			CenterOfMassVelocityDistance = (ObsVelocity - animVelocity).sqrMagnitude;
 
             SensorDistance = 0.0f;
 			var sensorDistanceStep = 1.0f / _agent.SensorIsInTouch.Count;
@@ -250,9 +253,10 @@ public class StyleTransfer002Master : MonoBehaviour {
 			MaxEndEffectorDistance = Mathf.Max(MaxEndEffectorDistance, EndEffectorDistance);
 			MaxEndEffectorVelocityDistance = Mathf.Max(MaxEndEffectorVelocityDistance, EndEffectorVelocityDistance);
 			MaxRotationDistance = Mathf.Max(MaxRotationDistance, RotationDistance);
-			MaxVelocityDistance = Mathf.Max(MaxVelocityDistance, VelocityDistance);
+			MaxCenterOfMassVelocityDistance = Mathf.Max(MaxCenterOfMassVelocityDistance, CenterOfMassVelocityDistance);
 			MaxEndEffectorVelocityDistance = Mathf.Max(MaxEndEffectorVelocityDistance, EndEffectorVelocityDistance);
 			MaxJointAngularVelocityDistance = Mathf.Max(MaxJointAngularVelocityDistance, JointAngularVelocityDistance);
+			MaxJointAngularVelocityDistanceWorld = Mathf.Max(MaxJointAngularVelocityDistanceWorld, JointAngularVelocityDistanceWorld);
 			MaxCenterOfMassDistance = Mathf.Max(MaxCenterOfMassDistance, CenterOfMassDistance);
 			MaxSensorDistance = Mathf.Max(MaxSensorDistance, SensorDistance);
 		}
@@ -318,7 +322,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 			if (setAnim)
 				bodyPart.MoveToAnim(animPosition, animRotation, angularVelocity, velocity);
 
-			bodyPart.SetAnimationPosition(animPosition, animStep.Rotations[i], velocity, angularVelocityLocal);
+			bodyPart.SetAnimationPosition(animPosition, animStep.Rotations[i], velocity, angularVelocityLocal, angularVelocity);
 		}
 	}
 
@@ -379,8 +383,9 @@ public class StyleTransfer002Master : MonoBehaviour {
 		EndEffectorDistance = 0f;
 		EndEffectorVelocityDistance = 0f;
 		JointAngularVelocityDistance = 0;
+		JointAngularVelocityDistanceWorld = 0;
 		RotationDistance = 0f;
-		VelocityDistance = 0f;
+		CenterOfMassVelocityDistance = 0f;
 		IgnorRewardUntilObservation = true;
 		_resetCenterOfMassOnLastUpdate = true;
 		_fakeVelocity = true;

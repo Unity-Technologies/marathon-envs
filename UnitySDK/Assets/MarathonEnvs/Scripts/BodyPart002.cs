@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using MLAgents;
 
 
 [System.Serializable]
@@ -22,7 +23,7 @@ public class BodyPart002
 
     public Vector3 ObsDeltaFromAnimationVelocity;
     public Vector3 ObsDeltaFromAnimationAngularVelocity;
-
+    public Vector3 ObsDeltaFromAnimationAngularVelocityWorld;
     public Vector3 DebugMaxRotationVelocity;
     public Vector3 DebugMaxVelocity;
 
@@ -45,33 +46,20 @@ public class BodyPart002
 
 
     Quaternion _lastObsRotation;
+    Quaternion _lastWorldRotation;
     Vector3 _lastLocalPosition;
     Vector3 _lastWorldPosition;
     Vector3 _animationAngularVelocity;
+    Vector3 _animationAngularVelocityWorld;
     Vector3 _animationVelocityWorld;
+
+    DecisionRequester _decisionRequester;
 
     float _lastUpdateObsTime;
     bool _firstRunComplete;
     bool _hasRanVeryFirstInit;
     private Vector3 _animationPositionWorld;
     private Quaternion _animationRotation;
-
-    static Vector3 NormalizedEulerAngles(Vector3 eulerAngles)
-    {
-        var x = eulerAngles.x < 180f ?
-            eulerAngles.x :
-            - 360 + eulerAngles.x;
-        var y = eulerAngles.y < 180f ?
-            eulerAngles.y :
-            - 360 + eulerAngles.y;
-        var z = eulerAngles.z < 180f ?
-            eulerAngles.z :
-            - 360 + eulerAngles.z;
-        x = x / 180f;
-        y = y / 180f;
-        z = z / 180f;
-        return new Vector3(x,y,z);
-    }
 
     static Vector3 Vector3Max (Vector3 a, Vector3 b)
     {
@@ -84,6 +72,8 @@ public class BodyPart002
 
     public void Init()
     {
+        _decisionRequester = GameObject.Find("MarathonMan").GetComponent<DecisionRequester>();
+
         _firstRunComplete = false;
         if (Rigidbody != null){
             Rigidbody.angularVelocity = Vector3.zero;
@@ -133,47 +123,45 @@ public class BodyPart002
         
         if (_firstRunComplete == false){
             _lastUpdateObsTime = Time.time;
-
-            _lastObsRotation = rotation;
             _lastLocalPosition = position;
             _lastWorldPosition = Transform.position;
+            _lastObsRotation = rotation;
+            _lastWorldRotation = Transform.rotation;
         }
 
-        var dt = Time.time - _lastUpdateObsTime;
-        _lastUpdateObsTime = Time.time;
+        var dt = Time.fixedDeltaTime * _decisionRequester.DecisionPeriod;
 
-        var velocity = position - _lastLocalPosition;
-        var velocityWorld = Transform.position - _lastWorldPosition;
-        var angularVelocity = JointHelper002.CalcDeltaRotationNormalizedEuler(_lastObsRotation, rotation);
+        var velocity = (position - _lastLocalPosition)/dt;
+        var velocityWorld = (Transform.position - _lastWorldPosition)/dt;
+        var angularVelocity = JointHelper002.CalcDeltaRotationNormalizedEuler(_lastObsRotation, rotation)/dt;
+        var angularVelocityWorld = JointHelper002.CalcDeltaRotationNormalizedEuler(_lastWorldRotation, Transform.rotation)/dt;
 
         // old calulation for observation vector
         //angularVelocity = NormalizedEulerAngles(rotationVelocity.eulerAngles);
         //angularVelocity /= 128f;
         // old calculation end
 
-        if (dt > 0f) {
-            angularVelocity /= dt;
-            velocity /= dt;
-            velocityWorld /= dt;
-        }
-
+        _lastUpdateObsTime = Time.time;
         _lastLocalPosition = position;
         _lastWorldPosition = Transform.position;
         _lastObsRotation = rotation;
+        _lastWorldRotation = Transform.rotation;
 
-        //if (Name == "left_hand") {
-        //    Debug.Log("^^^^^^^^^^^^");
-        //    Debug.Log("body part name: " + Name);
-        //    Debug.Log("animation angular velocity:" + _animationAngularVelocity);
-        //    Debug.Log("angular velocity:" + angularVelocity);
-        //    Debug.Log("rotation local:" + rotation.eulerAngles);
-        //    Debug.Log("animation rotation local: " + _animationRotation.eulerAngles);
-        //    Debug.Log("velocity world: " + velocityWorld);
-        //    Debug.Log("animation velocity world:" + _animationVelocityWorld);
-        //    Debug.Log("transform position:" + Transform.position);
-        //    Debug.Log("animation position world: " + _animationPositionWorld);
-        //    Debug.Log("dt:" + dt);
-        //}
+        if (Name == "right_right_foot") {
+            Debug.Log("^^^^^^^^^^^^");
+            Debug.Log("body part name: " + Name);
+            Debug.Log("animation angular velocity:" + _animationAngularVelocity);
+            Debug.Log("angular velocity:" + angularVelocity);
+            Debug.Log("animation angular velocity world:" + _animationAngularVelocityWorld);
+            Debug.Log("angular velocity world:" + angularVelocityWorld);
+            Debug.Log("rotation local:" + rotation.eulerAngles);
+            Debug.Log("animation rotation local: " + _animationRotation.eulerAngles);
+            Debug.Log("velocity world: " + velocityWorld);
+            Debug.Log("animation velocity world:" + _animationVelocityWorld);
+            Debug.Log("transform position:" + Transform.position);
+            Debug.Log("animation position world: " + _animationPositionWorld);
+            Debug.Log("dt:" + dt);
+        }
 
         ObsLocalPosition = position;
         ObsRotation = rotation;
@@ -187,13 +175,7 @@ public class BodyPart002
 
         ObsDeltaFromAnimationVelocity = _animationVelocityWorld - velocityWorld;
         ObsDeltaFromAnimationAngularVelocity = (_animationAngularVelocity - angularVelocity);
-        //Debug.Log("Obs Delta Angular Velocity: " + ObsDeltaFromAnimationAngularVelocity);
-
-
-        if (_firstRunComplete == false){
-            ObsDeltaFromAnimationPosition = Vector3.zero;
-            ObsAngleDeltaFromAnimationRotation = 0f;
-        }
+        ObsDeltaFromAnimationAngularVelocityWorld = (_animationAngularVelocityWorld - angularVelocityWorld);
 
         DebugMaxRotationVelocity = Vector3Max(DebugMaxRotationVelocity, angularVelocity);
         DebugMaxVelocity = Vector3Max(DebugMaxVelocity, velocity);
@@ -230,12 +212,13 @@ public class BodyPart002
             Rigidbody.velocity = velocity;
         }
     }
-    public void SetAnimationPosition(Vector3 animPositionWorld, Quaternion animRotationLocal, Vector3 animVelocityWorld, Vector3 animAngularVelocityLocal)
+    public void SetAnimationPosition(Vector3 animPositionWorld, Quaternion animRotationLocal, Vector3 animVelocityWorld, Vector3 animAngularVelocityLocal, Vector3 animAngularVelocityWorld)
     {
         _animationPositionWorld = animPositionWorld;
         _animationRotation = animRotationLocal;
 
         _animationVelocityWorld = animVelocityWorld;
         _animationAngularVelocity = animAngularVelocityLocal;
+        _animationAngularVelocityWorld = animAngularVelocityWorld;
     }
 }
