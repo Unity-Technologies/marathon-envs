@@ -81,7 +81,7 @@ public class BodyPart002
         }
 
         if (!_hasRanVeryFirstInit) {
-			
+
             InitialRootRotation = Root.Transform.transform.rotation;
             InitialRootPosition = Root.Transform.transform.position;
             BaseRotation = Root.Transform.transform.rotation;
@@ -147,21 +147,21 @@ public class BodyPart002
         _lastObsRotation = rotation;
         _lastWorldRotation = Transform.rotation;
 
-        if (Name == "right_right_foot") {
-            Debug.Log("^^^^^^^^^^^^");
-            Debug.Log("body part name: " + Name);
-            Debug.Log("animation angular velocity:" + _animationAngularVelocity);
-            Debug.Log("angular velocity:" + angularVelocity);
-            Debug.Log("animation angular velocity world:" + _animationAngularVelocityWorld);
-            Debug.Log("angular velocity world:" + angularVelocityWorld);
-            Debug.Log("rotation local:" + rotation.eulerAngles);
-            Debug.Log("animation rotation local: " + _animationRotation.eulerAngles);
-            Debug.Log("velocity world: " + velocityWorld);
-            Debug.Log("animation velocity world:" + _animationVelocityWorld);
-            Debug.Log("transform position:" + Transform.position);
-            Debug.Log("animation position world: " + _animationPositionWorld);
-            Debug.Log("dt:" + dt);
-        }
+        //if (Name == "right_right_foot") {
+        //    Debug.Log("^^^^^^^^^^^^");
+        //    Debug.Log("body part name: " + Name);
+        //    Debug.Log("animation angular velocity:" + _animationAngularVelocity);
+        //    Debug.Log("angular velocity:" + angularVelocity);
+        //    Debug.Log("animation angular velocity world:" + _animationAngularVelocityWorld);
+        //    Debug.Log("angular velocity world:" + angularVelocityWorld);
+        //    Debug.Log("rotation local:" + rotation.eulerAngles);
+        //    Debug.Log("animation rotation local: " + _animationRotation.eulerAngles);
+        //    Debug.Log("velocity world: " + velocityWorld);
+        //    Debug.Log("animation velocity world:" + _animationVelocityWorld);
+        //    Debug.Log("transform position:" + Transform.position);
+        //    Debug.Log("animation position world: " + _animationPositionWorld);
+        //    Debug.Log("dt:" + dt);
+        //}
 
         ObsLocalPosition = position;
         ObsRotation = rotation;

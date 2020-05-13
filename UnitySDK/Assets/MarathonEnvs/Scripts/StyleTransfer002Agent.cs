@@ -69,6 +69,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 
 		sensor.AddVectorObs(_master.ObsCenterOfMass);
 		sensor.AddVectorObs(_master.ObsVelocity);
+		sensor.AddVectorObs(_master.ObsAngularMoment);
 		sensor.AddVectorObs(SensorIsInTouch);
 	}
 
@@ -97,35 +98,46 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		var jointAngularVelocityDistance = _master.JointAngularVelocityDistance / 7000f;
 		var jointAngularVelocityDistanceWorld = _master.JointAngularVelocityDistanceWorld / 7000f;
 		var centerOfMassDistance = _master.CenterOfMassDistance / 0.3f;
+		var angularMomentDistance = _master.AngularMomentDistance / 150.0f;
 		var sensorDistance = _master.SensorDistance / 1f;
 
-		var rotationReward = 0.5f * Mathf.Exp(-rotationDistance);
+		var rotationReward = 0.4f * Mathf.Exp(-rotationDistance);
 		var centerOfMassVelocityReward = 0.0f * Mathf.Exp(-centerOfMassvelocityDistance);
 		var endEffectorReward = 0.15f * Mathf.Exp(-endEffectorDistance);
-        var endEffectorVelocityReward = 0.15f * Mathf.Exp(-endEffectorVelocityDistance);
+        var endEffectorVelocityReward = 0.1f * Mathf.Exp(-endEffectorVelocityDistance);
 		var jointAngularVelocityReward = 0.1f * Mathf.Exp(-jointAngularVelocityDistance);
 		var jointAngularVelocityRewardWorld = 0.0f * Mathf.Exp(-jointAngularVelocityDistanceWorld);
 		var centerMassReward = 0.1f * Mathf.Exp(-centerOfMassDistance);
+		var angularMomentReward = 0.15f * Mathf.Exp(-angularMomentDistance);
 		var sensorReward = 0.0f * Mathf.Exp(-sensorDistance);
         var jointsNotAtLimitReward = 0.0f * Mathf.Exp(-JointsAtLimit());
 
-        Debug.Log("---------------");
-        Debug.Log("rotation reward: " + rotationReward);
-        Debug.Log("endEffectorReward: " + endEffectorReward);
-        Debug.Log("endEffectorVelocityReward: " + endEffectorVelocityReward);
-        Debug.Log("jointAngularVelocityReward: " + jointAngularVelocityReward);
-        Debug.Log("jointAngularVelocityRewardWorld: " + jointAngularVelocityRewardWorld);
-        Debug.Log("centerMassReward: " + centerMassReward);
-        Debug.Log("centerMassVelocityReward: " + centerOfMassVelocityReward);
-        Debug.Log("sensorReward: " + sensorReward);
-        Debug.Log("joints not at limit rewards:" + jointsNotAtLimitReward);
+        //Debug.Log("---------------");
+        //Debug.Log("rotation reward: " + rotationReward);
+        //Debug.Log("endEffectorReward: " + endEffectorReward);
+        //Debug.Log("endEffectorVelocityReward: " + endEffectorVelocityReward);
+        //Debug.Log("jointAngularVelocityReward: " + jointAngularVelocityReward);
+        //Debug.Log("jointAngularVelocityRewardWorld: " + jointAngularVelocityRewardWorld);
+        //Debug.Log("centerMassReward: " + centerMassReward);
+        //Debug.Log("centerMassVelocityReward: " + centerOfMassVelocityReward);
+        //Debug.Log("sensorReward: " + sensorReward);
+        //Debug.Log("joints not at limit rewards:" + jointsNotAtLimitReward);
 
-		float reward = rotationReward + centerOfMassVelocityReward + endEffectorReward + endEffectorVelocityReward + jointAngularVelocityReward + jointAngularVelocityRewardWorld + centerMassReward + sensorReward + jointsNotAtLimitReward;
+		float reward = rotationReward +
+            centerOfMassVelocityReward +
+            endEffectorReward +
+            endEffectorVelocityReward +
+            jointAngularVelocityReward +
+            jointAngularVelocityRewardWorld +
+            centerMassReward +
+            angularMomentReward +
+            sensorReward +
+            jointsNotAtLimitReward;
 
 		if (!_master.IgnorRewardUntilObservation)
 			AddReward(reward);
 
-		if (reward < 0.1)
+		if (reward < 0.4)
 			Done();
 
 		if (!_isDone){
@@ -188,8 +200,8 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 			_styleAnimator = _localStyleAnimator.GetFirstOfThisAnim();
 			_styleAnimator.BodyConfig = MarathonManAgent.BodyConfig;
 
-			_master.OnInitializeAgent();
 			_styleAnimator.OnInitializeAgent();
+			_master.OnInitializeAgent();
 
 			_hasLazyInitialized = true;
 			_localStyleAnimator.DestoryIfNotFirstAnim();

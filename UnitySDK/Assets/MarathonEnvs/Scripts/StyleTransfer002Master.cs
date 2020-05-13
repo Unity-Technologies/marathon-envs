@@ -17,6 +17,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 	public List<BodyPart002> BodyParts;
 	public float ObsPhase;
 	public Vector3 ObsCenterOfMass;
+	public Vector3 ObsAngularMoment;
 	public Vector3 ObsVelocity;
 
 	// model observations
@@ -29,6 +30,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 	public float RotationDistance;
 	public float CenterOfMassVelocityDistance;
 	public float CenterOfMassDistance;
+	public float AngularMomentDistance;
 	public float SensorDistance;
 
 	public float MaxEndEffectorDistance; // feet, hands, head
@@ -38,6 +40,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 	public float MaxRotationDistance;
 	public float MaxCenterOfMassVelocityDistance;
 	public float MaxCenterOfMassDistance;
+	public float MaxAngularMomentDistance;
 	public float MaxSensorDistance;
 
 	// debug variables
@@ -184,6 +187,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 		RotationDistance = 0f;
 		CenterOfMassVelocityDistance = 0f;
 		CenterOfMassDistance = 0f;
+		AngularMomentDistance = 0f;
 		SensorDistance = 0f;
 		if (_phaseIsRunning && DebugShowWithOffset)
 			MimicAnimationFrame(debugAnimStep);
@@ -220,9 +224,14 @@ public class StyleTransfer002Master : MonoBehaviour {
 			}
 		}
 
-		ObsCenterOfMass = GetCenterOfMass();
+		ObsCenterOfMass = JointHelper002.GetCenterOfMassRelativeToRoot(BodyParts);		
+		//ObsCenterOfMass = GetCenterOfMass();
+
+		ObsAngularMoment = JointHelper002.GetAngularMoment(BodyParts);
+
 		if (_phaseIsRunning) {
 			CenterOfMassDistance = (animStep.CenterOfMass - ObsCenterOfMass).sqrMagnitude;
+			AngularMomentDistance = (animStep.AngularMoment - ObsAngularMoment).sqrMagnitude;
 		}
 
 		ObsVelocity = ObsCenterOfMass - _lastCenterOfMass;
@@ -258,6 +267,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 			MaxJointAngularVelocityDistance = Mathf.Max(MaxJointAngularVelocityDistance, JointAngularVelocityDistance);
 			MaxJointAngularVelocityDistanceWorld = Mathf.Max(MaxJointAngularVelocityDistanceWorld, JointAngularVelocityDistanceWorld);
 			MaxCenterOfMassDistance = Mathf.Max(MaxCenterOfMassDistance, CenterOfMassDistance);
+			MaxAngularMomentDistance = Mathf.Max(MaxAngularMomentDistance, AngularMomentDistance);
 			MaxSensorDistance = Mathf.Max(MaxSensorDistance, SensorDistance);
 		}
 
@@ -301,6 +311,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 				rb.velocity = Vector3.zero;
 			}
 		}
+
 		foreach (var bodyPart in BodyParts)
 		{
 			var i = animStep.Names.IndexOf(bodyPart.Name);
@@ -308,27 +319,30 @@ public class StyleTransfer002Master : MonoBehaviour {
             Quaternion animRotation = bodyPart.InitialRootRotation * animStep.Rotations[0];
 			if (i != 0) {
 				animPosition += animStep.Positions[i];
-				animRotation = bodyPart.InitialRootRotation * animStep.Rotations[i];
+				animRotation *= animStep.Rotations[i];
 			}
-			Vector3 angularVelocity = animStep.AngularVelocities[i] / (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
-			Vector3 velocity = animStep.Velocities[i] / (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
+			Vector3 angularVelocity = animStep.AngularVelocities[i];
+			Vector3 velocity = animStep.Velocities[i];
 
-            Vector3 angularVelocityLocal = animStep.AngularVelocitiesLocal[i] / (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
-			Vector3 velocityLocal = animStep.VelocitiesLocal[i] / (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
+            Vector3 angularVelocityLocal = animStep.AngularVelocitiesLocal[i];
+			Vector3 velocityLocal = animStep.VelocitiesLocal[i];
 
 			bool setAnim = !onlySetAnimation;
 			if (bodyPart.Name.Contains("head") || bodyPart.Name.Contains("upper_waist"))
 				setAnim = false;
-			if (setAnim)
+			if (setAnim) {
 				bodyPart.MoveToAnim(animPosition, animRotation, angularVelocity, velocity);
-
+			}
+                
 			bodyPart.SetAnimationPosition(animPosition, animStep.Rotations[i], velocity, angularVelocityLocal, angularVelocity);
 		}
+
 	}
 
 	protected virtual void LateUpdate() {
 		if (_resetCenterOfMassOnLastUpdate){
-			ObsCenterOfMass = GetCenterOfMass();
+			ObsCenterOfMass = JointHelper002.GetCenterOfMassRelativeToRoot(BodyParts);
+			//ObsCenterOfMass = GetCenterOfMass();
 			_lastCenterOfMass = ObsCenterOfMass;
 			_resetCenterOfMassOnLastUpdate = false;
 		}
@@ -405,6 +419,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 			.Select(x=>x.Rigidbody)
 			.Where(x=>x!=null)
 			.ToList();
+
 		foreach (Rigidbody rb in bodies)
 		{
 			centerOfMass += rb.worldCenterOfMass * rb.mass;

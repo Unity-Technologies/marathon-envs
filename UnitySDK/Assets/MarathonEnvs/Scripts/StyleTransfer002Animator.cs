@@ -26,7 +26,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 	private List<Quaternion> _lastRotationLocal;
 	private bool _isRagDoll;
 
-	Quaternion _baseRotation;
 	List<Quaternion> _initialRotations;
 
 	public List<BodyPart002> BodyParts;
@@ -53,6 +52,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		public List<Quaternion> Rotations;
 		public List<string> Names;
 		public Vector3 CenterOfMass;
+		public Vector3 AngularMoment;
 		public Vector3 TransformPosition;
 		public Quaternion TransformRotation;
 		public List<float> SensorIsInTouch;
@@ -60,10 +60,14 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 	}
 
 	public BodyConfig BodyConfig;
+	DecisionRequester _decisionRequester;
 
 	// Use this for initialization
 	public void OnInitializeAgent()
     {
+
+		_decisionRequester = GameObject.Find("MarathonMan").GetComponent<DecisionRequester>();
+
 		anim = GetComponent<Animator>();
 		anim.Play("Record",0, NormalizedTime);
 		anim.Update(0f);
@@ -75,10 +79,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 			_transforms = GetComponentsInChildren<Transform>().ToList();
 		}
 
-		_baseRotation = 
-			_transforms
-			.First(x=> BodyConfig.GetBodyPartGroup(x.name) == BodyConfig.GetRootBodyPart())
-			.rotation;
 		SetupSensors();
 	}
 	void Awake()
@@ -107,12 +107,12 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		{
 			if (BodyConfig.GetBodyPartGroup(t.name) == BodyHelper002.BodyPartGroup.None)
 				continue;
-			
-			var bodyPart = new BodyPart002{
+
+			var bodyPart = new BodyPart002 {
 				Rigidbody = t.GetComponent<Rigidbody>(),
 				Transform = t,
 				Name = t.name,
-				Group = BodyConfig.GetBodyPartGroup(t.name), 
+				Group = BodyConfig.GetBodyPartGroup(t.name),
 			};
 			if (bodyPart.Group == BodyConfig.GetRootBodyPart())
 				root = bodyPart;
@@ -194,33 +194,42 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		animStep.AngularVelocitiesLocal = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.Positions = Enumerable.Repeat(Vector3.zero, c).ToList();
 		animStep.Rotations = Enumerable.Repeat(Quaternion.identity, c).ToList();
-		animStep.CenterOfMass = GetCenterOfMass();
+		animStep.CenterOfMass = JointHelper002.GetCenterOfMassRelativeToRoot(BodyParts);
+		//animStep.CenterOfMass = GetCenterOfMass();
+
 		animStep.CenterOfMassVelocity = animStep.CenterOfMass - _lastCenterOfMass;
 		animStep.Names = BodyParts.Select(x=>x.Name).ToList();
 		animStep.SensorIsInTouch = new List<float>(SensorIsInTouch);
 		_lastCenterOfMass = animStep.CenterOfMass;
 
 		var rootBone = BodyParts[0];
-
+		
 		foreach (var bodyPart in BodyParts)
 		{
 			var i = BodyParts.IndexOf(bodyPart);
 			if (i ==0) {
-				animStep.Rotations[i] = Quaternion.Inverse(_baseRotation) * bodyPart.Transform.rotation;
+				animStep.Rotations[i] = Quaternion.Inverse(bodyPart.InitialRootRotation) * bodyPart.Transform.rotation;
 				animStep.Positions[i] =  bodyPart.Transform.position - bodyPart.InitialRootPosition;
 			}
 			else {
-				animStep.Rotations[i] = Quaternion.Inverse(_baseRotation) * bodyPart.Transform.rotation;
+				animStep.Rotations[i] = Quaternion.Inverse(rootBone.Transform.rotation) * bodyPart.Transform.rotation;
 				animStep.Positions[i] =  bodyPart.Transform.position - rootBone.Transform.position;
 			}
 			
 			if (NormalizedTime != 0f) {
-                // these are difference only, the division by dt will be done in master.cs
-				animStep.Velocities[i] = bodyPart.Transform.position - _lastPosition[i];
-				animStep.AngularVelocities[i] = JointHelper002.CalcDeltaRotationNormalizedEuler(_lastRotation[i], bodyPart.Transform.rotation);
-				animStep.VelocitiesLocal[i] = animStep.Positions[i] - _lastPositionLocal[i];
-				animStep.AngularVelocitiesLocal[i] = JointHelper002.CalcDeltaRotationNormalizedEuler(_lastRotationLocal[i], animStep.Rotations[i]);				
+				animStep.Velocities[i] = (bodyPart.Transform.position - _lastPosition[i]) / (_decisionRequester.DecisionPeriod * Time.fixedDeltaTime); ;
+				animStep.AngularVelocities[i] = JointHelper002.CalcDeltaRotationNormalizedEuler(_lastRotation[i], bodyPart.Transform.rotation) / (_decisionRequester.DecisionPeriod * Time.fixedDeltaTime); ;
+				animStep.VelocitiesLocal[i] = (animStep.Positions[i] - _lastPositionLocal[i]) / (_decisionRequester.DecisionPeriod * Time.fixedDeltaTime); ;
+				animStep.AngularVelocitiesLocal[i] = JointHelper002.CalcDeltaRotationNormalizedEuler(_lastRotationLocal[i], animStep.Rotations[i]) / (_decisionRequester.DecisionPeriod * Time.fixedDeltaTime);
 			}
+
+			if (bodyPart.Rigidbody != null) {
+				bodyPart.Rigidbody.angularVelocity = JointHelper002.CalcDeltaRotationNormalizedEuler(bodyPart.Transform.rotation, _lastRotation[i]) / (_decisionRequester.DecisionPeriod * Time.fixedDeltaTime);
+				bodyPart.Rigidbody.velocity = (bodyPart.Transform.position - _lastPosition[i]) / (_decisionRequester.DecisionPeriod * Time.fixedDeltaTime);
+				bodyPart.Rigidbody.transform.position = bodyPart.Transform.position;
+				bodyPart.Rigidbody.transform.rotation = bodyPart.Transform.rotation;
+			}
+
 			_lastPosition[i] = bodyPart.Transform.position;
 			_lastRotation[i] = bodyPart.Transform.rotation;
 
@@ -230,6 +239,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		}
 		animStep.TransformPosition = transform.position;
 		animStep.TransformRotation = transform.rotation;
+		animStep.AngularMoment = JointHelper002.GetAngularMoment(BodyParts);
 		AnimationSteps.Add(animStep);
     }
 	public void BecomeAnimated()
@@ -245,6 +255,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		}
 		_isRagDoll = false;
 	}
+
 	public void BecomeRagDoll()
 	{
 		if (_rigidbodies == null || _transforms == null)
@@ -258,6 +269,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		}
 		_isRagDoll = true;
 	}
+
 	public void StopAnimation()
 	{
 		AnimationStepsReady = true;
@@ -270,6 +282,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 			Destroy(this.gameObject);
         }
     }
+
     Vector3 GetCenterOfMass()
 	{
 		var centerOfMass = Vector3.zero;
@@ -278,6 +291,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 			.Select(x=>x.Rigidbody)
 			.Where(x=>x!=null)
 			.ToList();
+
 		foreach (Rigidbody rb in bodies)
 		{
 			centerOfMass += rb.worldCenterOfMass * rb.mass;
@@ -288,6 +302,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 		return centerOfMass;
 	}
+
 	public void MimicAnimation()
 	{
 		if (!anim.enabled)
@@ -311,9 +326,8 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
         MimicRightFoot("right_right_foot", new Vector3(.0f, -.0f, -.0f),  			Quaternion.Euler(3, -90, 180));//3));
         MimicLeftFoot("left_left_foot",   new Vector3(-.0f, -.0f, -.0f), 			Quaternion.Euler(-8, -90, 180));//3));
-		
-
 	}
+
 	void MimicBone(string name, string bodyPartName, Vector3 offset, Quaternion rotationOffset)
 	{
 		if (_rigidbodies == null || _transforms == null)

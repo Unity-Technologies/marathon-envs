@@ -211,33 +211,9 @@ public class Muscle002
         }
     }
 
-    public Quaternion RootRotation{
+    public Quaternion RootRotation {
         get {
             return InitialRootRotation;
         }
     }
-
-    
-    // public Quaternion ParentRotation {
-    //     get {
-    //         if (ConfigurableJoint.connectedBody != null) return ConfigurableJoint.connectedBody.rotation;
-    //         if (transform..parent == null) return Quaternion.identity;
-    //         return transform..parent.rotation;
-    //     }
-    // }
-
-    // public void MoveToAnim(Vector3 animPosition, Quaternion animRotation, Vector3 angularVelocity, Vector3 velocity)
-    // {
-    //     Transform.position = animPosition;
-    //     Transform.rotation = animRotation;
-    //     Rigidbody.angularVelocity = angularVelocity;
-    //     Rigidbody.velocity = velocity;
-    // }
-    // public void SetAnimationPosition(Vector3 animPosition, Quaternion animRotation)
-    // {
-    //     // _animationPosition = animPosition + InitialRootPosition;
-    //     // _animationRotation = animRotation * InitialRootRotation;
-    //     _animationPosition = animPosition;
-    //     _animationRotation = animRotation;
-    // }
 }
