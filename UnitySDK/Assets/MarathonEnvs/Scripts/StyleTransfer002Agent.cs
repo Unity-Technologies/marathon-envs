@@ -101,29 +101,30 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		var angularMomentDistance = _master.AngularMomentDistance / 150.0f;
 		var sensorDistance = _master.SensorDistance / 1f;
 
-		var rotationReward = 0.4f * Mathf.Exp(-rotationDistance);
-		var centerOfMassVelocityReward = 0.0f * Mathf.Exp(-centerOfMassvelocityDistance);
+		var rotationReward = 0.35f * Mathf.Exp(-rotationDistance);
+		var centerOfMassVelocityReward = 0.1f * Mathf.Exp(-centerOfMassvelocityDistance);
 		var endEffectorReward = 0.15f * Mathf.Exp(-endEffectorDistance);
         var endEffectorVelocityReward = 0.1f * Mathf.Exp(-endEffectorVelocityDistance);
 		var jointAngularVelocityReward = 0.1f * Mathf.Exp(-jointAngularVelocityDistance);
 		var jointAngularVelocityRewardWorld = 0.0f * Mathf.Exp(-jointAngularVelocityDistanceWorld);
-		var centerMassReward = 0.1f * Mathf.Exp(-centerOfMassDistance);
+		var centerMassReward = 0.05f * Mathf.Exp(-centerOfMassDistance);
 		var angularMomentReward = 0.15f * Mathf.Exp(-angularMomentDistance);
 		var sensorReward = 0.0f * Mathf.Exp(-sensorDistance);
         var jointsNotAtLimitReward = 0.0f * Mathf.Exp(-JointsAtLimit());
 
-        //Debug.Log("---------------");
-        //Debug.Log("rotation reward: " + rotationReward);
-        //Debug.Log("endEffectorReward: " + endEffectorReward);
-        //Debug.Log("endEffectorVelocityReward: " + endEffectorVelocityReward);
-        //Debug.Log("jointAngularVelocityReward: " + jointAngularVelocityReward);
-        //Debug.Log("jointAngularVelocityRewardWorld: " + jointAngularVelocityRewardWorld);
-        //Debug.Log("centerMassReward: " + centerMassReward);
-        //Debug.Log("centerMassVelocityReward: " + centerOfMassVelocityReward);
-        //Debug.Log("sensorReward: " + sensorReward);
-        //Debug.Log("joints not at limit rewards:" + jointsNotAtLimitReward);
+  //      Debug.Log("---------------");
+  //      Debug.Log("rotation reward: " + rotationReward);
+  //      Debug.Log("endEffectorReward: " + endEffectorReward);
+  //      Debug.Log("endEffectorVelocityReward: " + endEffectorVelocityReward);
+  //      Debug.Log("jointAngularVelocityReward: " + jointAngularVelocityReward);
+  //      Debug.Log("jointAngularVelocityRewardWorld: " + jointAngularVelocityRewardWorld);
+  //      Debug.Log("centerMassReward: " + centerMassReward);
+  //      Debug.Log("centerMassVelocityReward: " + centerOfMassVelocityReward);
+		//Debug.Log("angularMomentReward: " + angularMomentReward);
+		//Debug.Log("sensorReward: " + sensorReward);
+  //      Debug.Log("joints not at limit rewards:" + jointsNotAtLimitReward);
 
-		float reward = rotationReward +
+        float reward = rotationReward +
             centerOfMassVelocityReward +
             endEffectorReward +
             endEffectorVelocityReward +
