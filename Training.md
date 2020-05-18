@@ -87,3 +87,48 @@ This is a legacy tutorial from an older version of MarathonEnvs. The tutorial co
 * How to retrain the hopper agent and follow training in Tensorboard.
 * How to modify the hopper reward function and train it to jump.
 * See tutorial [here](https://towardsdatascience.com/gettingstartedwithmarathonenvs-v0-5-0a-c1054a0b540c)
+----
+
+
+## Working with Style Transfer  
+
+#### Introduction
+There are several steps to update the style transfer environment. This sections gives an overview of the 
+steps required to update, build, and train your own environment on a server. 
+
+#### Update style transfer target animation
+In order to switch from imitatin a Backflip animation, to, say Kick animation, you need to 
+first open the UnitySDK/ package. Then, in the Unity editor, double click the 
+`Assets/MarathonEnvs/Agents/Prefabs/MarathonBackflipEnv-v0` prefab. Select the `AnimatorBase/Animator`
+gameObject in the editor, and drag the desired animation onto Animator Controller: 
+![](images/StyleTransferAnimatorControllerSwitch.png)
+
+#### Build the new environment
+Now you can make the changes to the scripts that work with style transfer. Mainly, these are 
+`StyleTransfer002Master.csv`, `StyleTransfer002Animator.csv`, and `StyleTransfer002Agent.csv`. Then, in the 
+Unity Editor, click `File->BuildSettings`. In order to build on linux system, make these selections:
+![](images/BuildSettings.png)
+
+Then, copy over the Build to your linux server. You need these files: 
+![](images/BuildDirectory.png)
+
+Put these files into the directory on your server:
+![](images/ServerDirectory.png)
+
+#### Start the training
+Now, you can run the shell command on your server in order to start training: 
+``` bash
+mlagents-learn config/marathon_envs_config.yaml --train --env marathon-envs/marathon_envs/envs/MarathonEnvsLinux/MarathonEnvsLinux.x86_64 --num-envs=7 --run-id=MarathonManBackflip123 --load --no-graphics --env-args --spawn-env=MarathonManBackflip-v0 --num-spawn-envs=100
+```
+Run tensorboard and watch the training process: 
+``` bash
+tensorboard --logdir=summaries
+```
+
+#### Deploy the trained model
+Once happy with the model training progress, you can see it in action. Copy over the trained model found
+on the server at `models/MarathonManBackflip123/MarathonManBackflip-v0.nn` into your Unity Editor 
+`MarathonEnvs/Agents/Models` window:
+![](images/ModelsDirectory.png)
+Now, activate `Scenes/MarathonEnvs' scene, click Play, and select the `BackflipEnvironment`. Your trained
+model agent will be shown in action. 
