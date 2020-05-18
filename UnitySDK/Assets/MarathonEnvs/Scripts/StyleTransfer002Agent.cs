@@ -138,7 +138,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		if (!_master.IgnorRewardUntilObservation)
 			AddReward(reward);
 
-		if (reward < 0.6)
+		if (reward < 0.5)
 			Done();
 
 		if (!_isDone){
