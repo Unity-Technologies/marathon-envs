@@ -112,17 +112,17 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		var sensorReward = 0.0f * Mathf.Exp(-sensorDistance);
         var jointsNotAtLimitReward = 0.0f * Mathf.Exp(-JointsAtLimit());
 
-  //      Debug.Log("---------------");
-  //      Debug.Log("rotation reward: " + rotationReward);
-  //      Debug.Log("endEffectorReward: " + endEffectorReward);
-  //      Debug.Log("endEffectorVelocityReward: " + endEffectorVelocityReward);
-  //      Debug.Log("jointAngularVelocityReward: " + jointAngularVelocityReward);
-  //      Debug.Log("jointAngularVelocityRewardWorld: " + jointAngularVelocityRewardWorld);
-  //      Debug.Log("centerMassReward: " + centerMassReward);
-  //      Debug.Log("centerMassVelocityReward: " + centerOfMassVelocityReward);
-		//Debug.Log("angularMomentReward: " + angularMomentReward);
-		//Debug.Log("sensorReward: " + sensorReward);
-  //      Debug.Log("joints not at limit rewards:" + jointsNotAtLimitReward);
+        //Debug.Log("---------------");
+        //Debug.Log("rotation reward: " + rotationReward);
+        //Debug.Log("endEffectorReward: " + endEffectorReward);
+        //Debug.Log("endEffectorVelocityReward: " + endEffectorVelocityReward);
+        //Debug.Log("jointAngularVelocityReward: " + jointAngularVelocityReward);
+        //Debug.Log("jointAngularVelocityRewardWorld: " + jointAngularVelocityRewardWorld);
+        //Debug.Log("centerMassReward: " + centerMassReward);
+        //Debug.Log("centerMassVelocityReward: " + centerOfMassVelocityReward);
+        //Debug.Log("angularMomentReward: " + angularMomentReward);
+        //Debug.Log("sensorReward: " + sensorReward);
+        //Debug.Log("joints not at limit rewards:" + jointsNotAtLimitReward);
 
         float reward = rotationReward +
             centerOfMassVelocityReward +
@@ -138,7 +138,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		if (!_master.IgnorRewardUntilObservation)
 			AddReward(reward);
 
-		if (reward < 0.4)
+		if (reward < 0.6)
 			Done();
 
 		if (!_isDone){
