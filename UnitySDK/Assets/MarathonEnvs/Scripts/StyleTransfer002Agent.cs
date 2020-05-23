@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿// Implmentation of an Agent. Agent reads observations relevant to the reinforcement
+// learning task at hand, acts based on the observations, and receives a reward
+// based on its performance. 
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MLAgents;
@@ -40,6 +44,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 	void Update () {
 	}
 
+    // Collect observations that are used by the Neural Network for training and inference.
 	override public void CollectObservations()
 	{
 		var sensor = this;
@@ -73,6 +78,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		sensor.AddVectorObs(SensorIsInTouch);
 	}
 
+    // A method that applies the vectorAction to the muscles, and calculates the rewards. 
 	public override void AgentAction(float[] vectorAction)
 	{
 		_isDone = false;
@@ -138,7 +144,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		if (!_master.IgnorRewardUntilObservation)
 			AddReward(reward);
 
-		if (reward < 0.5)
+		if (reward < 0.3)
 			Done();
 
 		if (!_isDone){
@@ -153,6 +159,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		AverageReward = GetCumulativeReward() / (float) stepCount;
 	}
 
+    // A helper function that calculates a fraction of joints at their limit positions
 	float JointsAtLimit(string[] ignorJoints = null)
 	{
 		int atLimitCount = 0;
@@ -177,6 +184,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		return fractionOfJointsAtLimit;
 	}
 
+    // Sets reward 
 	public void SetTotalAnimFrames(int totalAnimFrames)
 	{
 		_totalAnimFrames = totalAnimFrames;
@@ -189,6 +197,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 			Rewards = _scoreHistogramData.GetAverages().Select(x=>(float)x).ToList();
 	}
 
+    // Resets the agent. Initialize the style animator and master if not initialized. 
 	public override void AgentReset()
 	{
 		if (!_hasLazyInitialized)
@@ -225,6 +234,8 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
         }
 	}
 
+    // A method called on terrain collision. Used for early stopping an episode
+    // on specific objects' collision with terrain. 
 	public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
 	{
 		if (string.Compare(terrain.name, "Terrain", true) != 0)
@@ -250,7 +261,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		}
 	}
 
-
+    // Sets the a flag in Sensors In Touch array when an object enters collision with terrain
 	public void OnSensorCollisionEnter(Collider sensorCollider, GameObject other) {
 			if (string.Compare(other.name, "Terrain", true) !=0)
                 return;
@@ -261,16 +272,18 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
                 SensorIsInTouch[idx] = 1f;
             }
 		}
-        public void OnSensorCollisionExit(Collider sensorCollider, GameObject other)
-        {
-            if (string.Compare(other.gameObject.name, "Terrain", true) !=0)
-                return;
-            var sensor = _sensors
-                .FirstOrDefault(x=>x == sensorCollider.gameObject);
-            if (sensor != null) {
-                var idx = _sensors.IndexOf(sensor);
-                SensorIsInTouch[idx] = 0f;
-            }
-        }  
+
+	// Sets the a flag in Sensors In Touch array when an object stops colliding with terrain
+	public void OnSensorCollisionExit(Collider sensorCollider, GameObject other)
+    {
+        if (string.Compare(other.gameObject.name, "Terrain", true) !=0)
+            return;
+        var sensor = _sensors
+            .FirstOrDefault(x=>x == sensorCollider.gameObject);
+        if (sensor != null) {
+            var idx = _sensors.IndexOf(sensor);
+            SensorIsInTouch[idx] = 0f;
+        }
+    }  
 
 }

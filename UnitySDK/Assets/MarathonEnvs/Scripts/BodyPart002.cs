@@ -1,3 +1,7 @@
+// A class that describes a body part of an Agent or an Animator. The object
+// stores the rigid body associated with an Agent's body part. Along with some
+// important data like root bone, i. e. 'butt' for a marathonMan. Implments methods
+// to calculate distance to the characteristics of an animation being mimiced.
 
 using System.Collections;
 using System.Collections.Generic;
@@ -26,7 +30,6 @@ public class BodyPart002
     public Vector3 ObsDeltaFromAnimationAngularVelocityWorld;
     public Vector3 DebugMaxRotationVelocity;
     public Vector3 DebugMaxVelocity;
-
 
     public Quaternion DefaultLocalRotation;
     public Quaternion ToJointSpaceInverse;
@@ -70,6 +73,7 @@ public class BodyPart002
         return answer;
     }
 
+    // Initialize
     public void Init()
     {
         _decisionRequester = GameObject.Find("MarathonMan").GetComponent<DecisionRequester>();
@@ -108,6 +112,9 @@ public class BodyPart002
         }
     }
 
+    // Update values like ObsLocalPosition, ObsRotation, ... that will be accessed
+    // by the agent as observations for the neural network. Also calculates distances
+    // to an animation being mimicked
     public void UpdateObservations()
     {
         Quaternion rotation;
@@ -182,18 +189,24 @@ public class BodyPart002
 
         _firstRunComplete = true;
     }
+
+    // returns local rotation
     public Quaternion LocalRotation {
         get {
             return Quaternion.Inverse(RootRotation) * Transform.rotation;
         }
     }
 
+    // retuns root rotation
     public Quaternion RootRotation{
         get {
             return InitialRootRotation;
         }
     }
 
+    // Set the position, rotation of a body part to match animation's position and
+    // rotation. Also sets the rigid body's position and velocity, which is used
+    // in angular momentum calculation
     public void MoveToAnim(Vector3 animPosition, Quaternion animRotation, Vector3 angularVelocity, Vector3 velocity)
     {
         Transform.position = animPosition;
@@ -212,6 +225,8 @@ public class BodyPart002
             Rigidbody.velocity = velocity;
         }
     }
+
+    // Set the position of the animation being mimicked
     public void SetAnimationPosition(Vector3 animPositionWorld, Quaternion animRotationLocal, Vector3 animVelocityWorld, Vector3 animAngularVelocityLocal, Vector3 animAngularVelocityWorld)
     {
         _animationPositionWorld = animPositionWorld;

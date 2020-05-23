@@ -1,3 +1,7 @@
+// Helper Utilities to work with agent's rigid bodies charateristics. Allows to
+// calculate Angles between rotations in radians, find center of mass of an agent,
+// and find Angular Momentum of an agent. 
+
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,12 +9,15 @@ using System.Linq;
 using System;
 
 public static class JointHelper002 {
+
+    // Return rotation from one rotation to another
     public static Quaternion FromToRotation(Quaternion from, Quaternion to) {
         if (to == from) return Quaternion.identity;
 
         return to * Quaternion.Inverse(from);
     }
 
+    // Calculate rotation between two rotations in radians. Adjusts the value to lie within [-pi, +pi].
     public static Vector3 NormalizedEulerAngles(Vector3 eulerAngles) {
         var x = eulerAngles.x < 180f ?
             eulerAngles.x :
@@ -27,6 +34,7 @@ public static class JointHelper002 {
         return new Vector3(x, y, z);
     }
 
+    // Adjust the value of an angle to lie within [-pi, +pi].
     public static float NormalizedAngle(float angle) {
         if (angle < 180) {
             return angle * Mathf.Deg2Rad;
@@ -34,13 +42,14 @@ public static class JointHelper002 {
         return (angle - 360) * Mathf.Deg2Rad;
     }
 
-
+    // Find rotation and convert to radians within [-pi, +pi].
     public static Vector3 CalcDeltaRotationNormalizedEuler(Quaternion from, Quaternion to) {
         var rotationVelocity = FromToRotation(from, to);
         var angularVelocity = NormalizedEulerAngles(rotationVelocity.eulerAngles);
         return angularVelocity;
     }
 
+    // Find the center of mass of a list of Body Parts beloning to an agent. Relative to the root bone, i. e. "butt" for humanoid. 
     public static Vector3 GetCenterOfMassRelativeToRoot(List<BodyPart002> BodyParts) {
         var centerOfMass = Vector3.zero;
         float totalMass = 0f;
@@ -58,19 +67,21 @@ public static class JointHelper002 {
         return centerOfMass;
     }
 
-
+    // Find the center of mass of a List of Body Parts relative to the world coordinate system. 
     public static Vector3 GetCenterOfMassWorld(List<BodyPart002> BodyParts) {
         var centerOfMass = GetCenterOfMassRelativeToRoot(BodyParts) + BodyParts[0].InitialRootPosition;
         return centerOfMass;
     }
 
+    // Calculate Angular Momentum of a List of Body Parts. In the world coordinate system about the center
+    // of mass of the Body Parts. Formulas at https://ocw.mit.edu/courses/aeronautics-and-astronautics/16-07-dynamics-fall-2009/lecture-notes/MIT16_07F09_Lec11.pdf
     public static Vector3 GetAngularMoment(List<BodyPart002> BodyParts) {
         var centerOfMass = GetCenterOfMassWorld(BodyParts);
         var bodies = BodyParts
             .Select(x => x.Rigidbody)
             .Where(x => x != null)
             .ToList();
-        Vector3 L = Vector3.zero;
+        Vector3 totalAngularMoment = Vector3.zero;
         foreach (Rigidbody rb in bodies) {
 
             var w_local = rb.transform.rotation * rb.angularVelocity;
@@ -83,17 +94,14 @@ public static class JointHelper002 {
 
             Vector3 L_world = Quaternion.Inverse(rb.transform.rotation) * Quaternion.Inverse(rb.inertiaTensorRotation) * L_inertiaFrame;
 
-            Vector3 rcm = rb.worldCenterOfMass - centerOfMass;
-            Vector3 LofCenterOfMass = rb.mass * Vector3.Cross(rcm, rb.velocity);
+            Vector3 bodyPartCenterOfMassRelativeTobodyPartsCenterOfMass = rb.worldCenterOfMass - centerOfMass;
+            Vector3 LofBodyPartCenterOfMass = rb.mass * Vector3.Cross(bodyPartCenterOfMassRelativeTobodyPartsCenterOfMass, rb.velocity);
 
-            L += L_world + LofCenterOfMass;
+            totalAngularMoment += L_world + LofBodyPartCenterOfMass;
 
         }
-        return L;
+        return totalAngularMoment;
     }
-
-
-
 }
 
 

@@ -1,4 +1,10 @@
-﻿using System;
+﻿// A class defining the Animator. The Animator is used as a reference for an
+// Agent that mimicks the animator behavior. Before training, the animator's
+// animation is run once and all the charateristics of it are stored as animSteps.
+// During training, the agent can simply acess the precomputed values and mimick
+// Animator's body Part' velocities, positions, rotations, angular velocities, etc. 
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,10 +87,12 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 		SetupSensors();
 	}
+
 	void Awake()
     {
         SetupSensors();
     }
+
 	void SetupSensors()
 	{
 		_sensors = GetComponentsInChildren<SensorBehavior>()
@@ -92,6 +100,8 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 			.ToList();
 		SensorIsInTouch = Enumerable.Range(0,_sensors.Count).Select(x=>0f).ToList();
 	}
+
+    // Reset the animator. 
 	void Reset()
 	{
 		BodyParts = new List<BodyPart002> ();
@@ -148,7 +158,9 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		isFirstOfThisAnim = true;
 		return this;
 	}
-	
+
+    // Mimics the positions of body parts of an animation. Computes AnimStep structure
+    // for the step if it is not computed already. 
 	public void OnAgentAction() {
 			
 		if (AnimationStepsReady){
@@ -177,6 +189,9 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 			// BecomeRagDoll();
 		}
 	}
+
+    // Prepares an animation step. Records the positions, rotations, velocities
+    // of the rigid bodies forming an animation into the animation step structure. 
 	void UpdateAnimationStep(float timeStep)
     {
 		// HACK deal with two of first frame
@@ -242,6 +257,8 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		animStep.AngularMoment = JointHelper002.GetAngularMoment(BodyParts);
 		AnimationSteps.Add(animStep);
     }
+
+    // Sets kinematic flag for Animator's rigid bodies to true
 	public void BecomeAnimated()
 	{
 		if (_rigidbodies == null || _transforms == null)
@@ -256,6 +273,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		_isRagDoll = false;
 	}
 
+    // Sets the kinematic flags for Animator's rigid bodies to false
 	public void BecomeRagDoll()
 	{
 		if (_rigidbodies == null || _transforms == null)
@@ -270,39 +288,25 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		_isRagDoll = true;
 	}
 
+    // Stop the animation
 	public void StopAnimation()
 	{
 		AnimationStepsReady = true;
 		anim.enabled=false;
 	}
 
-	public void DestoryIfNotFirstAnim()
+    public void DestoryIfNotFirstAnim()
     {
 		if (!isFirstOfThisAnim){
 			Destroy(this.gameObject);
         }
     }
 
-    Vector3 GetCenterOfMass()
-	{
-		var centerOfMass = Vector3.zero;
-		float totalMass = 0f;
-		var bodies = BodyParts
-			.Select(x=>x.Rigidbody)
-			.Where(x=>x!=null)
-			.ToList();
-
-		foreach (Rigidbody rb in bodies)
-		{
-			centerOfMass += rb.worldCenterOfMass * rb.mass;
-			totalMass += rb.mass;
-		}
-		centerOfMass /= totalMass;
-		centerOfMass -= transform.parent.position;
-
-		return centerOfMass;
-	}
-
+    // Sets positions and rotations of the Animator's body Rigid Bodies to match
+    // the positions and rotations of the animation avatar. The rotatin and position
+    // values passed as arguments to the MimicBone() calls are adjusted so that
+    // the avatar's body parts' positions and rotations look identical to the
+    // Animator's body parts
 	public void MimicAnimation()
 	{
 		if (!anim.enabled)
@@ -328,6 +332,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
         MimicLeftFoot("left_left_foot",   new Vector3(-.0f, -.0f, -.0f), 			Quaternion.Euler(-8, -90, 180));//3));
 	}
 
+    // Set position and rotation of a rigid body to match avatar's rigid body
 	void MimicBone(string name, string bodyPartName, Vector3 offset, Quaternion rotationOffset)
 	{
 		if (_rigidbodies == null || _transforms == null)
@@ -343,6 +348,7 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		target.transform.rotation = bodyPart.transform.rotation * rotationOffset;
 	}
 
+	// Set position and rotation of a rigid body to match avatar's rigid body
 	void MimicBone(string name, string animStartName, string animEndtName, Vector3 offset, Quaternion rotationOffset)
 	{
 		if (_rigidbodies == null || _transforms == null)
@@ -360,10 +366,13 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		target.transform.position = animStartBone.transform.position + pos/2 + offset;
 		target.transform.rotation = animStartBone.transform.rotation * rotationOffset;
 	}
+
 	[Range(0f,1f)]
 	public float toePositionOffset = .3f;
 	[Range(0f,1f)]
 	public float toeRotationOffset = .7f;
+
+	// Set position and rotation of the left foot to match avatar's left foor
 	void MimicLeftFoot(string name, Vector3 offset, Quaternion rotationOffset)
 	{
 		string animStartName = "mixamorig:LeftFoot";
@@ -383,6 +392,8 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		target.transform.position = animStartBone.transform.position + (skinOffset * toePositionOffset) + offset;
 		target.transform.rotation = rotation * rotationOffset;
 	}
+
+	// Set position and rotation of the right foot to match avatar's right foot
 	void MimicRightFoot(string name, Vector3 offset, Quaternion rotationOffset)
 	{
 		string animStartName = "mixamorig:RightFoot";
@@ -405,6 +416,8 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 
 	}
 
+    // Update the array of Sensors In Touch if an Animator's collider collides
+    // with an object named "Terrain"
 	public void OnSensorCollisionEnter(Collider sensorCollider, GameObject other)
 	{
 		if (string.Compare(other.name, "Terrain", true) !=0)
@@ -416,6 +429,8 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 			SensorIsInTouch[idx] = 1f;
 		}
 	}
+
+    // Update the array of Sensors In Touch if a sensor no more collides with terrain 
 	public void OnSensorCollisionExit(Collider sensorCollider, GameObject other)
 	{
 		if (string.Compare(other.gameObject.name, "Terrain", true) !=0)

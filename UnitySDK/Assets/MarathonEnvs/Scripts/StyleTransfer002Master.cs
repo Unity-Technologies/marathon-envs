@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿// The Master script is attached to the Agent object. Calculates the distance metrics
+// used by the Agent to calculate rewards: distances between the rotations of agent's
+// body parts and Animator's body parts, the distance between the angular momentum, and
+// the center of masses. 
+
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -7,7 +12,6 @@ using System;
 
 
 public class StyleTransfer002Master : MonoBehaviour {
-
 
 	public float FixedDeltaTime = 0.005f;
 	public bool visualizeAnimator = true;
@@ -66,9 +70,6 @@ public class StyleTransfer002Master : MonoBehaviour {
 	bool _fakeVelocity;
 	bool _waitingForAnimation;
 
-
-	// public List<float> vector;
-
 	private StyleTransfer002Animator _muscleAnimator;
 	private StyleTransfer002Agent _agent;
 	StyleTransfer002Animator _styleAnimator;
@@ -94,6 +95,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 			CameraFollowMe = true;
 	}
 
+    // Initialize the Agent. Sets up Body Parts, Muscles. 
 	public void OnInitializeAgent()
     {
 		Time.fixedDeltaTime = FixedDeltaTime;
@@ -165,6 +167,13 @@ public class StyleTransfer002Master : MonoBehaviour {
 		var animStep = UpdateObservations();
 		Step(animStep);
 	}
+
+	// Calculate values like ObsCenterOfMass, ObsAngularMoment that will be used
+    // as observations fed into the neural network for training and inference. Also
+    // calculates the distance metrics between animation's and agents' body parts.
+    // The distances are used by the Agent to calculate rewards. The max distances
+    // can be used to manually tune the denominators in exp(-distance/denominator)
+    // when forming reward function. 
 	StyleTransfer002Animator.AnimationStep UpdateObservations()
 	{
 		if (DebugMode)
@@ -225,8 +234,6 @@ public class StyleTransfer002Master : MonoBehaviour {
 		}
 
 		ObsCenterOfMass = JointHelper002.GetCenterOfMassRelativeToRoot(BodyParts);		
-		//ObsCenterOfMass = GetCenterOfMass();
-
 		ObsAngularMoment = JointHelper002.GetAngularMoment(BodyParts);
 
 		if (_phaseIsRunning) {
@@ -277,6 +284,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 		return animStep;
 	}
 
+    // Increment animation index. The index is used to get the current AnimStep structure.
 	void Step(StyleTransfer002Animator.AnimationStep animStep)
 	{
 		if (_phaseIsRunning){
@@ -301,6 +309,10 @@ public class StyleTransfer002Master : MonoBehaviour {
 		MimicAnimationFrame(animStep, true);
 	}
 
+    // Moves Agent's body part to animation's position and rotation if onlySetAnimation = false.
+    // Then sets the target animation for each Agent's body part. The animation's
+    // positions and rotations are later on used by the Body Part object to calculate
+    // distance metrics to the target animation. 
 	void MimicAnimationFrame(StyleTransfer002Animator.AnimationStep animStep, bool onlySetAnimation = false)
 	{
 		if (!onlySetAnimation)
@@ -355,6 +367,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 	{
 		return _isDone;
 	}
+
 	void Done()
 	{
 		_isDone = true;
@@ -409,25 +422,6 @@ public class StyleTransfer002Master : MonoBehaviour {
 			bodyPart.Init();
 		MimicAnimationFrame(animStep);
 		EpisodeAnimationIndex = AnimationIndex;
-	}
-
-	Vector3 GetCenterOfMass()
-	{
-		var centerOfMass = Vector3.zero;
-		float totalMass = 0f;
-		var bodies = BodyParts
-			.Select(x=>x.Rigidbody)
-			.Where(x=>x!=null)
-			.ToList();
-
-		foreach (Rigidbody rb in bodies)
-		{
-			centerOfMass += rb.worldCenterOfMass * rb.mass;
-			totalMass += rb.mass;
-		}
-		centerOfMass /= totalMass;
-		centerOfMass -= transform.parent.position;
-		return centerOfMass;
 	}
 
 	private void VisualizeTargetPose() {
