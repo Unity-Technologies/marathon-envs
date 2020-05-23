@@ -5,6 +5,7 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 ![MarathonEnvs](images/MarathonEnvsBanner.gif)
 
 ## Preview MarathonEnvs using the **[Web Demo](http://marathonenvs.joebooth.com)**
+## Style transfer [video playlist](https://www.youtube.com/playlist?list=PLX7INEUkOHp-uXg6xhqDWuDT4ENb6sSWA)
 
 **MarathonEnvs** is a set of high-dimensional continuous control benchmarks using Unity’s native physics simulator, PhysX. MarathonEnvs can be trained using Unity ML-Agents or any OpenAI Gym compatable algorthem. MarathonEnvs maybe useful for:
 

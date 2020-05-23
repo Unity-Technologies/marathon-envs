@@ -132,3 +132,19 @@ on the server at `models/MarathonManBackflip123/MarathonManBackflip-v0.nn` into 
 ![](images/ModelsDirectory.png)
 Now, activate `Scenes/MarathonEnvs' scene, click Play, and select the `BackflipEnvironment`. Your trained
 model agent will be shown in action. 
+
+#### Training hints
+The animations provided with the repo are trainable within a reasonable timeframe from several hours to 
+a day. The reward function works equally well for all of them. However, you must adjust the stopping 
+conditions for each animation by changing the reward threshold in the `StyleTransfer002Agent.cs`:
+  ``` 
+		if (reward < 0.5)
+			Done();
+```
+For example, if you set threshold too high for the running animation, the agent will be reset too soon, 
+before it had a chance to accelerate. Setting the threshold too low, however, will result in the agent
+running on its knees. Check out the [video results](https://www.youtube.com/playlist?list=PLX7INEUkOHp-uXg6xhqDWuDT4ENb6sSWA) 
+showing the target animations along with the agents. Each video file describes the length of training
+and the reward threshold. For example, 
+`Backflip05Reward8h.mov` says that an agent was trained on `Backfilp` animation for `8 hours` with a 
+`reward threshold of 0.5`.
