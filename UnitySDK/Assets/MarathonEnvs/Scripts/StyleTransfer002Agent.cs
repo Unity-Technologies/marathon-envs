@@ -1,4 +1,8 @@
-﻿using System.Collections;
+﻿// Implmentation of an Agent. Agent reads observations relevant to the reinforcement
+// learning task at hand, acts based on the observations, and receives a reward
+// based on its performance. 
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MLAgents;
@@ -14,7 +18,6 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 	StyleTransfer002Animator _localStyleAnimator;
 	StyleTransfer002Animator _styleAnimator;
 	DecisionRequester _decisionRequester;
-	// StyleTransfer002TrainerAgent _trainerAgent;
 
 	List<GameObject> _sensors;
 
@@ -41,6 +44,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 	void Update () {
 	}
 
+    // Collect observations that are used by the Neural Network for training and inference.
 	override public void CollectObservations()
 	{
 		var sensor = this;
@@ -49,24 +53,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 			AgentReset();
 		}
 
-		// for (int i = 0; i < 255; i++)
-		// 	sensor.AddVectorObs(0f);
-		// return;
 		sensor.AddVectorObs(_master.ObsPhase);
-
-		// if (false){
-		// 	// temp hack to support old models
-		// 	if (SensorIsInTouch?.Count>0){
-		// 		sensor.AddVectorObs(SensorIsInTouch[0]);
-		// 		sensor.AddVectorObs(0f);
-		// 		sensor.AddVectorObs(SensorIsInTouch[1]);
-		// 		sensor.AddVectorObs(0f);
-		// 	}
-		// } else {
-		// 	sensor.AddVectorObs(_master.ObsCenterOfMass);
-		// 	sensor.AddVectorObs(_master.ObsVelocity);
-		// 	sensor.AddVectorObs(SensorIsInTouch);	
-		// }
 
 		foreach (var bodyPart in _master.BodyParts)
 		{
@@ -87,9 +74,11 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 
 		sensor.AddVectorObs(_master.ObsCenterOfMass);
 		sensor.AddVectorObs(_master.ObsVelocity);
-		sensor.AddVectorObs(SensorIsInTouch);	
+		sensor.AddVectorObs(_master.ObsAngularMoment);
+		sensor.AddVectorObs(SensorIsInTouch);
 	}
 
+    // A method that applies the vectorAction to the muscles, and calculates the rewards. 
 	public override void AgentAction(float[] vectorAction)
 	{
 		_isDone = false;
@@ -99,8 +88,6 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		int i = 0;
 		foreach (var muscle in _master.Muscles)
 		{
-			// if(muscle.Parent == null)
-			// 	continue;
 			if (muscle.ConfigurableJoint.angularXMotion != ConfigurableJointMotion.Locked)
 				muscle.TargetNormalizedRotationX = vectorAction[i++];
 			if (muscle.ConfigurableJoint.angularYMotion != ConfigurableJointMotion.Locked)
@@ -108,121 +95,61 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 			if (muscle.ConfigurableJoint.angularZMotion != ConfigurableJointMotion.Locked)
 				muscle.TargetNormalizedRotationZ = vectorAction[i++];
 		}
-        float effort = GetEffort();
-        var effortPenality = 0.05f * (float)effort;
-		
-		// var poseReward = 1f - _master.RotationDistance;
-		// var velocityReward = 1f - Mathf.Abs(_master.VelocityDistance);
-		// var endEffectorReward = 1f - _master.EndEffectorDistance;
-		// // var feetPoseReward = 1f - _master.FeetRotationDistance;
-		// var centerMassReward = 1f - _master.CenterOfMassDistance;
-		// var sensorReward = 1f - _master.SensorDistance;
 
-		var rotationDistanceScale = (float)_master.BodyParts.Count;
-		var velocityDistanceScale = 3f;
-		var endEffectorDistanceScale = 8f;
-		var centerOfMassDistancScalee = 5f;
-		var sensorDistanceScale = 1f;
-		var rotationDistance = _master.RotationDistance;
-		var velocityDistance = Mathf.Abs(_master.VelocityDistance);
-		var endEffectorDistance = _master.EndEffectorDistance;
-		var centerOfMassDistance = _master.CenterOfMassDistance;
-		var sensorDistance = _master.SensorDistance;
-		rotationDistance = Mathf.Clamp(rotationDistance, 0f, rotationDistanceScale);
-		velocityDistance = Mathf.Clamp(velocityDistance, 0f, velocityDistanceScale);
-		endEffectorDistance = Mathf.Clamp(endEffectorDistance, 0f, endEffectorDistanceScale);
-		centerOfMassDistance = Mathf.Clamp(centerOfMassDistance, 0f, centerOfMassDistancScalee);
-		sensorDistance = Mathf.Clamp(sensorDistance, 0f, sensorDistanceScale);
+        // the scaler factors are picked empirically by calculating the MaxRotationDistance, MaxVelocityDistance achieved for an untrained agent. 
+		var rotationDistance = _master.RotationDistance / 16f ;
+		var centerOfMassvelocityDistance = _master.CenterOfMassVelocityDistance / 6f ;
+		var endEffectorDistance = _master.EndEffectorDistance / 1f ;
+		var endEffectorVelocityDistance = _master.EndEffectorVelocityDistance / 170f;
+		var jointAngularVelocityDistance = _master.JointAngularVelocityDistance / 7000f;
+		var jointAngularVelocityDistanceWorld = _master.JointAngularVelocityDistanceWorld / 7000f;
+		var centerOfMassDistance = _master.CenterOfMassDistance / 0.3f;
+		var angularMomentDistance = _master.AngularMomentDistance / 150.0f;
+		var sensorDistance = _master.SensorDistance / 1f;
 
-		var rotationReward = (rotationDistanceScale - rotationDistance) / rotationDistanceScale;
-		var velocityReward = (velocityDistanceScale - velocityDistance) / velocityDistanceScale;
-		var endEffectorReward = (endEffectorDistanceScale - endEffectorDistance) / endEffectorDistanceScale;
-		var centerMassReward = (centerOfMassDistancScalee - centerOfMassDistance) / centerOfMassDistancScalee;
-		var sensorReward = (sensorDistanceScale - sensorDistance) / sensorDistanceScale;
-		rotationReward = Mathf.Pow(rotationReward, rotationDistanceScale);
-		velocityReward = Mathf.Pow(velocityReward, velocityDistanceScale);
-		endEffectorReward = Mathf.Pow(endEffectorReward, endEffectorDistanceScale);
-		centerMassReward = Mathf.Pow(centerMassReward, centerOfMassDistancScalee);
-		sensorReward = Mathf.Pow(sensorReward, sensorDistanceScale);
+		var rotationReward = 0.35f * Mathf.Exp(-rotationDistance);
+		var centerOfMassVelocityReward = 0.1f * Mathf.Exp(-centerOfMassvelocityDistance);
+		var endEffectorReward = 0.15f * Mathf.Exp(-endEffectorDistance);
+        var endEffectorVelocityReward = 0.1f * Mathf.Exp(-endEffectorVelocityDistance);
+		var jointAngularVelocityReward = 0.1f * Mathf.Exp(-jointAngularVelocityDistance);
+		var jointAngularVelocityRewardWorld = 0.0f * Mathf.Exp(-jointAngularVelocityDistanceWorld);
+		var centerMassReward = 0.05f * Mathf.Exp(-centerOfMassDistance);
+		var angularMomentReward = 0.15f * Mathf.Exp(-angularMomentDistance);
+		var sensorReward = 0.0f * Mathf.Exp(-sensorDistance);
+        var jointsNotAtLimitReward = 0.0f * Mathf.Exp(-JointsAtLimit());
 
-		float rotationRewardScale = .65f*.9f;
-		float velocityRewardScale = .1f*.9f;
-		float endEffectorRewardScale = .15f*.9f;
-		float centerMassRewardScale = .1f*.9f;
-		float sensorRewardScale = .1f*.9f;
+        //Debug.Log("---------------");
+        //Debug.Log("rotation reward: " + rotationReward);
+        //Debug.Log("endEffectorReward: " + endEffectorReward);
+        //Debug.Log("endEffectorVelocityReward: " + endEffectorVelocityReward);
+        //Debug.Log("jointAngularVelocityReward: " + jointAngularVelocityReward);
+        //Debug.Log("jointAngularVelocityRewardWorld: " + jointAngularVelocityRewardWorld);
+        //Debug.Log("centerMassReward: " + centerMassReward);
+        //Debug.Log("centerMassVelocityReward: " + centerOfMassVelocityReward);
+        //Debug.Log("angularMomentReward: " + angularMomentReward);
+        //Debug.Log("sensorReward: " + sensorReward);
+        //Debug.Log("joints not at limit rewards:" + jointsNotAtLimitReward);
 
-		// float poseRewardScale = .65f;
-		// float velocityRewardScale = .1f;
-		// float endEffectorRewardScale = .15f;
-		// // float feetRewardScale = .15f;
-		// float centerMassRewardScale = .1f;
-		// float sensorRewardScale = .1f;
-
-		// poseReward = Mathf.Clamp(poseReward, -1f, 1f);
-		// velocityReward = Mathf.Clamp(velocityReward, -1f, 1f);
-		// endEffectorReward = Mathf.Clamp(endEffectorReward, -1f, 1f);
-		// centerMassReward = Mathf.Clamp(centerMassReward, -1f, 1f);
-		// feetPoseReward = Mathf.Clamp(feetPoseReward, -1f, 1f);
-		// sensorReward = Mathf.Clamp(sensorReward, -1f, 1f);
-        var jointsNotAtLimitReward = 1f - JointsAtLimit();
-		var jointsNotAtLimitRewardScale = .09f;
-
-
-		float distanceReward = 
-			(rotationReward * rotationRewardScale) +
-			(velocityReward * velocityRewardScale) +
-			(endEffectorReward * endEffectorRewardScale) +
-			// (feetPoseReward * feetRewardScale) +
-			(centerMassReward * centerMassRewardScale) + 
-			(sensorReward * sensorRewardScale);
-		float reward = 
-			distanceReward
-			// - effortPenality +
-			+ (jointsNotAtLimitReward * jointsNotAtLimitRewardScale);
-
-		// HACK _startCount used as Monitor does not like reset
-    //    if (ShowMonitor && _startCount < 2) {
-    //        // Monitor.Log("start frame hist", Rewards.ToArray());
-    //        var hist = new []{
-    //            reward,
-				//distanceReward,
-    //            (jointsNotAtLimitReward * jointsNotAtLimitRewardScale), 
-    //            // - effortPenality, 
-				//(rotationReward * rotationRewardScale),
-				//(velocityReward * velocityRewardScale),
-				//(endEffectorReward * endEffectorRewardScale),
-				//// (feetPoseReward * feetRewardScale),
-				//(centerMassReward * centerMassRewardScale),
-				//(sensorReward * sensorRewardScale),
-				//}.ToList();
-    //        Monitor.Log("rewardHist", hist.ToArray());
-    //    }
+        float reward = rotationReward +
+            centerOfMassVelocityReward +
+            endEffectorReward +
+            endEffectorVelocityReward +
+            jointAngularVelocityReward +
+            jointAngularVelocityRewardWorld +
+            centerMassReward +
+            angularMomentReward +
+            sensorReward +
+            jointsNotAtLimitReward;
 
 		if (!_master.IgnorRewardUntilObservation)
 			AddReward(reward);
-		// if (distanceReward < 0.18f && _master.IsInferenceMode == false)
-		// if (distanceReward < 0.334f && _master.IsInferenceMode == false)
-		// if (distanceReward < 0.25f && _master.IsInferenceMode == false)
-		// if (_trainerAgent.ShouldAgentTerminate(distanceReward) && _master.IsInferenceMode == false)
-			// Done();
-		// if (GetStepCount() >= 50 && _master.IsInferenceMode == false)
-		if (distanceReward < 0.334f && _master.IsInferenceMode == false)
+
+		if (reward < 0.5)
 			Done();
+
 		if (!_isDone){
-			// // if (distanceReward < _master.ErrorCutoff && !_master.DebugShowWithOffset) {
-			// if (shouldTerminate && !_master.DebugShowWithOffset) {
-			// 	AddReward(-10f);
-			// 	Done();
-			// 	// _master.StartAnimationIndex = _muscleAnimator.AnimationSteps.Count-1;
-			// 	if (_master.StartAnimationIndex < _styleAnimator.AnimationSteps.Count-1)
-			// 		_master.StartAnimationIndex++;
-			// }
 			if (_master.IsDone()){
-				// AddReward(1f*(float)this.GetStepCount());
-				// AddReward(10f);
 				Done();
-				// if (_master.StartAnimationIndex > 0 && distanceReward >= _master.ErrorCutoff)
-				// if (_master.StartAnimationIndex > 0 && !shouldTerminate)
 				if (_master.StartAnimationIndex > 0)
 				 	_master.StartAnimationIndex--;
 			}
@@ -231,25 +158,8 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		var stepCount = GetStepCount() > 0 ? GetStepCount() : 1;
 		AverageReward = GetCumulativeReward() / (float) stepCount;
 	}
-	float GetEffort(string[] ignorJoints = null)
-	{
-		double effort = 0;
-		foreach (var muscle in _master.Muscles)
-		{
-			if(muscle.Parent == null)
-				continue;
-			var name = muscle.Name;
-			if (ignorJoints != null && ignorJoints.Contains(name))
-				continue;
-			var jointEffort = Mathf.Pow(Mathf.Abs(muscle.TargetNormalizedRotationX),2);
-			effort += jointEffort;
-			jointEffort = Mathf.Pow(Mathf.Abs(muscle.TargetNormalizedRotationY),2);
-			effort += jointEffort;
-			jointEffort = Mathf.Pow(Mathf.Abs(muscle.TargetNormalizedRotationZ),2);
-			effort += jointEffort;
-		}
-		return (float)effort;
-	}	
+
+    // A helper function that calculates a fraction of joints at their limit positions
 	float JointsAtLimit(string[] ignorJoints = null)
 	{
 		int atLimitCount = 0;
@@ -273,6 +183,8 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 		float fractionOfJointsAtLimit = (float)atLimitCount / (float)totalJoints;
 		return fractionOfJointsAtLimit;
 	}
+
+    // Sets reward 
 	public void SetTotalAnimFrames(int totalAnimFrames)
 	{
 		_totalAnimFrames = totalAnimFrames;
@@ -285,20 +197,22 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 			Rewards = _scoreHistogramData.GetAverages().Select(x=>(float)x).ToList();
 	}
 
+    // Resets the agent. Initialize the style animator and master if not initialized. 
 	public override void AgentReset()
 	{
 		if (!_hasLazyInitialized)
 		{
 			_master = GetComponent<StyleTransfer002Master>();
 			_master.BodyConfig = MarathonManAgent.BodyConfig;
-			_master.OnInitializeAgent();
 			_decisionRequester = GetComponent<DecisionRequester>();
 			var spawnableEnv = GetComponentInParent<SpawnableEnv>();
 			_localStyleAnimator = spawnableEnv.gameObject.GetComponentInChildren<StyleTransfer002Animator>();
 			_styleAnimator = _localStyleAnimator.GetFirstOfThisAnim();
 			_styleAnimator.BodyConfig = MarathonManAgent.BodyConfig;
+
 			_styleAnimator.OnInitializeAgent();
-			// _styleAnimator = _localStyleAnimator;
+			_master.OnInitializeAgent();
+
 			_hasLazyInitialized = true;
 			_localStyleAnimator.DestoryIfNotFirstAnim();
 		}
@@ -319,6 +233,9 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 	             _scoreHistogramData.SetItem(column, AverageReward);
         }
 	}
+
+    // A method called on terrain collision. Used for early stopping an episode
+    // on specific objects' collision with terrain. 
 	public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
 	{
 		if (string.Compare(terrain.name, "Terrain", true) != 0)
@@ -339,23 +256,12 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 			case BodyHelper002.BodyPartGroup.ArmUpper:
 				break;
 			default:
-				// AddReward(-100f);
 				Done();
-				// if (_master.IsInferenceMode == false)
-				// 	Done();
 				break;
-			// case BodyHelper002.BodyPartGroup.Hand:
-			// 	// AddReward(-.5f);
-			// 	Done();
-			// 	break;
-			// case BodyHelper002.BodyPartGroup.Head:
-			// 	// AddReward(-2f);
-			// 	Done();
-			// 	break;
 		}
 	}
 
-
+    // Sets the a flag in Sensors In Touch array when an object enters collision with terrain
 	public void OnSensorCollisionEnter(Collider sensorCollider, GameObject other) {
 			if (string.Compare(other.name, "Terrain", true) !=0)
                 return;
@@ -366,16 +272,18 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
                 SensorIsInTouch[idx] = 1f;
             }
 		}
-        public void OnSensorCollisionExit(Collider sensorCollider, GameObject other)
-        {
-            if (string.Compare(other.gameObject.name, "Terrain", true) !=0)
-                return;
-            var sensor = _sensors
-                .FirstOrDefault(x=>x == sensorCollider.gameObject);
-            if (sensor != null) {
-                var idx = _sensors.IndexOf(sensor);
-                SensorIsInTouch[idx] = 0f;
-            }
-        }  
+
+	// Sets the a flag in Sensors In Touch array when an object stops colliding with terrain
+	public void OnSensorCollisionExit(Collider sensorCollider, GameObject other)
+    {
+        if (string.Compare(other.gameObject.name, "Terrain", true) !=0)
+            return;
+        var sensor = _sensors
+            .FirstOrDefault(x=>x == sensorCollider.gameObject);
+        if (sensor != null) {
+            var idx = _sensors.IndexOf(sensor);
+            SensorIsInTouch[idx] = 0f;
+        }
+    }  
 
 }

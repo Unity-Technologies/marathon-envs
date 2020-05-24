@@ -1,11 +1,18 @@
-﻿using System.Collections;
+﻿// The Master script is attached to the Agent object. Calculates the distance metrics
+// used by the Agent to calculate rewards: distances between the rotations of agent's
+// body parts and Animator's body parts, the distance between the angular momentum, and
+// the center of masses. 
+
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using MLAgents;
 using System;
 
+
 public class StyleTransfer002Master : MonoBehaviour {
+
 	public float FixedDeltaTime = 0.005f;
 	public bool visualizeAnimator = true;
 
@@ -14,30 +21,31 @@ public class StyleTransfer002Master : MonoBehaviour {
 	public List<BodyPart002> BodyParts;
 	public float ObsPhase;
 	public Vector3 ObsCenterOfMass;
+	public Vector3 ObsAngularMoment;
 	public Vector3 ObsVelocity;
 
 	// model observations
 	// i.e. model = difference between mocap and actual)
 	// ideally we dont want to generate model at inference
-	// public float PositionDistance;
 	public float EndEffectorDistance; // feet, hands, head
-	public float FeetRotationDistance; 
 	public float EndEffectorVelocityDistance; // feet, hands, head
+	public float JointAngularVelocityDistance;
+	public float JointAngularVelocityDistanceWorld;
 	public float RotationDistance;
-	public float VelocityDistance;
+	public float CenterOfMassVelocityDistance;
 	public float CenterOfMassDistance;
+	public float AngularMomentDistance;
 	public float SensorDistance;
 
 	public float MaxEndEffectorDistance; // feet, hands, head
-	public float MaxFeetRotationDistance; 
 	public float MaxEndEffectorVelocityDistance; // feet, hands, head
+	public float MaxJointAngularVelocityDistance;
+	public float MaxJointAngularVelocityDistanceWorld;
 	public float MaxRotationDistance;
-	public float MaxVelocityDistance;
+	public float MaxCenterOfMassVelocityDistance;
 	public float MaxCenterOfMassDistance;
+	public float MaxAngularMomentDistance;
 	public float MaxSensorDistance;
-
-	
-
 
 	// debug variables
 	public bool IgnorRewardUntilObservation;
@@ -47,7 +55,6 @@ public class StyleTransfer002Master : MonoBehaviour {
 	public bool DebugDisableMotor;
     [Range(-100,100)]
 	public int DebugAnimOffset;
-
 
 	public float TimeStep;
 	public int AnimationIndex;
@@ -63,16 +70,12 @@ public class StyleTransfer002Master : MonoBehaviour {
 	bool _fakeVelocity;
 	bool _waitingForAnimation;
 
-
-	// public List<float> vector;
-
 	private StyleTransfer002Animator _muscleAnimator;
 	private StyleTransfer002Agent _agent;
 	StyleTransfer002Animator _styleAnimator;
 	StyleTransfer002Animator _localStyleAnimator;
 	DecisionRequester _decisionRequester;
-	// private StyleTransfer002TrainerAgent _trainerAgent;
-	// private Brain _brain;
+
 	public bool IsInferenceMode;
 	bool _phaseIsRunning;
     UnityEngine.Random _random = new UnityEngine.Random();
@@ -92,6 +95,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 			CameraFollowMe = true;
 	}
 
+    // Initialize the Agent. Sets up Body Parts, Muscles. 
 	public void OnInitializeAgent()
     {
 		Time.fixedDeltaTime = FixedDeltaTime;
@@ -126,7 +130,6 @@ public class StyleTransfer002Master : MonoBehaviour {
 		foreach (var m in muscles)
 		{
 			var maximumForce = ragDoll.MusclePowers.First(x=>x.Muscle == m.name).PowerVector;
-			// maximumForce *= 2f;
 			var muscle = new Muscle002{
 				Rigidbody = m.GetComponent<Rigidbody>(),
 				Transform = m.GetComponent<Transform>(),
@@ -145,31 +148,14 @@ public class StyleTransfer002Master : MonoBehaviour {
 		var spawnableEnv = GetComponentInParent<SpawnableEnv>();
 		_localStyleAnimator = spawnableEnv.gameObject.GetComponentInChildren<StyleTransfer002Animator>();
 		_styleAnimator = _localStyleAnimator.GetFirstOfThisAnim();
-		// _styleAnimator = _localStyleAnimator;
 		_muscleAnimator = _styleAnimator;
 		_agent = GetComponent<StyleTransfer002Agent>();
-		// _trainerAgent = GetComponent<StyleTransfer002TrainerAgent>();
-		// _brain = FindObjectsOfType<Brain>().First(x=>x.name=="LearnFromMocapBrain");
+
 		IsInferenceMode = !Academy.Instance.IsCommunicatorOn;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	}
-	static float SumAbs(Vector3 vector)
-	{
-		var sum = Mathf.Abs(vector.x);
-		sum += Mathf.Abs(vector.y);
-		sum += Mathf.Abs(vector.z);
-		return sum;
-	}
-	static float SumAbs(Quaternion q)
-	{
-		var sum = Mathf.Abs(q.w);
-		sum += Mathf.Abs(q.x);
-		sum += Mathf.Abs(q.y);
-		sum += Mathf.Abs(q.z);
-		return sum;
 	}
 
 	public void OnAgentAction()
@@ -181,6 +167,13 @@ public class StyleTransfer002Master : MonoBehaviour {
 		var animStep = UpdateObservations();
 		Step(animStep);
 	}
+
+	// Calculate values like ObsCenterOfMass, ObsAngularMoment that will be used
+    // as observations fed into the neural network for training and inference. Also
+    // calculates the distance metrics between animation's and agents' body parts.
+    // The distances are used by the Agent to calculate rewards. The max distances
+    // can be used to manually tune the denominators in exp(-distance/denominator)
+    // when forming reward function. 
 	StyleTransfer002Animator.AnimationStep UpdateObservations()
 	{
 		if (DebugMode)
@@ -197,11 +190,13 @@ public class StyleTransfer002Master : MonoBehaviour {
 			animStep = _muscleAnimator.AnimationSteps[AnimationIndex];
 		}
 		EndEffectorDistance = 0f;
-		FeetRotationDistance = 0f;
 		EndEffectorVelocityDistance = 0;
+		JointAngularVelocityDistance = 0;
+		JointAngularVelocityDistanceWorld = 0;
 		RotationDistance = 0f;
-		VelocityDistance = 0f;
+		CenterOfMassVelocityDistance = 0f;
 		CenterOfMassDistance = 0f;
+		AngularMomentDistance = 0f;
 		SensorDistance = 0f;
 		if (_phaseIsRunning && DebugShowWithOffset)
 			MimicAnimationFrame(debugAnimStep);
@@ -220,63 +215,66 @@ public class StyleTransfer002Master : MonoBehaviour {
 		{
 			if (_phaseIsRunning){
 				bodyPart.UpdateObservations();
-				
+
 				var rotDistance = bodyPart.ObsAngleDeltaFromAnimationRotation;
 				var squareRotDistance = Mathf.Pow(rotDistance,2);
 				RotationDistance += squareRotDistance;
-				// RotationDistance += rotDistance;
+
+				JointAngularVelocityDistance += bodyPart.ObsDeltaFromAnimationAngularVelocity.sqrMagnitude;
+				JointAngularVelocityDistanceWorld += bodyPart.ObsDeltaFromAnimationAngularVelocityWorld.sqrMagnitude;
+
 				if (bodyPart.Group == BodyHelper002.BodyPartGroup.Hand
 					|| bodyPart.Group == BodyHelper002.BodyPartGroup.Torso
 					|| bodyPart.Group == BodyHelper002.BodyPartGroup.Foot)
 				{
 					EndEffectorDistance += bodyPart.ObsDeltaFromAnimationPosition.sqrMagnitude;
-					// EndEffectorDistance += bodyPart.ObsDeltaFromAnimationPosition.magnitude;
-				}
-				if (bodyPart.Group == BodyHelper002.BodyPartGroup.Foot)
-				{
-					FeetRotationDistance += squareRotDistance;
-					// EndEffectorRotDistance += rotDistance;
+					EndEffectorVelocityDistance += bodyPart.ObsDeltaFromAnimationVelocity.sqrMagnitude;
 				}
 			}
 		}
 
-		// RotationDistance *= RotationDistance; // take the square;
-		ObsCenterOfMass = GetCenterOfMass();
-		if (_phaseIsRunning)
+		ObsCenterOfMass = JointHelper002.GetCenterOfMassRelativeToRoot(BodyParts);		
+		ObsAngularMoment = JointHelper002.GetAngularMoment(BodyParts);
+
+		if (_phaseIsRunning) {
 			CenterOfMassDistance = (animStep.CenterOfMass - ObsCenterOfMass).sqrMagnitude;
-		ObsVelocity = ObsCenterOfMass-_lastCenterOfMass;
+			AngularMomentDistance = (animStep.AngularMoment - ObsAngularMoment).sqrMagnitude;
+		}
+
+		ObsVelocity = ObsCenterOfMass - _lastCenterOfMass;
 		if (_fakeVelocity)
-			ObsVelocity = animStep.Velocity;
+			ObsVelocity = animStep.CenterOfMassVelocity;
 		_lastCenterOfMass = ObsCenterOfMass;
+
 		if (!_resetCenterOfMassOnLastUpdate)
 			_fakeVelocity = false;
 
 		if (_phaseIsRunning){
-			var animVelocity = animStep.Velocity / Time.fixedDeltaTime;
-			ObsVelocity /= Time.fixedDeltaTime;
-			var velocityDistance = ObsVelocity-animVelocity;
-			VelocityDistance = velocityDistance.sqrMagnitude;
-			var sensorDistance = 0.0;
-			var sensorDistanceStep = 1.0 / _agent.SensorIsInTouch.Count;
+			var animVelocity = animStep.CenterOfMassVelocity / (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
+			ObsVelocity /= (Time.fixedDeltaTime * _decisionRequester.DecisionPeriod);
+
+			CenterOfMassVelocityDistance = (ObsVelocity - animVelocity).sqrMagnitude;
+
+            SensorDistance = 0.0f;
+			var sensorDistanceStep = 1.0f / _agent.SensorIsInTouch.Count;
 			for (int i = 0; i < _agent.SensorIsInTouch.Count; i++)
 			{
-				if (animStep.SensorIsInTouch[i] != _agent.SensorIsInTouch[i])
-					sensorDistance += sensorDistanceStep;
+				if (animStep.SensorIsInTouch[i] != _agent.SensorIsInTouch[i]) {
+					SensorDistance += sensorDistanceStep;
+				}
 			}
-			SensorDistance = (float) sensorDistance;
 		}
-		// normalize distances
-		// VelocityDistance /= 10f;
-		// VelocityDistance = Mathf.Clamp(VelocityDistance, -1f, 1f);
-		// CenterOfMassDistance
 
 		if (!IgnorRewardUntilObservation){
 			MaxEndEffectorDistance = Mathf.Max(MaxEndEffectorDistance, EndEffectorDistance);
-			MaxFeetRotationDistance = Mathf.Max(MaxFeetRotationDistance, FeetRotationDistance);
 			MaxEndEffectorVelocityDistance = Mathf.Max(MaxEndEffectorVelocityDistance, EndEffectorVelocityDistance);
 			MaxRotationDistance = Mathf.Max(MaxRotationDistance, RotationDistance);
-			MaxVelocityDistance = Mathf.Max(MaxVelocityDistance, VelocityDistance);
+			MaxCenterOfMassVelocityDistance = Mathf.Max(MaxCenterOfMassVelocityDistance, CenterOfMassVelocityDistance);
+			MaxEndEffectorVelocityDistance = Mathf.Max(MaxEndEffectorVelocityDistance, EndEffectorVelocityDistance);
+			MaxJointAngularVelocityDistance = Mathf.Max(MaxJointAngularVelocityDistance, JointAngularVelocityDistance);
+			MaxJointAngularVelocityDistanceWorld = Mathf.Max(MaxJointAngularVelocityDistanceWorld, JointAngularVelocityDistanceWorld);
 			MaxCenterOfMassDistance = Mathf.Max(MaxCenterOfMassDistance, CenterOfMassDistance);
+			MaxAngularMomentDistance = Mathf.Max(MaxAngularMomentDistance, AngularMomentDistance);
 			MaxSensorDistance = Mathf.Max(MaxSensorDistance, SensorDistance);
 		}
 
@@ -285,13 +283,14 @@ public class StyleTransfer002Master : MonoBehaviour {
 		ObsPhase = _muscleAnimator.AnimationSteps[AnimationIndex].NormalizedTime % 1f;
 		return animStep;
 	}
+
+    // Increment animation index. The index is used to get the current AnimStep structure.
 	void Step(StyleTransfer002Animator.AnimationStep animStep)
 	{
 		if (_phaseIsRunning){
 			if (!DebugShowWithOffset)
 				AnimationIndex++;
 			if (AnimationIndex>=_muscleAnimator.AnimationSteps.Count) {
-				//ResetPhase();
 				Done();
 				AnimationIndex--;
 			}
@@ -304,11 +303,16 @@ public class StyleTransfer002Master : MonoBehaviour {
 			_muscleAnimator.anim.transform.rotation = animStep.TransformRotation;
 		}
 	}
+
 	void CompareAnimationFrame(StyleTransfer002Animator.AnimationStep animStep)
 	{
 		MimicAnimationFrame(animStep, true);
 	}
 
+    // Moves Agent's body part to animation's position and rotation if onlySetAnimation = false.
+    // Then sets the target animation for each Agent's body part. The animation's
+    // positions and rotations are later on used by the Body Part object to calculate
+    // distance metrics to the target animation. 
 	void MimicAnimationFrame(StyleTransfer002Animator.AnimationStep animStep, bool onlySetAnimation = false)
 	{
 		if (!onlySetAnimation)
@@ -319,31 +323,38 @@ public class StyleTransfer002Master : MonoBehaviour {
 				rb.velocity = Vector3.zero;
 			}
 		}
+
 		foreach (var bodyPart in BodyParts)
 		{
 			var i = animStep.Names.IndexOf(bodyPart.Name);
 			Vector3 animPosition = bodyPart.InitialRootPosition + animStep.Positions[0];
-            Quaternion animRotation = bodyPart.InitialRootRotation * animStep.Rotaions[0];
+            Quaternion animRotation = bodyPart.InitialRootRotation * animStep.Rotations[0];
 			if (i != 0) {
 				animPosition += animStep.Positions[i];
-				animRotation = bodyPart.InitialRootRotation * animStep.Rotaions[i];
+				animRotation *= animStep.Rotations[i];
 			}
-			Vector3 angularVelocity = animStep.AngularVelocities[i] / Time.fixedDeltaTime;
-			Vector3 velocity = animStep.Velocities[i] / Time.fixedDeltaTime;
-			// angularVelocity = Vector3.zero;
-			// velocity = Vector3.zero;
+			Vector3 angularVelocity = animStep.AngularVelocities[i];
+			Vector3 velocity = animStep.Velocities[i];
+
+            Vector3 angularVelocityLocal = animStep.AngularVelocitiesLocal[i];
+			Vector3 velocityLocal = animStep.VelocitiesLocal[i];
+
 			bool setAnim = !onlySetAnimation;
 			if (bodyPart.Name.Contains("head") || bodyPart.Name.Contains("upper_waist"))
 				setAnim = false;
-			if (setAnim)
+			if (setAnim) {
 				bodyPart.MoveToAnim(animPosition, animRotation, angularVelocity, velocity);
-			bodyPart.SetAnimationPosition(animStep.Positions[i], animStep.Rotaions[i]);
+			}
+                
+			bodyPart.SetAnimationPosition(animPosition, animStep.Rotations[i], velocity, angularVelocityLocal, angularVelocity);
 		}
+
 	}
 
 	protected virtual void LateUpdate() {
 		if (_resetCenterOfMassOnLastUpdate){
-			ObsCenterOfMass = GetCenterOfMass();
+			ObsCenterOfMass = JointHelper002.GetCenterOfMassRelativeToRoot(BodyParts);
+			//ObsCenterOfMass = GetCenterOfMass();
 			_lastCenterOfMass = ObsCenterOfMass;
 			_resetCenterOfMassOnLastUpdate = false;
 		}
@@ -356,6 +367,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 	{
 		return _isDone;
 	}
+
 	void Done()
 	{
 		_isDone = true;
@@ -366,9 +378,7 @@ public class StyleTransfer002Master : MonoBehaviour {
 		if (_waitingForAnimation)
 			return;
 		_decisionRequester.enabled = true;
-		// _trainerAgent.SetBrainParams(_muscleAnimator.AnimationSteps.Count);
 		_agent.SetTotalAnimFrames(_muscleAnimator.AnimationSteps.Count);
-		// _trainerAgent.RequestDecision(_agent.AverageReward);
 		SetStartIndex(0); // HACK for gym
 		UpdateObservations();
 	}
@@ -377,7 +387,6 @@ public class StyleTransfer002Master : MonoBehaviour {
 	{
 		_decisionRequester.enabled = false;
 
-		// _animationIndex =  UnityEngine.Random.Range(0, _muscleAnimator.AnimationSteps.Count);
 		if (!_phaseIsRunning){
 			StartAnimationIndex = _muscleAnimator.AnimationSteps.Count-1;
 			EpisodeAnimationIndex = _muscleAnimator.AnimationSteps.Count-1;
@@ -388,37 +397,6 @@ public class StyleTransfer002Master : MonoBehaviour {
 				follow.target = CameraTarget;
 			}
 		}
-		// // ErrorCutoff = UnityEngine.Random.Range(-15f, 2f);
-		// // ErrorCutoff = UnityEngine.Random.Range(-10f, 1f);
-		// // ErrorCutoff = UnityEngine.Random.Range(-5f, 1f);
-		// ErrorCutoff = UnityEngine.Random.Range(-3f, .5f);
-		// if (IsInferenceMode)
-		// 	ErrorCutoff = UnityEngine.Random.Range(-3f, -3f);
-		// var lastLenght = AnimationIndex - EpisodeAnimationIndex;
-		// if (lastLenght >=  _muscleAnimator.AnimationSteps.Count-2){
-		// 	StartAnimationIndex = _muscleAnimator.AnimationSteps.Count-1;
-		// 	// StartAnimationIndex = 0;
-		// 	// ErrorCutoff += 0.25f;
-		// 	EpisodeAnimationIndex = _muscleAnimator.AnimationSteps.Count-1;
-		// 	AnimationIndex = EpisodeAnimationIndex;
-		// }
-
-		// // start with random
-		// AnimationIndex = UnityEngine.Random.Range(0, _muscleAnimator.AnimationSteps.Count);
-		// // AnimationIndex = StartAnimationIndex;
-		// if (IsInferenceMode && !UseRandomIndexForInference){
-		// 	AnimationIndex = 1;
-		// } else if (!IsInferenceMode && !UseRandomIndexForTraining) {
-		// 	var minIdx = StartAnimationIndex;
-		// 	if (_muscleAnimator.IsLoopingAnimation)
-		// 		minIdx = minIdx == 0 ? 1 : minIdx;
-		// 	var maxIdx = _muscleAnimator.AnimationSteps.Count-1;
-		// 	var range = 30f;//maxIdx-minIdx;
-		// 	var rnd = (NextGaussian() /3f) * (float) range;
-		// 	var idx = Mathf.Clamp((float)minIdx + rnd, minIdx, (float)maxIdx);
-		// 	AnimationIndex = (int)idx;
-		// }
-		// // AnimationIndex = StartAnimationIndex;
 
 		AnimationIndex = startIdx;
 		if (_decisionRequester?.DecisionPeriod > 1)
@@ -430,10 +408,11 @@ public class StyleTransfer002Master : MonoBehaviour {
 		var animStep = _muscleAnimator.AnimationSteps[AnimationIndex];
 		TimeStep = animStep.TimeStep;
 		EndEffectorDistance = 0f;
-		FeetRotationDistance = 0f;
 		EndEffectorVelocityDistance = 0f;
+		JointAngularVelocityDistance = 0;
+		JointAngularVelocityDistanceWorld = 0;
 		RotationDistance = 0f;
-		VelocityDistance = 0f;
+		CenterOfMassVelocityDistance = 0f;
 		IgnorRewardUntilObservation = true;
 		_resetCenterOfMassOnLastUpdate = true;
 		_fakeVelocity = true;
@@ -445,56 +424,9 @@ public class StyleTransfer002Master : MonoBehaviour {
 		EpisodeAnimationIndex = AnimationIndex;
 	}
 
-	Vector3 GetCenterOfMass()
-	{
-		var centerOfMass = Vector3.zero;
-		float totalMass = 0f;
-		var bodies = BodyParts
-			.Select(x=>x.Rigidbody)
-			.Where(x=>x!=null)
-			.ToList();
-		foreach (Rigidbody rb in bodies)
-		{
-			centerOfMass += rb.worldCenterOfMass * rb.mass;
-			totalMass += rb.mass;
-		}
-		centerOfMass /= totalMass;
-		centerOfMass -= transform.parent.position;
-		return centerOfMass;
-	}
-
-	float NextGaussian(float mu = 0, float sigma = 1)
-	{
-		var u1 = UnityEngine.Random.value;
-		var u2 = UnityEngine.Random.value;
-
-		var rand_std_normal = Mathf.Sqrt(-2.0f * Mathf.Log(u1)) *
-							Mathf.Sin(2.0f * Mathf.PI * u2);
-
-		var rand_normal = mu + sigma * rand_std_normal;
-
-		return rand_normal;
-	}
-
 	private void VisualizeTargetPose() {
 		if (!visualizeAnimator) return;
 		if (!Application.isEditor) return;
-
-		// foreach (Muscle002 m in Muscles) {
-		// 	if (m.ConfigurableJoint.connectedBody != null && m.connectedBodyTarget != null) {
-		// 		Debug.DrawLine(m.target.position, m.connectedBodyTarget.position, Color.cyan);
-				
-		// 		bool isEndMuscle = true;
-		// 		foreach (Muscle002 m2 in Muscles) {
-		// 			if (m != m2 && m2.ConfigurableJoint.connectedBody == m.rigidbody) {
-		// 				isEndMuscle = false;
-		// 				break;
-		// 			}
-		// 		}
-				
-		// 		if (isEndMuscle) VisualizeHierarchy(m.target, Color.cyan);
-		// 	}
-		// }
 	}
 	
 	// Recursively visualizes a bone hierarchy
