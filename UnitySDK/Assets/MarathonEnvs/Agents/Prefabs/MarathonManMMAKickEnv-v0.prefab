@@ -15,7 +15,7 @@ PrefabInstance:
     - target: {fileID: 1802870815327278923, guid: c13ea8e8df87c42639b6304f70acf750,
         type: 3}
       propertyPath: m_Name
-      value: MarathonManJazzDancingEnv-v0
+      value: MarathonManMMAKickEnv-v0
       objectReference: {fileID: 0}
     - target: {fileID: 2980313876947868916, guid: c13ea8e8df87c42639b6304f70acf750,
         type: 3}
@@ -51,7 +51,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: 7d52166beaf134443a03794602bb2053, type: 2}
+      objectReference: {fileID: 9100000, guid: 4979868bc09e6410d9654e6d76d3adbc, type: 2}
     - target: {fileID: 3038961438858554306, guid: c13ea8e8df87c42639b6304f70acf750,
         type: 3}
       propertyPath: m_ApplyRootMotion
@@ -120,13 +120,13 @@ PrefabInstance:
     - target: {fileID: 7287095565751321531, guid: c13ea8e8df87c42639b6304f70acf750,
         type: 3}
       propertyPath: m_BehaviorName
-      value: MarathonManJazzDancing-v0
+      value: MarathonManMMAKick-v0
       objectReference: {fileID: 0}
     - target: {fileID: 7287095565751321531, guid: c13ea8e8df87c42639b6304f70acf750,
         type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 11400000, guid: b7a674254088b4148881ff08b5fe1261,
+      objectReference: {fileID: 11400000, guid: 8810dccb2264b442e9e2a3156936d71f,
         type: 3}
     - target: {fileID: 7287095565751321531, guid: c13ea8e8df87c42639b6304f70acf750,
         type: 3}
