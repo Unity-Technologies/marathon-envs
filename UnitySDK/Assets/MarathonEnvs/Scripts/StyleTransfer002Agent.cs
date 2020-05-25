@@ -262,22 +262,27 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 	}
 
     // Sets the a flag in Sensors In Touch array when an object enters collision with terrain
-	public void OnSensorCollisionEnter(Collider sensorCollider, GameObject other) {
-			if (string.Compare(other.name, "Terrain", true) !=0)
-                return;
-            var sensor = _sensors
-                .FirstOrDefault(x=>x == sensorCollider.gameObject);
-            if (sensor != null) {
-                var idx = _sensors.IndexOf(sensor);
-                SensorIsInTouch[idx] = 1f;
-            }
+	public void OnSensorCollisionEnter(Collider sensorCollider, GameObject other) 
+	{
+		if (string.Compare(other.name, "Terrain", true) !=0)
+			return;
+		if (_sensors == null || _sensors.Count != 0)
+			return;
+		var sensor = _sensors
+			.FirstOrDefault(x=>x == sensorCollider.gameObject);
+		if (sensor != null) {
+			var idx = _sensors.IndexOf(sensor);
+			SensorIsInTouch[idx] = 1f;
 		}
+	}
 
 	// Sets the a flag in Sensors In Touch array when an object stops colliding with terrain
 	public void OnSensorCollisionExit(Collider sensorCollider, GameObject other)
     {
         if (string.Compare(other.gameObject.name, "Terrain", true) !=0)
             return;
+		if (_sensors == null || _sensors.Count != 0)
+			return;
         var sensor = _sensors
             .FirstOrDefault(x=>x == sensorCollider.gameObject);
         if (sensor != null) {
