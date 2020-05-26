@@ -42,6 +42,11 @@ PrefabInstance:
       propertyPath: m_BrainParameters.vectorObservationSize
       value: 226
       objectReference: {fileID: 0}
+    - target: {fileID: 114263248370519032, guid: 27548cbf466924cd699685496025f534,
+        type: 3}
+      propertyPath: m_BehaviorName
+      value: MarathonManSparse-v0
+      objectReference: {fileID: 0}
     - target: {fileID: 6637013144633364566, guid: 27548cbf466924cd699685496025f534,
         type: 3}
       propertyPath: m_Enabled
