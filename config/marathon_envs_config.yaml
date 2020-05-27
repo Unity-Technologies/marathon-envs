@@ -103,7 +103,7 @@ MarathonMan-v0:
     # summary_freq: 250000
     summary_freq: 25000
     use_recurrent: false
-    normalize: false 
+    normalize: true 
     num_layers: 2
     hidden_units: 64
     learning_rate: 3e-4
@@ -118,7 +118,7 @@ MarathonManSparse-v0:
     # summary_freq: 250000
     summary_freq: 25000
     use_recurrent: false
-    normalize: false 
+    normalize: true 
     num_layers: 2
     reward_signals: 
         extrinsic:
@@ -220,7 +220,7 @@ TerrainMarathonMan-v0:
     time_horizon: 1000 
     summary_freq: 10000
     use_recurrent: false
-    normalize: false 
+    normalize: true 
     num_layers: 2
     hidden_units: 64
     learning_rate: 3e-4
