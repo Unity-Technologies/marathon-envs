@@ -31,25 +31,31 @@ public class MarathonTestBedController : MonoBehaviour
         
         foreach (var agent in marathonAgents)
         {
-            Rigidbody head = null;
-            Rigidbody butt = null;
-            Rigidbody[] children = null;
+            ArticulationBody head = null;
+            ArticulationBody butt = null;
+            ArticulationBody[] children = null;
             switch (agent.name)
             {
                 case "MarathonMan":
                     _hasFrozen = true;
-                    children = agent.GetComponentsInChildren<Rigidbody>();
+                    children = agent.GetComponentsInChildren<ArticulationBody>();
                     head = children.FirstOrDefault(x=>x.name=="torso");
                     butt = children.FirstOrDefault(x=>x.name=="butt");
-                    var rb = children.FirstOrDefault(x=>x.name == "MarathonMan");
-                    if (FreezeHead || FreezeHips)
-                        rb.constraints = RigidbodyConstraints.FreezeAll;
-                    if (FreezeHead && !FreezeHips)
-                        rb.GetComponentInChildren<FixedJoint>().connectedBody = head;
+                    // var rb = children.FirstOrDefault(x=>x.name == "MarathonMan");
+                    // if (FreezeHead || FreezeHips)
+                    //     rb.constraints = RigidbodyConstraints.FreezeAll;
+                    // if (FreezeHead && !FreezeHips)
+                    //     rb.GetComponentInChildren<FixedJoint>().connectedBody = head;
+                    break;
+                case "RagDoll":
+                    _hasFrozen = true;
+                    children = agent.GetComponentsInChildren<ArticulationBody>();
+                    head = children.FirstOrDefault(x=>x.name=="torso");
+                    butt = children.FirstOrDefault(x=>x.name=="butt");
                     break;
                 case "humanoid":
                     _hasFrozen = true;
-                    children = agent.GetComponentsInChildren<Rigidbody>();
+                    children = agent.GetComponentsInChildren<ArticulationBody>();
                     head = children.FirstOrDefault(x=>x.name=="head");
                     butt = children.FirstOrDefault(x=>x.name=="butt");
                     break;
@@ -57,9 +63,9 @@ public class MarathonTestBedController : MonoBehaviour
                     break;
             }
             if (FreezeHead && head != null)
-                head.constraints = RigidbodyConstraints.FreezeAll;
+                head.immovable = true;
             if (FreezeHips && butt != null)
-                butt.constraints = RigidbodyConstraints.FreezeAll;
+                butt.immovable = true;
         }
     }
 
@@ -68,5 +74,9 @@ public class MarathonTestBedController : MonoBehaviour
     {
         if (!_hasFrozen)
             FreezeBodyParts();
+        if (ApplyRandomActions)
+        {
+            Actions = Actions.Select(x=>Random.Range(-1f,1f)).ToArray();
+        }
     }
 }
