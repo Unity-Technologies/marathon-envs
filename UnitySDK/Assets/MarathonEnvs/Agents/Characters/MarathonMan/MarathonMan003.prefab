@@ -1928,9 +1928,11 @@ GameObject:
   - component: {fileID: 8719875636317608491}
   - component: {fileID: 8690789666678175709}
   - component: {fileID: 114263248370519032}
-  - component: {fileID: 6637013144633364566}
-  - component: {fileID: 5859498862604059448}
   - component: {fileID: 114275564199513312}
+  - component: {fileID: 4177175816300940728}
+  - component: {fileID: 4606487679878347701}
+  - component: {fileID: 6615205430042084611}
+  - component: {fileID: 6001081406238583533}
   m_Layer: 14
   m_Name: MarathonMan003
   m_TagString: Untagged
@@ -2006,61 +2008,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    vectorObservationSize: 224
+    vectorObservationSize: 114
     numStackedVectorObservations: 1
     vectorActionSize: 15000000
     vectorActionDescriptions: []
     vectorActionSpaceType: 1
-  m_Model: {fileID: 11400000, guid: e9b426c649f1941ae986f1b3713cb135, type: 3}
+  m_Model: {fileID: 11400000, guid: 370d4b1f339744221b3c4c788f19e2af, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 0
-  m_BehaviorName: MarathonMan-v0
+  m_BehaviorName: ControllerMarathonMan-v0
   m_TeamID: 0
   m_UseChildSensors: 1
---- !u!114 &6637013144633364566
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8722076229893094739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 92cfc2ffe17d245ee822312e5451327c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  agentParameters:
-    maxStep: 1000
-  hasUpgradedFromAgentParameters: 1
-  maxStep: 5000
---- !u!114 &5859498862604059448
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8722076229893094739}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 776799f55314f4500bc35f859c94e2fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CameraTarget: {fileID: 8719972220993353125}
-  FixedDeltaTime: 0.005
-  ShowMonitor: 0
-  DebugDisableMotor: 0
-  DebugShowWithOffset: 0
-  Muscles: []
-  BodyParts: []
-  SensorIsInTouch: []
-  Observations: []
-  ObservationNormalizedErrors: 0
-  MaxObservationNormalizedErrors: 0
-  Sensors: []
-  FrameReward: 0
-  AverageReward: 0
-  MaxDistanceTraveled: 0
-  DistanceTraveled: 0
 --- !u!114 &114275564199513312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2076,6 +2034,110 @@ MonoBehaviour:
   DecisionPeriod: 5
   RepeatAction: 0
   offsetStep: 0
+--- !u!114 &4177175816300940728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8722076229893094739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ddf48037c6c1455a8a163a00e342e36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  agentParameters:
+    maxStep: 0
+  hasUpgradedFromAgentParameters: 1
+  maxStep: 5000
+  FixedDeltaTime: 0.006666667
+  SmoothBeta: 0.2
+  RequestCamera: 1
+  CameraFollowMe: 0
+  CameraTarget: {fileID: 8719972220993353125}
+  SkipRewardSmoothing: 0
+  debugCopyMocap: 0
+  ignorActions: 0
+  dontResetOnZeroReward: 0
+  DebugPauseOnReset: 0
+--- !u!114 &4606487679878347701
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8722076229893094739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ec1e370542a14f3da19024594e4c394, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SumOfSubRewards: 0
+  Reward: 0
+  SumOfDistances: 0
+  SumOfSqrDistances: 0
+  PositionReward: 0
+  MocapPointsVelocity: 0
+  RagDollPointsVelocity: 0
+  PointsVelocityDifferenceSquared: 0
+  PointsVelocityReward: 0
+  RotationDifferences: []
+  SumOfRotationDifferences: 0
+  SumOfRotationSqrDifferences: 0
+  LocalPoseReward: 0
+  MocapCOMVelocity: {x: 0, y: 0, z: 0}
+  RagDollCOMVelocity: {x: 0, y: 0, z: 0}
+  MocapCOMVelocityMagnitude: 0
+  RagDollCOMVelocityMagnitude: 0
+  COMVelocityDifference: 0
+  ComReward: 0
+  HeadDistance: 0
+  FallFactor: 0
+  ObjectForPointDistancesGizmo: 3
+--- !u!114 &6615205430042084611
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8722076229893094739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ad1013fcfea94c78bd38ee533603b89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SensorIsInTouch: []
+--- !u!114 &6001081406238583533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8722076229893094739}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f30d0638fe74d3faa981d3a313928f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MocapCOMVelocity: {x: 0, y: 0, z: 0}
+  RagDollCOMVelocity: {x: 0, y: 0, z: 0}
+  InputDesiredHorizontalVelocity: {x: 0, y: 0}
+  InputJump: 0
+  InputBackflip: 0
+  HorizontalVelocityDifference: {x: 0, y: 0}
+  BodyPartDifferenceStats: []
+  MocapBodyStats: []
+  RagDollBodyStats: []
+  PreviousActions: []
+  BodyPartsToTrack:
+  - butt
+  - head
+  - left_hand
+  - right_hand
+  - left_left_foot
+  - right_right_foot
+  VelocityInWorldSpace: 1
+  PositionInWorldSpace: 1
 --- !u!1 &8722159205191571325
 GameObject:
   m_ObjectHideFlags: 0

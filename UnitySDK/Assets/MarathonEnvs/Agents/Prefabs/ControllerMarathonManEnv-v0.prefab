@@ -1,109 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &1274969532842488926
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8878912891930077695}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ddf48037c6c1455a8a163a00e342e36, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  agentParameters:
-    maxStep: 0
-  hasUpgradedFromAgentParameters: 1
-  maxStep: 5000
-  FixedDeltaTime: 0.006666667
-  SmoothBeta: 0.2
-  RequestCamera: 1
-  CameraFollowMe: 0
-  CameraTarget: {fileID: 8876778131031204105}
-  SkipRewardSmoothing: 0
-  debugCopyMocap: 0
-  ignorActions: 0
-  dontResetOnZeroReward: 0
-  DebugPauseOnReset: 0
---- !u!114 &5002467186126936294
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8878912891930077695}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ec1e370542a14f3da19024594e4c394, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SumOfSubRewards: 0
-  Reward: 0
-  SumOfDistances: 0
-  SumOfSqrDistances: 0
-  PositionReward: 0
-  MocapPointsVelocity: 0
-  RagDollPointsVelocity: 0
-  PointsVelocityDifferenceSquared: 0
-  PointsVelocityReward: 0
-  RotationDifferences: []
-  SumOfRotationDifferences: 0
-  SumOfRotationSqrDifferences: 0
-  LocalPoseReward: 0
-  MocapCOMVelocity: {x: 0, y: 0, z: 0}
-  RagDollCOMVelocity: {x: 0, y: 0, z: 0}
-  MocapCOMVelocityMagnitude: 0
-  RagDollCOMVelocityMagnitude: 0
-  COMVelocityDifference: 0
-  ComReward: 0
-  HeadDistance: 0
-  FallFactor: 0
-  ObjectForPointDistancesGizmo: 3
---- !u!114 &5965043261311126201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8878912891930077695}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ad1013fcfea94c78bd38ee533603b89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  SensorIsInTouch: []
---- !u!114 &8704383841024592634
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8878912891930077695}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81f30d0638fe74d3faa981d3a313928f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MocapCOMVelocity: {x: 0, y: 0, z: 0}
-  RagDollCOMVelocity: {x: 0, y: 0, z: 0}
-  InputDesiredHorizontalVelocity: {x: 0, y: 0}
-  InputJump: 0
-  InputBackflip: 0
-  HorizontalVelocityDifference: {x: 0, y: 0}
-  BodyPartDifferenceStats: []
-  MocapBodyStats: []
-  RagDollBodyStats: []
-  PreviousActions: []
-  BodyPartsToTrack:
-  - butt
-  - head
-  - left_hand
-  - right_hand
-  - left_left_foot
-  - right_right_foot
-  VelocityInWorldSpace: 1
-  PositionInWorldSpace: 1
 --- !u!1 &421908985547291649
 GameObject:
   m_ObjectHideFlags: 0
@@ -1010,7 +906,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxVelocity: 8
-  ClipInput: 0
+  ClipInput: 0.5
   NoJumpsInMockMode: 1
   MovementVector: {x: 0, y: 0}
   CameraRotation: {x: 0, y: 0}
@@ -1026,27 +922,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5553125032997501617}
     m_Modifications:
-    - target: {fileID: 114263248370519032, guid: e41b6ea7d7185480f93948a920da7583,
-        type: 3}
-      propertyPath: m_BehaviorName
-      value: ControllerMarathonMan-v0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114263248370519032, guid: e41b6ea7d7185480f93948a920da7583,
-        type: 3}
-      propertyPath: m_BrainParameters.vectorObservationSize
-      value: 114
-      objectReference: {fileID: 0}
-    - target: {fileID: 114263248370519032, guid: e41b6ea7d7185480f93948a920da7583,
-        type: 3}
-      propertyPath: m_Model
-      value: 
-      objectReference: {fileID: 11400000, guid: 370d4b1f339744221b3c4c788f19e2af,
-        type: 3}
-    - target: {fileID: 114275564199513312, guid: e41b6ea7d7185480f93948a920da7583,
-        type: 3}
-      propertyPath: DecisionPeriod
-      value: 5
-      objectReference: {fileID: 0}
     - target: {fileID: 260939356137283678, guid: e41b6ea7d7185480f93948a920da7583,
         type: 3}
       propertyPath: m_ParentAnchorRotation.x
@@ -1447,16 +1322,6 @@ PrefabInstance:
       propertyPath: m_ParentAnchorRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8690789666678175709, guid: e41b6ea7d7185480f93948a920da7583,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8690789666678175709, guid: e41b6ea7d7185480f93948a920da7583,
-        type: 3}
-      propertyPath: MotorScale
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8712265431949821219, guid: e41b6ea7d7185480f93948a920da7583,
         type: 3}
       propertyPath: m_Enabled
@@ -1692,22 +1557,8 @@ PrefabInstance:
       propertyPath: m_ParentAnchorRotation.z
       value: 0.70710677
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 6637013144633364566, guid: e41b6ea7d7185480f93948a920da7583, type: 3}
-    - {fileID: 5859498862604059448, guid: e41b6ea7d7185480f93948a920da7583, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e41b6ea7d7185480f93948a920da7583, type: 3}
---- !u!1 &8878912891930077695 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8722076229893094739, guid: e41b6ea7d7185480f93948a920da7583,
-    type: 3}
-  m_PrefabInstance: {fileID: 158529944589636780}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &8876778131031204105 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 8719972220993353125, guid: e41b6ea7d7185480f93948a920da7583,
-    type: 3}
-  m_PrefabInstance: {fileID: 158529944589636780}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6849425082336688031
 PrefabInstance:
   m_ObjectHideFlags: 0
