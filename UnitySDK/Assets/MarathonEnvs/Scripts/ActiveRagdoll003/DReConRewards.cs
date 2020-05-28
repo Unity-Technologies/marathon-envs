@@ -167,6 +167,8 @@ public class DReConRewards : MonoBehaviour
     }
     void OnDrawGizmos()
     {
+        if (_ragDollBodyStats == null)
+            return;
         var max = (_ragDollBodyStats.Points.Length/6)-1;
         ObjectForPointDistancesGizmo = Mathf.Clamp(ObjectForPointDistancesGizmo, -1, max);
         _mocapBodyStats.DrawPointDistancesFrom(_ragDollBodyStats, ObjectForPointDistancesGizmo);

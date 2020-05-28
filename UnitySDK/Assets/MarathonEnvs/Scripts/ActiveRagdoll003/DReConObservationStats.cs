@@ -257,6 +257,8 @@ public class DReConObservationStats : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
+        if (_bodyPartsToTrack == null)
+            return;           
         // draw arrow for desired input velocity
         // Vector3 pos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
         Vector3 pos = new Vector3(transform.position.x, .3f, transform.position.z);

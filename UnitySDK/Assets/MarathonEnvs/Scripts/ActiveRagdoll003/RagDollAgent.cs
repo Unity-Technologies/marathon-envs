@@ -287,6 +287,8 @@ public class RagDollAgent : Agent
     }
     void OnDrawGizmos()
     {
+        if (_dReConRewards == null)
+            return;
         var comTransform = _dReConRewards._ragDollBodyStats.transform;
         var vector = new Vector3( _inputController.MovementVector.x, 0f, _inputController.MovementVector.y);
         var pos = new Vector3(comTransform.position.x, 0.001f, comTransform.position.z);

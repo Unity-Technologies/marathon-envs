@@ -123,6 +123,8 @@ public class DReConObservations : MonoBehaviour
     }
     void OnDrawGizmos()
     {
+        if (_mocapBodyStats == null)
+            return;        
         // MocapCOMVelocity
         Vector3 pos = new Vector3(transform.position.x, .3f, transform.position.z);
         Vector3 vector = MocapCOMVelocity;
