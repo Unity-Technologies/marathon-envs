@@ -486,7 +486,9 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		// get heights based on global senor position
 		var sensorsPos = Sensors
 			.Select(x=>x.transform.position).ToList();
-		var senorHeights = _terrainGenerator.GetDistances2d(globalSensorsPos);
+		var senorHeights = _terrainGenerator != null
+			? _terrainGenerator.GetDistances2d(globalSensorsPos)
+			: Enumerable.Range(0, globalSensorsPos.Length).Select(x=>0f).ToList();
 		for (int i = 0; i < Sensors.Count; i++) {
 			senorHeights[i] -= sensorColliders[i].radius;
 			if (senorHeights[i] >= 1f)

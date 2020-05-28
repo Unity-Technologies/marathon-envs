@@ -58,7 +58,7 @@ public class TerrainGenerator : MonoBehaviour
 			terrain.terrainData.SetDetailResolution(sharedTerrainData.detailResolution, sharedTerrainData.detailResolutionPerPatch);
 			terrain.terrainData.size = sharedTerrainData.size;
 			terrain.terrainData.thickness = sharedTerrainData.thickness;
-			terrain.terrainData.splatPrototypes = sharedTerrainData.splatPrototypes;
+			// terrain.terrainData.splatPrototypes = sharedTerrainData.splatPrototypes;
 			terrain.terrainData.terrainLayers = sharedTerrainData.terrainLayers;
 			var collider = terrain.GetComponent<TerrainCollider>();
 			collider.terrainData = terrain.terrainData;
@@ -115,7 +115,7 @@ public class TerrainGenerator : MonoBehaviour
 			{
 				SetNextHeight(action);				
 			}
-			catch (System.Exception ex)
+			catch (System.Exception)
 			{
 				SetNextHeight(action);
 				throw;

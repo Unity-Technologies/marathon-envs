@@ -24,8 +24,6 @@ public class Muscle002
     public Vector3 ObsNormalizedDeltaFromTargetRotation;
     public Vector3 ObsRotationVelocity;
     public Vector3 ObsVelocity;
-    public Quaternion ObsNormalizedDeltaFromAnimationRotation;
-    public Vector3 ObsDeltaFromAnimationPosition;
 
     public Vector3 DebugMaxRotationVelocity;
     public Vector3 DebugMaxVelocity;
@@ -48,8 +46,6 @@ public class Muscle002
     float _lastUpdateObsTime;
     bool _firstRunComplete;
     bool _hasRanVeryFirstInit;
-    private Vector3 _animationPosition;
-    private Quaternion _animationRotation;
 
 
     public void UpdateMotor()
@@ -159,9 +155,9 @@ public class Muscle002
             new Vector3(TargetNormalizedRotationX, TargetNormalizedRotationY, TargetNormalizedRotationZ) - ObsNormalizedRotation;
 
         // Debug code 
-        if (Group == BodyHelper002.MuscleGroup.Head){
-            var debug = 1;
-        }
+        // if (Group == BodyHelper002.MuscleGroup.Head){
+        //     var debug = 1;
+        // }
 
         if (_firstRunComplete == false){
             _lastUpdateObsTime = Time.time;
@@ -186,15 +182,6 @@ public class Muscle002
         if (dt > 0f)
             velocity /= dt;
         _lastLocalPosition = ObsLocalPosition;
-
-        ObsDeltaFromAnimationPosition = _animationPosition - Transform.position;
-        ObsNormalizedDeltaFromAnimationRotation = _animationRotation * Quaternion.Inverse(Transform.rotation);
-
-        // ObsNormalizedDeltaFromAnimationRotation = NormalizedEulerAngles(obsDeltaFromAnimationRotation.eulerAngles);
-        if (_firstRunComplete == false){
-            ObsDeltaFromAnimationPosition = Vector3.zero;
-            ObsNormalizedDeltaFromAnimationRotation = new Quaternion(0,0,0,0);
-        }
 
         DebugMaxRotationVelocity = Vector3Max(DebugMaxRotationVelocity, rotationVelocity);
         DebugMaxVelocity = Vector3Max(DebugMaxVelocity, velocity);

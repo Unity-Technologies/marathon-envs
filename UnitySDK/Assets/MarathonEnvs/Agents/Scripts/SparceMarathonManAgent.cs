@@ -98,8 +98,7 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 			sensor.AddVectorObs(bodyPart.ObsRotationVelocity);
 			sensor.AddVectorObs(bodyPart.ObsVelocity);
 		}
-		sensor.AddVectorObs(_bodyManager.GetSensorYPositions());
-		sensor.AddVectorObs(_bodyManager.GetSensorZPositions());
+		sensor.AddVectorObs(_bodyManager.GetSensorObservations());
 
 		sensor.AddVectorObs(_notAtLimitBonus);
 		sensor.AddVectorObs(_reducedPowerBonus);
