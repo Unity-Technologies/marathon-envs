@@ -17,6 +17,7 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   maxStep: 5000
   lastXPosInMeters: 0
+  maxXPosInMeters: 0
 --- !u!114 &4456988602556955296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -58,7 +59,7 @@ PrefabInstance:
     - target: {fileID: 114263248370519032, guid: 27548cbf466924cd699685496025f534,
         type: 3}
       propertyPath: m_BrainParameters.vectorObservationSize
-      value: 260
+      value: 290
       objectReference: {fileID: 0}
     - target: {fileID: 5859498862604059448, guid: 27548cbf466924cd699685496025f534,
         type: 3}
