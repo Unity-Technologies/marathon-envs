@@ -137,6 +137,7 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		else{
 			var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
 			if (pelvis.Transform.position.y<0){
+	            AddEpisodeEndReward();
 				Done();
 			}
 		}
