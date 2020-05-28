@@ -112,6 +112,10 @@ public class MarathonManAgent : Agent, IOnTerrainCollision
 
 	public override void AgentAction(float[] vectorAction)
 	{
+		if (!_hasLazyInitialized)
+		{
+			return;
+		}
 		_isDone = false;
 		// apply actions to body
 		_bodyManager.OnAgentAction(vectorAction);

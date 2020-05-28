@@ -267,6 +267,10 @@ namespace MLAgents
 
         public override void AgentAction(float[] vectorAction)
         {
+            if (!_hasLazyInitialized)
+            {
+                return;
+            }
     		_isDone = false;
             if (lastVectorAction == null){
                 lastVectorAction = vectorAction.Select(x=>0f).ToArray();

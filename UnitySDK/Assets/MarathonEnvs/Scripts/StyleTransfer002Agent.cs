@@ -81,6 +81,10 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
     // A method that applies the vectorAction to the muscles, and calculates the rewards. 
 	public override void AgentAction(float[] vectorAction)
 	{
+		if (!_hasLazyInitialized)
+		{
+			return;
+		}
 		_isDone = false;
 		if (_styleAnimator == _localStyleAnimator)
 			_styleAnimator.OnAgentAction();
