@@ -266,7 +266,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
 	{
 		if (string.Compare(other.name, "Terrain", true) !=0)
 			return;
-		if (_sensors == null || _sensors.Count != 0)
+		if (_sensors == null || _sensors.Count == 0)
 			return;
 		var sensor = _sensors
 			.FirstOrDefault(x=>x == sensorCollider.gameObject);
@@ -281,7 +281,7 @@ public class StyleTransfer002Agent : Agent, IOnSensorCollision, IOnTerrainCollis
     {
         if (string.Compare(other.gameObject.name, "Terrain", true) !=0)
             return;
-		if (_sensors == null || _sensors.Count != 0)
+		if (_sensors == null || _sensors.Count == 0)
 			return;
         var sensor = _sensors
             .FirstOrDefault(x=>x == sensorCollider.gameObject);
