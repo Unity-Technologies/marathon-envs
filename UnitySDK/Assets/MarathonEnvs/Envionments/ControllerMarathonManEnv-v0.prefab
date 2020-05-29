@@ -915,6 +915,7 @@ MonoBehaviour:
   DesiredHorizontalVelocity: {x: 0, y: 0}
   HorizontalDirection: {x: 0, y: 0, z: 0}
   UseHumanInput: 0
+  DemoMockIfNoInput: 1
 --- !u!1001 &158529944589636780
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -922,6 +923,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5553125032997501617}
     m_Modifications:
+    - target: {fileID: 114275564199513312, guid: e41b6ea7d7185480f93948a920da7583,
+        type: 3}
+      propertyPath: DecisionPeriod
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 260939356137283678, guid: e41b6ea7d7185480f93948a920da7583,
         type: 3}
       propertyPath: m_ParentAnchorRotation.x
@@ -1076,6 +1082,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ParentAnchorPosition.z
       value: 0.00000004656613
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177175816300940728, guid: e41b6ea7d7185480f93948a920da7583,
+        type: 3}
+      propertyPath: FixedDeltaTime
+      value: 0.016666668
+      objectReference: {fileID: 0}
+    - target: {fileID: 4177175816300940728, guid: e41b6ea7d7185480f93948a920da7583,
+        type: 3}
+      propertyPath: maxStep
+      value: 2000
       objectReference: {fileID: 0}
     - target: {fileID: 6032172806317267978, guid: e41b6ea7d7185480f93948a920da7583,
         type: 3}
@@ -1623,6 +1639,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 406cfe35d9a3146ef8a02a2d380d7306, type: 3}
+--- !u!1 &2739597924260629196 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8722076229893094739, guid: 406cfe35d9a3146ef8a02a2d380d7306,
+    type: 3}
+  m_PrefabInstance: {fileID: 6849425082336688031}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2742018560325911098 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8719972220993353125, guid: 406cfe35d9a3146ef8a02a2d380d7306,
@@ -1632,12 +1654,6 @@ Transform:
 --- !u!4 &2741904245885201844 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8719875636317608491, guid: 406cfe35d9a3146ef8a02a2d380d7306,
-    type: 3}
-  m_PrefabInstance: {fileID: 6849425082336688031}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &2739597924260629196 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8722076229893094739, guid: 406cfe35d9a3146ef8a02a2d380d7306,
     type: 3}
   m_PrefabInstance: {fileID: 6849425082336688031}
   m_PrefabAsset: {fileID: 0}
