@@ -10,7 +10,6 @@ public class TerrainHopperAgent : MarathonAgent {
     int _lastXPosInMeters;
     int _stepCountAtLastMeter;
     float _pain;
-    bool _modeRecover;
     Vector3 _centerOfMass;
 
     public override void AgentReset()
@@ -36,7 +35,6 @@ public class TerrainHopperAgent : MarathonAgent {
         ObservationsFunction = ObservationsDefault;
         OnTerminateRewardValue = 0f;
         _pain = 0f;
-        _modeRecover = false;
 
         base.SetupBodyParts();
         SetCenterOfMass();
@@ -71,7 +69,6 @@ public class TerrainHopperAgent : MarathonAgent {
             // case "torso": // dm_hopper
             //     _pain += 5f;
             //     NonFootHitTerrain = true;
-            //     _modeRecover = true;
             //     break;
             case "foot": // dm_hopper
             case "calf": // dm_hopper
@@ -83,7 +80,6 @@ public class TerrainHopperAgent : MarathonAgent {
             case "torso": // dm_hopper
                 _pain += .5f;
                 NonFootHitTerrain = true;
-                _modeRecover = true;
                 break;
         }
     }

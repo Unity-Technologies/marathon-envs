@@ -10,6 +10,7 @@ namespace MLAgents
     public class SelectEnvToSpawn : MonoBehaviour
     {
         public EnvSpawner agentSpawner;
+        public bool DebugSkipPopUp;
         bool showPopUp = false;
         static int envIdIdex = -1;
         string[] envIds;
@@ -89,6 +90,8 @@ namespace MLAgents
         }        
         bool ShouldInitalizeOnAwake()
         {
+            if (DebugSkipPopUp)
+                return true;
             if (IsTrainingMode())
                 return true;
             if (GetComponent<SelectEnvToSpawn>() == null)
@@ -110,18 +113,21 @@ namespace MLAgents
         }
 
         // Update is called once per frame
-        async void Update()
+        void Update()
         {
             if (showPopUp)
             {
                 var oldEnvIdIdex = envIdIdex;
-                if (Input.GetKeyDown(KeyCode.UpArrow))
-                    envIdIdex--;
-                if (Input.GetKeyDown(KeyCode.DownArrow))
-                    envIdIdex++;
-                envIdIdex = Mathf.Clamp(envIdIdex, 0, agentSpawner.spawnableEnvDefinitions.Count - 1);
-                if (Input.GetKeyDown(KeyCode.Return))
-                    Go();
+        		if (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.RightShift))
+                {
+                    if (Input.GetKeyDown(KeyCode.UpArrow))
+                        envIdIdex--;
+                    if (Input.GetKeyDown(KeyCode.DownArrow))
+                        envIdIdex++;
+                    envIdIdex = Mathf.Clamp(envIdIdex, 0, agentSpawner.spawnableEnvDefinitions.Count - 1);
+                    if (Input.GetKeyDown(KeyCode.Return))
+                        Go();
+                }
                 return;
             }
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("`") || Input.GetKeyDown(KeyCode.Delete))
