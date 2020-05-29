@@ -156,7 +156,7 @@ public class RagDollAgent : Agent
             if (!dontResetOnZeroReward)
                 Done();
         }
-        else if (_dReConRewards.FallFactor <= .5f)
+        else if (_dReConRewards.DistanceFactor <= .5f)
         {
             Transform ragDollCom = _dReConObservations.GetRagDollCOM();
             Vector3 snapPosition = ragDollCom.position;

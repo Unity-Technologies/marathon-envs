@@ -41,8 +41,12 @@ public class DReConRewards : MonoBehaviour
 
 //  fall factor
     [Header("Fall Factor")]
-    public float HeadDistance;
+    public float HeadHeightDistance;
     public float FallFactor;
+
+    [Header("Distance Factor")]
+    public float HeadDistance;
+    public float DistanceFactor;
 
     [Header("Gizmos")]
     public int ObjectForPointDistancesGizmo;
@@ -148,11 +152,18 @@ public class DReConRewards : MonoBehaviour
         LocalPoseReward = Mathf.Exp(LocalPoseReward);
 
         // fall factor
-        HeadDistance = (_mocapHead.position - _ragDollHead.position).magnitude;
-        FallFactor = Mathf.Pow(HeadDistance,2);
+        HeadHeightDistance = (_mocapHead.position.y - _ragDollHead.position.y);
+        HeadHeightDistance = Mathf.Abs(HeadHeightDistance);
+        FallFactor = Mathf.Pow(HeadHeightDistance,2);
         FallFactor = 1.4f*FallFactor;
         FallFactor = 1.3f-FallFactor;
         FallFactor = Mathf.Clamp(FallFactor, 0f, 1f);
+
+        HeadDistance = (_mocapHead.position - _ragDollHead.position).magnitude;
+        DistanceFactor = Mathf.Pow(HeadDistance,2);
+        DistanceFactor = 1.4f*DistanceFactor;
+        DistanceFactor = 1.3f-DistanceFactor;
+        DistanceFactor = Mathf.Clamp(DistanceFactor, 0f, 1f);
 
         // reward
         SumOfSubRewards = PositionReward+ComReward+PointsVelocityReward+LocalPoseReward;
