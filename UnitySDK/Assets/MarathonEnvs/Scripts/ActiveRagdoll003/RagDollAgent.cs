@@ -44,11 +44,7 @@ public class RagDollAgent : Agent
     {
 		if (RequestCamera && CameraTarget != null)
 		{
-			var instances = FindObjectsOfType<MocapController>().ToList();
-			if (instances.Count(x=>x.CameraFollowMe) < 1)
-				CameraFollowMe = true;
-		}
-        if (CameraFollowMe){
+            // Will follow the last object to be spawned
             var camera = FindObjectOfType<Camera>();
             var follow = camera.GetComponent<SmoothFollow>();
             follow.target = CameraTarget;
