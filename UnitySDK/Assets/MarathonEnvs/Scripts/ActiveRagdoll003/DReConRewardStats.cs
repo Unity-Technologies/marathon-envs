@@ -132,11 +132,16 @@ public class DReConRewardStats : MonoBehaviour
         {
             LastCenterOfMassInWorldSpace = newCOM;
         }
+        // generate Horizontal Direction
+        var newHorizontalDirection = new Vector3(0f, _root.transform.eulerAngles.y, 0f);
         transform.position = newCOM;
-        CenterOfMassVelocity = transform.position - LastCenterOfMassInWorldSpace;
-        CenterOfMassVelocity /= timeDelta;
+        transform.rotation = Quaternion.Euler(newHorizontalDirection);
+
+        // get Center Of Mass velocity in f space
+        var velocity = transform.position - LastCenterOfMassInWorldSpace;
+        velocity /= timeDelta;
+        CenterOfMassVelocity = transform.InverseTransformVector(velocity);
         CenterOfMassVelocityMagnitude = CenterOfMassVelocity.magnitude;
-        transform.rotation = Quaternion.Euler(0f, _root.transform.eulerAngles.y, 0f);
         LastCenterOfMassInWorldSpace = newCOM;
         
         GetAllPoints(Points);
