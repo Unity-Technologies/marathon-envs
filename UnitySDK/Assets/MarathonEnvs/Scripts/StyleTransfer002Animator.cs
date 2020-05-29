@@ -30,7 +30,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 	private List<Quaternion> _lastRotation;
 	private List<Vector3> _lastPositionLocal;
 	private List<Quaternion> _lastRotationLocal;
-	private bool _isRagDoll;
 
 	List<Quaternion> _initialRotations;
 
@@ -270,7 +269,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		{
 			rb.isKinematic = true;
 		}
-		_isRagDoll = false;
 	}
 
     // Sets the kinematic flags for Animator's rigid bodies to false
@@ -285,7 +283,6 @@ public class StyleTransfer002Animator : MonoBehaviour, IOnSensorCollision {
 		{
 			rb.isKinematic = false;
 		}
-		_isRagDoll = true;
 	}
 
     // Stop the animation

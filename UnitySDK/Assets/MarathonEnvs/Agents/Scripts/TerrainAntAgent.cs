@@ -10,7 +10,6 @@ public class TerrainAntAgent : MarathonAgent {
     int _lastXPosInMeters;
     int _stepCountAtLastMeter;
     float _pain;
-    bool _modeRecover;
     Vector3 _centerOfMass;
 
     public override void AgentReset()
@@ -35,7 +34,6 @@ public class TerrainAntAgent : MarathonAgent {
         OnTerminateRewardValue = 0f;
         // OnTerminateRewardValue = -100f;
         _pain = 0f;
-        _modeRecover = false;
 
         base.SetupBodyParts();
         SetCenterOfMass();
@@ -74,7 +72,6 @@ public class TerrainAntAgent : MarathonAgent {
             case "pelvis": // dm_hopper
                 _pain += 5f;
                 NonFootHitTerrain = true;
-                _modeRecover = true;
                 break;
             case "left_ankle_geom": // oai_ant
             case "right_ankle_geom": // oai_ant
@@ -85,7 +82,6 @@ public class TerrainAntAgent : MarathonAgent {
             default:
                 _pain += 5f;
                 NonFootHitTerrain = true;
-                _modeRecover = true;
                 break;
         }
     }

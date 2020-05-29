@@ -415,31 +415,31 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
     {
         return SensorIsInTouch;
     }
-    public List<float> GetBodyPartsObservations()
-    {
-        List<float> vectorObservation = new List<float>();
-		foreach (var bodyPart in BodyParts)
-		{
-			bodyPart.UpdateObservations();
-			// _agent.sensor.AddVectorObs(bodyPart.ObsRotation);
-            vectorObservation.Add(bodyPart.ObsRotation.x);
-            vectorObservation.Add(bodyPart.ObsRotation.y);
-            vectorObservation.Add(bodyPart.ObsRotation.z);
-            vectorObservation.Add(bodyPart.ObsRotation.w);
+    // public List<float> GetBodyPartsObservations()
+    // {
+    //     List<float> vectorObservation = new List<float>();
+	// 	foreach (var bodyPart in BodyParts)
+	// 	{
+	// 		bodyPart.UpdateObservations();
+	// 		// _agent.sensor.AddVectorObs(bodyPart.ObsRotation);
+    //         vectorObservation.Add(bodyPart.ObsRotation.x);
+    //         vectorObservation.Add(bodyPart.ObsRotation.y);
+    //         vectorObservation.Add(bodyPart.ObsRotation.z);
+    //         vectorObservation.Add(bodyPart.ObsRotation.w);
 
-			// _agent.sensor.AddVectorObs(bodyPart.ObsRotationVelocity);
-            vectorObservation.Add(bodyPart.ObsRotationVelocity.x);
-            vectorObservation.Add(bodyPart.ObsRotationVelocity.y);
-            vectorObservation.Add(bodyPart.ObsRotationVelocity.z);
+	// 		// _agent.sensor.AddVectorObs(bodyPart.ObsRotationVelocity);
+    //         vectorObservation.Add(bodyPart.ObsRotationVelocity.x);
+    //         vectorObservation.Add(bodyPart.ObsRotationVelocity.y);
+    //         vectorObservation.Add(bodyPart.ObsRotationVelocity.z);
 
-			// _agent.sensor.AddVectorObs(GetNormalizedVelocity(bodyPart.ObsVelocity));
-            var normalizedVelocity = GetNormalizedVelocity(bodyPart.ObsVelocity);
-            vectorObservation.Add(normalizedVelocity.x);
-            vectorObservation.Add(normalizedVelocity.y);
-            vectorObservation.Add(normalizedVelocity.z);
-		}
-        return vectorObservation;
-    }
+	// 		// _agent.sensor.AddVectorObs(GetNormalizedVelocity(bodyPart.ObsVelocity));
+    //         var normalizedVelocity = GetNormalizedVelocity(bodyPart.ObsVelocity);
+    //         vectorObservation.Add(normalizedVelocity.x);
+    //         vectorObservation.Add(normalizedVelocity.y);
+    //         vectorObservation.Add(normalizedVelocity.z);
+	// 	}
+    //     return vectorObservation;
+    // }
     public List<float> GetMusclesObservations()
     {
         List<float> vectorObservation = new List<float>();
@@ -486,7 +486,9 @@ public class BodyManager002 : MonoBehaviour, IOnSensorCollision
 		// get heights based on global senor position
 		var sensorsPos = Sensors
 			.Select(x=>x.transform.position).ToList();
-		var senorHeights = _terrainGenerator.GetDistances2d(globalSensorsPos);
+		var senorHeights = _terrainGenerator != null
+			? _terrainGenerator.GetDistances2d(globalSensorsPos)
+			: Enumerable.Range(0, globalSensorsPos.Length).Select(x=>0f).ToList();
 		for (int i = 0; i < Sensors.Count; i++) {
 			senorHeights[i] -= sensorColliders[i].radius;
 			if (senorHeights[i] >= 1f)

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -321,12 +321,28 @@ MonoBehaviour:
     - envId: TerrainMarathonMan-v0
       envPrefab: {fileID: 4916072010681759962, guid: dd522fee983368f46be78694bfb2531c,
         type: 3}
+    - envId: MarathonManWalking-v0
+      envPrefab: {fileID: 4993543594474631292, guid: d7c9fbb45d5364c579795c900c9f1c8a,
+        type: 3}
+    - envId: MarathonManRunning-v0
+      envPrefab: {fileID: 4993543594474631292, guid: 0eb30d28e47cb4c0e8687caa8c6b6f77,
+        type: 3}
+    - envId: MarathonManJazzDancing-v0
+      envPrefab: {fileID: 4993543594474631292, guid: 387bf2f0cab8448578cc8bfd9e89f8ea,
+        type: 3}
+    - envId: MarathonManMMAKick-v0
+      envPrefab: {fileID: 4993543594474631292, guid: 0e4a1c6b3ca6244fdb2dc61df5f8a645,
+        type: 3}
+    - envId: MarathonManPunchingBag-v0
+      envPrefab: {fileID: 4993543594474631292, guid: 0e94e3ef000c34bd1b44d27922c1c4fd,
+        type: 3}
     - envId: MarathonManBackflip-v0
       envPrefab: {fileID: 4993543594474631292, guid: 6e16b77232d1f4b2d9696aa19a59513b,
         type: 3}
-    envIdDefault: Walker2d-v0
+    envIdDefault: MarathonManBackflip-v0
     trainingNumEnvsDefault: 64
-    inferenceNumEnvsDefault: 3
+    inferenceNumEnvsDefault: 10
+  DebugSkipPopUp: 0
 --- !u!1 &1715640920
 GameObject:
   m_ObjectHideFlags: 0

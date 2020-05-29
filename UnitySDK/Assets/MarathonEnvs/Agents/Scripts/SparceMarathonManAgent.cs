@@ -90,10 +90,15 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
         sensor.AddVectorObs(shoulders.Rigidbody.transform.up);
 
 		sensor.AddVectorObs(_bodyManager.GetSensorIsInTouch());
-		sensor.AddVectorObs(_bodyManager.GetBodyPartsObservations());
-		sensor.AddVectorObs(_bodyManager.GetMusclesObservations());
-		sensor.AddVectorObs(_bodyManager.GetSensorYPositions());
-		sensor.AddVectorObs(_bodyManager.GetSensorZPositions());
+		foreach (var bodyPart in _bodyManager.BodyParts)
+		{
+			bodyPart.UpdateObservations();
+			sensor.AddVectorObs(bodyPart.ObsLocalPosition);
+			sensor.AddVectorObs(bodyPart.ObsRotation);
+			sensor.AddVectorObs(bodyPart.ObsRotationVelocity);
+			sensor.AddVectorObs(bodyPart.ObsVelocity);
+		}
+		sensor.AddVectorObs(_bodyManager.GetSensorObservations());
 
 		sensor.AddVectorObs(_notAtLimitBonus);
 		sensor.AddVectorObs(_reducedPowerBonus);
@@ -132,6 +137,7 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 		else{
 			var pelvis = _bodyManager.GetFirstBodyPart(BodyPartGroup.Hips);
 			if (pelvis.Transform.position.y<0){
+	            AddEpisodeEndReward();
 				Done();
 			}
 		}
@@ -159,6 +165,9 @@ public class SparceMarathonManAgent : Agent, IOnTerrainCollision
 			return;
 		// if (!_styleAnimator.AnimationStepsReady)
 		// 	return;
+        // HACK - for when agent has not been initialized
+		if (_bodyManager == null)
+			return;
 		var bodyPart = _bodyManager.BodyParts.FirstOrDefault(x=>x.Transform.gameObject == other);
 		if (bodyPart == null)
 			return;

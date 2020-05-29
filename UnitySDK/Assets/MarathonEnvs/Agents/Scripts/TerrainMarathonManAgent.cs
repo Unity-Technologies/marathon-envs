@@ -15,7 +15,6 @@ public class TerrainMarathonManAgent : Agent, IOnTerrainCollision
     public int lastXPosInMeters;
     public int maxXPosInMeters;
 	float _pain;
-    bool _modeRecover;
 
 	List<float> distances;
 	float fraction;
@@ -41,8 +40,14 @@ public class TerrainMarathonManAgent : Agent, IOnTerrainCollision
         sensor.AddVectorObs(shoulders.Rigidbody.transform.up);
 
 		sensor.AddVectorObs(_bodyManager.GetSensorIsInTouch());
-		sensor.AddVectorObs(_bodyManager.GetBodyPartsObservations());
-		sensor.AddVectorObs(_bodyManager.GetMusclesObservations());
+		foreach (var bodyPart in _bodyManager.BodyParts)
+		{
+			bodyPart.UpdateObservations();
+			sensor.AddVectorObs(bodyPart.ObsLocalPosition);
+			sensor.AddVectorObs(bodyPart.ObsRotation);
+			sensor.AddVectorObs(bodyPart.ObsRotationVelocity);
+			sensor.AddVectorObs(bodyPart.ObsVelocity);
+		}
 		sensor.AddVectorObs(_bodyManager.GetSensorObservations());
         
         (distances, fraction) = 
@@ -111,7 +116,6 @@ public class TerrainMarathonManAgent : Agent, IOnTerrainCollision
 			Done();
 		}
         _pain = 0f;
-        _modeRecover = false;
 	}
 
 	public override void AgentReset()
@@ -136,7 +140,6 @@ public class TerrainMarathonManAgent : Agent, IOnTerrainCollision
             _bodyManager.GetBodyParts(BodyPartGroup.Foot)
             .Average(x=>x.Transform.position.x);
         _pain = 0f;
-        _modeRecover = false;
 	}
 	public virtual void OnTerrainCollision(GameObject other, GameObject terrain)
 	{
@@ -145,6 +148,9 @@ public class TerrainMarathonManAgent : Agent, IOnTerrainCollision
 			return;
 		// if (!_styleAnimator.AnimationStepsReady)
 		// 	return;
+        // HACK - for when agent has not been initialized
+		if (_bodyManager == null)
+			return;
 		var bodyPart = _bodyManager.BodyParts.FirstOrDefault(x=>x.Transform.gameObject == other);
 		if (bodyPart == null)
 			return;
@@ -159,12 +165,10 @@ public class TerrainMarathonManAgent : Agent, IOnTerrainCollision
 			case BodyHelper002.BodyPartGroup.ArmLower:
 			case BodyHelper002.BodyPartGroup.ArmUpper:
 				_pain += .1f;
-                _modeRecover = true;
 				break;
 			default:
 				// AddReward(-100f);
 				_pain += 5f;
-                _modeRecover = true;
 				break;
 		}
 	}
