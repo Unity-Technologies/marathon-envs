@@ -49,33 +49,36 @@ public class CameraHelper : MonoBehaviour {
 		{
 			ToggleTimeScale(0.2f);
 		}
-		if (Input.GetKeyDown("a") || Input.GetKeyDown(KeyCode.LeftArrow))
+		if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
 		{
-			AddAngle(30f);
-		}
-		if (Input.GetKeyDown("d") || Input.GetKeyDown(KeyCode.RightArrow))
-		{
-			AddAngle(-30f);
-		}
-		if (Input.GetKeyDown("w") || Input.GetKeyDown(KeyCode.UpArrow))
-		{
-			Height(+1f);
-		}
-		if (Input.GetKeyDown("s") || Input.GetKeyDown(KeyCode.DownArrow))
-		{
-			Height(-1f);
-		}
-		if (Input.GetKeyDown("e"))
-		{
-			Zoom(-1f);
-		}
-		if (Input.GetKeyDown("q"))
-		{
-			Zoom(1f);
-		}
-		if (Input.GetKeyDown(KeyCode.Return))
-		{
-			ResetCamera();
+			if (Input.GetKeyDown("a") || Input.GetKeyDown(KeyCode.LeftArrow))
+			{
+				AddAngle(30f);
+			}
+			if (Input.GetKeyDown("d") || Input.GetKeyDown(KeyCode.RightArrow))
+			{
+				AddAngle(-30f);
+			}
+			if (Input.GetKeyDown("w") || Input.GetKeyDown(KeyCode.UpArrow))
+			{
+				Height(+1f);
+			}
+			if (Input.GetKeyDown("s") || Input.GetKeyDown(KeyCode.DownArrow))
+			{
+				Height(-1f);
+			}
+			if (Input.GetKeyDown("e"))
+			{
+				Zoom(-1f);
+			}
+			if (Input.GetKeyDown("q"))
+			{
+				Zoom(1f);
+			}
+			if (Input.GetKeyDown(KeyCode.Return))
+			{
+				ResetCamera();
+			}
 		}
 
 	}

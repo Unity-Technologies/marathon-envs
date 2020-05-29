@@ -55,6 +55,8 @@ public class InputController : MonoBehaviour
     }
     void GetHumanInput()
     {
+        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            return;
         var newMovementVector = new Vector2(
             Input.GetAxis("Horizontal"),
             Input.GetAxis("Vertical")
