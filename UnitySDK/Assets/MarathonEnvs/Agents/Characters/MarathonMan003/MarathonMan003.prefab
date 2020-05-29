@@ -645,7 +645,6 @@ GameObject:
   - component: {fileID: 8719587607420323541}
   - component: {fileID: 8706269492965308833}
   - component: {fileID: 8690312593785035195}
-  - component: {fileID: 3039839509167661964}
   m_Layer: 14
   m_Name: left_foot_toe_senor_r
   m_TagString: Untagged
@@ -692,19 +691,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d041794481cd24f4d92e5f3da728fe64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3039839509167661964
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8721272255345969317}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da87b37fe0ae0475a99808928afad49b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Parent: {fileID: 8721806364151867171}
 --- !u!1 &8721378177218777041
 GameObject:
   m_ObjectHideFlags: 0
@@ -1534,7 +1520,6 @@ GameObject:
   - component: {fileID: 8726932274202523663}
   - component: {fileID: 8713795088801476167}
   - component: {fileID: 8690293087280147221}
-  - component: {fileID: 6405835891193345505}
   m_Layer: 14
   m_Name: right_foot_toe_senor_r
   m_TagString: Untagged
@@ -1581,19 +1566,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d041794481cd24f4d92e5f3da728fe64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6405835891193345505
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8721752914000565987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da87b37fe0ae0475a99808928afad49b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Parent: {fileID: 8721806364151867171}
 --- !u!1 &8721781786037005313
 GameObject:
   m_ObjectHideFlags: 0
@@ -1605,7 +1577,6 @@ GameObject:
   - component: {fileID: 8719750791822151511}
   - component: {fileID: 8713360080215785891}
   - component: {fileID: 8689911936334901297}
-  - component: {fileID: 8726782703305587350}
   m_Layer: 14
   m_Name: right_foot_toe_senor_l
   m_TagString: Untagged
@@ -1652,19 +1623,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d041794481cd24f4d92e5f3da728fe64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8726782703305587350
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8721781786037005313}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da87b37fe0ae0475a99808928afad49b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Parent: {fileID: 8721806364151867171}
 --- !u!1 &8721795517134667573
 GameObject:
   m_ObjectHideFlags: 0
@@ -1857,7 +1815,6 @@ GameObject:
   - component: {fileID: 8720010976070357619}
   - component: {fileID: 8713893099848355439}
   - component: {fileID: 8690688315238005755}
-  - component: {fileID: 6427379343652261886}
   m_Layer: 14
   m_Name: left_foot_toe_senor_l
   m_TagString: Untagged
@@ -1904,19 +1861,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d041794481cd24f4d92e5f3da728fe64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &6427379343652261886
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8722074975300299095}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da87b37fe0ae0475a99808928afad49b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Parent: {fileID: 8721806364151867171}
 --- !u!1 &8722076229893094739
 GameObject:
   m_ObjectHideFlags: 0
@@ -2954,7 +2898,6 @@ GameObject:
   - component: {fileID: 8726949476972103741}
   - component: {fileID: 8714195822574786137}
   - component: {fileID: 8690812653475193411}
-  - component: {fileID: 5388505510131583983}
   m_Layer: 14
   m_Name: left_foot_heal_senor_l
   m_TagString: Untagged
@@ -3001,19 +2944,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d041794481cd24f4d92e5f3da728fe64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &5388505510131583983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8723117275768723253}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da87b37fe0ae0475a99808928afad49b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Parent: {fileID: 8721806364151867171}
 --- !u!1 &8723118812784338853
 GameObject:
   m_ObjectHideFlags: 0
@@ -3222,7 +3152,6 @@ GameObject:
   - component: {fileID: 8727195330044446149}
   - component: {fileID: 8706224094127359635}
   - component: {fileID: 8690565018697606907}
-  - component: {fileID: 1670597461154702899}
   m_Layer: 14
   m_Name: right_foot_heal_senor_l
   m_TagString: Untagged
@@ -3269,19 +3198,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d041794481cd24f4d92e5f3da728fe64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1670597461154702899
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8723175157957148749}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da87b37fe0ae0475a99808928afad49b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Parent: {fileID: 8721806364151867171}
 --- !u!1 &8723185548267139965
 GameObject:
   m_ObjectHideFlags: 0
