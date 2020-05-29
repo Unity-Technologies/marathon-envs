@@ -21,13 +21,16 @@ public class InputController : MonoBehaviour
     public Vector2 DesiredHorizontalVelocity; // MovementVector * Max Velovity
     public Vector3 HorizontalDirection; // Normalized vector in direction of travel (assume right angle to floor)
     public bool UseHumanInput;
+    public bool DemoMockIfNoInput = true; // Demo mock mode if no human input
 
     float _delayUntilNextAction;
+    float _timeUnillDemo;
 
     // Start is called before the first frame update
     void Awake()
     {
         UseHumanInput = !Academy.Instance.IsCommunicatorOn;
+        _timeUnillDemo = 1f;
     }
 
     // Update is called once per frame
@@ -57,6 +60,8 @@ public class InputController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
             return;
+        bool resetTimeUntilDemo = false;
+        _timeUnillDemo -= Time.deltaTime;
         var newMovementVector = new Vector2(
             Input.GetAxis("Horizontal"),
             Input.GetAxis("Vertical")
@@ -68,10 +73,27 @@ public class InputController : MonoBehaviour
                 Mathf.Clamp(newMovementVector.y, -ClipInput, ClipInput));
         }
         if (!Mathf.Approximately(newMovementVector.sqrMagnitude, 0f))
+        {
             MovementVector = newMovementVector;
+            resetTimeUntilDemo = true;
+        }
+        else if (DemoMockIfNoInput && _timeUnillDemo <= 0)
+        {
+            GetMockInput();
+            _timeUnillDemo = 0f;
+            return;
+        }
         CameraRotation = Vector2.zero;
         Jump = Input.GetKey(KeyCode.Space); //Input.GetButtonDown("Fire1");
         Backflip = Input.GetKey(KeyCode.B);
+        if (Jump || Backflip)
+        {
+            resetTimeUntilDemo = true;
+        }
+        if (resetTimeUntilDemo)
+        {
+            _timeUnillDemo = 3f;
+        }
     }
     void GetMockInput()
     {
