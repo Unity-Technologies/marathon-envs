@@ -151,12 +151,12 @@ public class RagDollAgent : Agent
         _dReConObservations.PreviousActions = vectorAction;
 
         AddReward(_dReConRewards.Reward);
-        if (_dReConRewards.Reward <= 0f)
+        if (_dReConRewards.HeadHeightDistance > 0.5f)
         {
             if (!dontResetOnZeroReward)
                 Done();
         }
-        else if (_dReConRewards.DistanceFactor <= .5f)
+        else if (_dReConRewards.HeadDistance > .5f)
         {
             Transform ragDollCom = _dReConObservations.GetRagDollCOM();
             Vector3 snapPosition = ragDollCom.position;
