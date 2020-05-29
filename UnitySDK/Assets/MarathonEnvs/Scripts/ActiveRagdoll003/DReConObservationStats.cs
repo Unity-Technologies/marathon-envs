@@ -201,7 +201,7 @@ public class DReConObservationStats : MonoBehaviour
 			totalMass += ab.mass;
 		}
 		centerOfMass /= totalMass;
-		centerOfMass -= _spawnableEnv.transform.position;
+		// centerOfMass -= _spawnableEnv.transform.position;
 		return centerOfMass;
 	}
 	Vector3 GetCenterOfMass(IEnumerable<ArticulationBody> bodies)
@@ -214,7 +214,7 @@ public class DReConObservationStats : MonoBehaviour
 			totalMass += ab.mass;
 		}
 		centerOfMass /= totalMass;
-		centerOfMass -= _spawnableEnv.transform.position;
+		// centerOfMass -= _spawnableEnv.transform.position;
 		return centerOfMass;    
     }
     public static Vector3 GetAngularVelocity(Quaternion rotation, Quaternion lastRotation, float timeDelta)

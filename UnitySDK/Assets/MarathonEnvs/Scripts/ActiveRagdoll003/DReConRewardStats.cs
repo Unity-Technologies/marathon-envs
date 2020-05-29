@@ -275,7 +275,7 @@ public class DReConRewardStats : MonoBehaviour
 			totalMass += ab.mass;
 		}
 		centerOfMass /= totalMass;
-		centerOfMass -= _spawnableEnv.transform.position;
+		// centerOfMass -= _spawnableEnv.transform.position;
 		return centerOfMass;        
 	}    
 	Vector3 GetCenterOfMass(IEnumerable<Rigidbody> bodies)
@@ -288,7 +288,7 @@ public class DReConRewardStats : MonoBehaviour
 			totalMass += ab.mass;
 		}
 		centerOfMass /= totalMass;
-		centerOfMass -= _spawnableEnv.transform.position;
+		// centerOfMass -= _spawnableEnv.transform.position;
 		return centerOfMass;
 	}    
     public void DrawPointDistancesFrom(DReConRewardStats target, int objIdex)
