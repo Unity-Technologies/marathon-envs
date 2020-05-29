@@ -1,23 +1,26 @@
 default:
     trainer: ppo
     batch_size: 1024
+    beta: 5.0e-3
     buffer_size: 10240
     epsilon: 0.2
+    hidden_units: 128
     lambd: 0.95
     learning_rate: 3.0e-4
     max_steps: 5.0e4
     memory_size: 256
     normalize: false
+    num_epoch: 3
+    num_layers: 2
     time_horizon: 64
     sequence_length: 64
-    save_replay_buffer: true
     summary_freq: 1000
     use_recurrent: false
     vis_encode_type: simple
     reward_signals: 
         extrinsic:
             strength: 1.0
-            gamma: 0.997
+            gamma: 0.99
 
 MarathonManBackflip-v0:
     normalize: true
@@ -25,7 +28,7 @@ MarathonManBackflip-v0:
     beta: .00001
     learning_rate: 1e-4
     time_horizon: 100
-    max_steps: 256e6
+    max_steps: 128e6
     batch_size: 768 
     buffer_size: 21504 # 768 * 28
     summary_freq: 100000
@@ -228,3 +231,29 @@ TerrainMarathonMan-v0:
     buffer_size: 5120
     beta: .1
     max_steps: 50e6
+
+ControllerMarathonMan-v0:
+    # num_epoch: 4
+    # time_horizon: 100
+    # summary_freq: 10000
+    # use_recurrent: false
+    # normalize: true 
+    # num_layers: 2
+    # hidden_units: 128
+    # learning_rate: 3e-4
+    # batch_size: 10000 # buffer_size/4
+    # buffer_size: 40000
+    # beta: .00001
+    # max_steps: 100e6
+    normalize: true
+    num_epoch: 3
+    beta: .00001
+    learning_rate: 1e-4
+    time_horizon: 100
+    max_steps: 128e6
+    batch_size: 768 
+    # buffer_size: 21504 # 768 * 28
+    buffer_size: 3072 # 768 * 4
+    summary_freq: 100000
+    num_layers: 2
+    hidden_units: 256    
