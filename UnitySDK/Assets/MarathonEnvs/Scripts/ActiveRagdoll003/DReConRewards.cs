@@ -140,7 +140,7 @@ public class DReConRewards : MonoBehaviour
         { 
             var angle = Quaternion.Angle(_mocapBodyStats.Rotations[i], _ragDollBodyStats.Rotations[i]);
             Assert.IsTrue(angle <= 180f);
-            angle /=180f;
+            angle = DReConObservationStats.NormalizedAngle(angle);
             var sqrAngle = angle * angle;
             RotationDifferences[i] = angle;
             SumOfRotationDifferences += angle;

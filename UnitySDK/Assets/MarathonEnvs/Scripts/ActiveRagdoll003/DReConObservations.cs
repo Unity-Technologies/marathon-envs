@@ -114,7 +114,7 @@ public class DReConObservations : MonoBehaviour
             differenceStats.Position = mocapStats.Position - ragDollStats.Position;
             differenceStats.Velocity = mocapStats.Velocity - ragDollStats.Velocity;
             differenceStats.AngualrVelocity = mocapStats.AngualrVelocity - ragDollStats.AngualrVelocity;
-            differenceStats.Rotation = DReConObservationStats.GetAngularVelocity(ragDollStats.Rotation, mocapStats.Rotation, timeDelta);
+            differenceStats.Rotation = DReConObservationStats.GetAngularVelocity(mocapStats.Rotation, ragDollStats.Rotation, timeDelta);
         }
     }
     public Transform GetRagDollCOM()

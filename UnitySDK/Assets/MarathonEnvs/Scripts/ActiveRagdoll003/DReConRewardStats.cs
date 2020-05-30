@@ -132,8 +132,11 @@ public class DReConRewardStats : MonoBehaviour
         {
             LastCenterOfMassInWorldSpace = newCOM;
         }
+
         // generate Horizontal Direction
         var newHorizontalDirection = new Vector3(0f, _root.transform.eulerAngles.y, 0f);
+
+        // set this object to be f space
         transform.position = newCOM;
         transform.rotation = Quaternion.Euler(newHorizontalDirection);
 
@@ -142,6 +145,7 @@ public class DReConRewardStats : MonoBehaviour
         velocity /= timeDelta;
         CenterOfMassVelocity = transform.InverseTransformVector(velocity);
         CenterOfMassVelocityMagnitude = CenterOfMassVelocity.magnitude;
+
         LastCenterOfMassInWorldSpace = newCOM;
         
         GetAllPoints(Points);
@@ -177,6 +181,16 @@ public class DReConRewardStats : MonoBehaviour
         }
         return distances;
     }
+
+    public List<float> GetPointVelocityDistancesFrom(DReConRewardStats target) {
+        List<float> distances = new List<float>();
+        for (int i = 0; i < PointVelocity.Length; i++) {
+            float distance = (PointVelocity[i] - target.PointVelocity[i]).sqrMagnitude;
+            distances.Add(distance);
+        }
+        return distances;
+    }
+
     public void AssertIsCompatible(DReConRewardStats target)
     {
         Assert.AreEqual(Points.Length, target.Points.Length);

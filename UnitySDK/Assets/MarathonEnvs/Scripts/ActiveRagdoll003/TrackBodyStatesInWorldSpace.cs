@@ -49,7 +49,7 @@ public class TrackBodyStatesInWorldSpace : MonoBehaviour
             stat.Rotation = rb.transform.rotation;
             stat.Velocity = rb.transform.position - stat.LastPosition;
             stat.Velocity /= timeDelta;
-            stat.AngualrVelocity = DReConObservationStats.GetAngularVelocity(rb.transform.rotation, stat.LastRotation, timeDelta);
+            stat.AngualrVelocity = DReConObservationStats.GetAngularVelocity(stat.LastRotation, rb.transform.rotation, timeDelta);
             stat.LastPosition = rb.transform.position;
             stat.LastRotation = rb.transform.rotation;
             stat.LastIsSet = true;
