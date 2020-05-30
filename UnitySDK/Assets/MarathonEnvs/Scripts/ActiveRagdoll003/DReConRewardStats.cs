@@ -182,14 +182,14 @@ public class DReConRewardStats : MonoBehaviour
         return distances;
     }
 
-    public List<float> GetPointVelocityDistancesFrom(DReConRewardStats target) {
-        List<float> distances = new List<float>();
-        for (int i = 0; i < PointVelocity.Length; i++) {
-            float distance = (PointVelocity[i] - target.PointVelocity[i]).sqrMagnitude;
-            distances.Add(distance);
-        }
-        return distances;
-    }
+    // public List<float> GetPointVelocityDistancesFrom(DReConRewardStats target) {
+    //     List<float> distances = new List<float>();
+    //     for (int i = 0; i < PointVelocity.Length; i++) {
+    //         float distance = (PointVelocity[i] - target.PointVelocity[i]).sqrMagnitude;
+    //         distances.Add(distance);
+    //     }
+    //     return distances;
+    // }
 
     public void AssertIsCompatible(DReConRewardStats target)
     {
