@@ -1086,7 +1086,7 @@ PrefabInstance:
     - target: {fileID: 4177175816300940728, guid: e41b6ea7d7185480f93948a920da7583,
         type: 3}
       propertyPath: FixedDeltaTime
-      value: 0.016666668
+      value: 0.0125
       objectReference: {fileID: 0}
     - target: {fileID: 4177175816300940728, guid: e41b6ea7d7185480f93948a920da7583,
         type: 3}
@@ -1337,6 +1337,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_ParentAnchorRotation.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8690789666678175709, guid: e41b6ea7d7185480f93948a920da7583,
+        type: 3}
+      propertyPath: Stiffness
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 8712265431949821219, guid: e41b6ea7d7185480f93948a920da7583,
         type: 3}
