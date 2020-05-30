@@ -132,11 +132,20 @@ public class DReConRewardStats : MonoBehaviour
         {
             LastCenterOfMassInWorldSpace = newCOM;
         }
+
+        // generate Horizontal Direction
+        var newHorizontalDirection = new Vector3(0f, _root.transform.eulerAngles.y, 0f);
+
+        // set this object to be f space
         transform.position = newCOM;
-        CenterOfMassVelocity = transform.position - LastCenterOfMassInWorldSpace;
-        CenterOfMassVelocity /= timeDelta;
+        transform.rotation = Quaternion.Euler(newHorizontalDirection);
+
+        // get Center Of Mass velocity in f space
+        var velocity = transform.position - LastCenterOfMassInWorldSpace;
+        velocity /= timeDelta;
+        CenterOfMassVelocity = transform.InverseTransformVector(velocity);
         CenterOfMassVelocityMagnitude = CenterOfMassVelocity.magnitude;
-        transform.rotation = Quaternion.Euler(0f, _root.transform.eulerAngles.y, 0f);
+
         LastCenterOfMassInWorldSpace = newCOM;
         
         GetAllPoints(Points);
@@ -172,6 +181,16 @@ public class DReConRewardStats : MonoBehaviour
         }
         return distances;
     }
+
+    // public List<float> GetPointVelocityDistancesFrom(DReConRewardStats target) {
+    //     List<float> distances = new List<float>();
+    //     for (int i = 0; i < PointVelocity.Length; i++) {
+    //         float distance = (PointVelocity[i] - target.PointVelocity[i]).sqrMagnitude;
+    //         distances.Add(distance);
+    //     }
+    //     return distances;
+    // }
+
     public void AssertIsCompatible(DReConRewardStats target)
     {
         Assert.AreEqual(Points.Length, target.Points.Length);
@@ -275,7 +294,7 @@ public class DReConRewardStats : MonoBehaviour
 			totalMass += ab.mass;
 		}
 		centerOfMass /= totalMass;
-		centerOfMass -= _spawnableEnv.transform.position;
+		// centerOfMass -= _spawnableEnv.transform.position;
 		return centerOfMass;        
 	}    
 	Vector3 GetCenterOfMass(IEnumerable<Rigidbody> bodies)
@@ -288,7 +307,7 @@ public class DReConRewardStats : MonoBehaviour
 			totalMass += ab.mass;
 		}
 		centerOfMass /= totalMass;
-		centerOfMass -= _spawnableEnv.transform.position;
+		// centerOfMass -= _spawnableEnv.transform.position;
 		return centerOfMass;
 	}    
     public void DrawPointDistancesFrom(DReConRewardStats target, int objIdex)

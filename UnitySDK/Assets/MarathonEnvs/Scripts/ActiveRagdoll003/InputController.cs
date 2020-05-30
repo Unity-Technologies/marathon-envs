@@ -110,6 +110,8 @@ public class InputController : MonoBehaviour
         Jump = false;
         float direction = UnityEngine.Random.Range(0f, 360f);
         float power = UnityEngine.Random.value;
+        // float direction = UnityEngine.Random.Range(-Mathf.PI/8, Mathf.PI/8);
+        // float power = UnityEngine.Random.Range(1f, 1f);
         if (ClipInput > 0f)
         {
             power *= ClipInput;

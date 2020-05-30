@@ -15,9 +15,9 @@ public class DReConObservationStats : MonoBehaviour
         public Vector3 Velocity;
         public Vector3 AngualrVelocity;
         [HideInInspector]
-        public Vector3 LastWorldPosition;
+        public Vector3 LastLocalPosition;
         [HideInInspector]
-        public Quaternion LastWorldRotation;
+        public Quaternion LastLocalRotation;
         [HideInInspector]
         public bool LastIsSet;
     }
@@ -112,6 +112,37 @@ public class DReConObservationStats : MonoBehaviour
         SetStatusForStep(timeDelta);
     }
 
+
+    // Return rotation from one rotation to another
+    public static Quaternion FromToRotation(Quaternion from, Quaternion to) {
+        if (to == from) return Quaternion.identity;
+
+        return to * Quaternion.Inverse(from);
+    }
+
+    // Adjust the value of an angle to lie within [-pi, +pi].
+    public static float NormalizedAngle(float angle) {
+        if (angle < 180) {
+            return angle * Mathf.Deg2Rad;
+        }
+        return (angle - 360) * Mathf.Deg2Rad;
+    }
+
+    // Calculate rotation between two rotations in radians. Adjusts the value to lie within [-pi, +pi].
+    public static Vector3 NormalizedEulerAngles(Vector3 eulerAngles) {
+        var x = NormalizedAngle(eulerAngles.x);
+        var y = NormalizedAngle(eulerAngles.y);
+        var z = NormalizedAngle(eulerAngles.z);
+        return new Vector3(x, y, z);
+    }
+
+    // Find angular velocity. The delta rotation is converted to radians within [-pi, +pi].
+    public static Vector3 GetAngularVelocity(Quaternion from, Quaternion to, float timeDelta) {
+        var rotationVelocity = FromToRotation(from, to);
+        var angularVelocity = NormalizedEulerAngles(rotationVelocity.eulerAngles) / timeDelta;
+        return angularVelocity;
+    }
+
     public void SetStatusForStep(float timeDelta)
     {
         // find Center Of Mass
@@ -158,7 +189,7 @@ public class DReConObservationStats : MonoBehaviour
         {
             LastRotation = transform.rotation;
         }
-        AngualrVelocity = GetAngularVelocity(transform.rotation, LastRotation, timeDelta);
+        AngualrVelocity = GetAngularVelocity(LastRotation, transform.rotation, timeDelta);
         LastRotation = transform.rotation;
         LastCenterOfMassInWorldSpace = newCOM;
         LastIsSet = true;
@@ -169,24 +200,20 @@ public class DReConObservationStats : MonoBehaviour
             Stat bodyPartStat = Stats.First(x=>x.Name == bodyPart.name);
             Vector3 worldPosition = bodyPart.position;
             Quaternion worldRotation = bodyPart.rotation;
+            Vector3 localPosition = transform.InverseTransformPoint(worldPosition);
+            Quaternion localRotation = FromToRotation(transform.rotation, worldRotation);
             if (!bodyPartStat.LastIsSet)
             {
-                bodyPartStat.LastWorldPosition = worldPosition;
-                bodyPartStat.LastWorldRotation = worldRotation;
+                bodyPartStat.LastLocalPosition = localPosition;
+                bodyPartStat.LastLocalRotation = localRotation;
             }
-            Vector3 localPosition = transform.InverseTransformPoint(worldPosition);
-            Quaternion localRotation = Quaternion.Inverse(transform.rotation) * worldRotation;
+
             bodyPartStat.Position = localPosition;
             bodyPartStat.Rotation = localRotation;
-            bodyPartStat.Velocity = worldPosition - bodyPartStat.LastWorldPosition;
-            bodyPartStat.Velocity /= timeDelta;
-            bodyPartStat.Velocity = transform.InverseTransformVector(bodyPartStat.Velocity);
-            bodyPartStat.AngualrVelocity = GetAngularVelocity(
-                    Quaternion.Inverse(transform.rotation) * worldRotation, 
-                    Quaternion.Inverse(transform.rotation) * bodyPartStat.LastWorldRotation, 
-                    timeDelta);
-            bodyPartStat.LastWorldPosition = worldPosition;
-            bodyPartStat.LastWorldRotation = worldRotation;
+            bodyPartStat.Velocity = (localPosition - bodyPartStat.LastLocalPosition)/timeDelta;
+            bodyPartStat.AngualrVelocity = GetAngularVelocity(bodyPartStat.LastLocalRotation, localRotation, timeDelta);
+            bodyPartStat.LastLocalPosition = localPosition;
+            bodyPartStat.LastLocalRotation = localRotation;
             bodyPartStat.LastIsSet = true;
         }
     }
@@ -201,7 +228,7 @@ public class DReConObservationStats : MonoBehaviour
 			totalMass += ab.mass;
 		}
 		centerOfMass /= totalMass;
-		centerOfMass -= _spawnableEnv.transform.position;
+		// centerOfMass -= _spawnableEnv.transform.position;
 		return centerOfMass;
 	}
 	Vector3 GetCenterOfMass(IEnumerable<ArticulationBody> bodies)
@@ -214,46 +241,9 @@ public class DReConObservationStats : MonoBehaviour
 			totalMass += ab.mass;
 		}
 		centerOfMass /= totalMass;
-		centerOfMass -= _spawnableEnv.transform.position;
+		// centerOfMass -= _spawnableEnv.transform.position;
 		return centerOfMass;    
     }
-    public static Vector3 GetAngularVelocity(Quaternion rotation, Quaternion lastRotation, float timeDelta)
-    {
-        var q = lastRotation * Quaternion.Inverse(rotation);
-        float gain;
-        if(q.w < 0.0f)
-        {
-            var angle = Mathf.Acos(-q.w);
-            gain = -2.0f * angle / (Mathf.Sin(angle)*timeDelta);
-            // gain = -2.0f * angle / (Mathf.Sin(angle)/timeDelta);
-        }
-        else
-        {
-            var angle = Mathf.Acos(q.w);
-            gain = 2.0f * angle / (Mathf.Sin(angle)*timeDelta);
-            // gain = 2.0f * angle / (Mathf.Sin(angle)/timeDelta);
-        }
-        var result = new Vector3(q.x * gain,q.y * gain,q.z * gain);
-        var safeResult = new Vector3(
-            float.IsNaN(result.x) ? 0f : result.x,
-            float.IsNaN(result.y) ? 0f : result.y,
-            float.IsNaN(result.z) ? 0f : result.z
-        );
-        return safeResult;
-    }    
-    // public void DrawPointDistancesFrom(DReConRewardStats target, int objIdex)
-    // {
-    //     for (int i = objIdex*6; i < (objIdex*6)+6; i++)
-    //     {
-    //         Gizmos.color = Color.white;
-    //         var from = Points[i];
-    //         var to = target.Points[i];
-    //         // transform to this object's world space
-    //         from = this.transform.TransformPoint(from);
-    //         to = this.transform.TransformPoint(to);
-    //         Gizmos.DrawLine(from, to);
-    //     }
-    // }
 
     void OnDrawGizmosSelected()
     {

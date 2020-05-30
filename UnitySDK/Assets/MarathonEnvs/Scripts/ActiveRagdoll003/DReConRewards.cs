@@ -41,8 +41,11 @@ public class DReConRewards : MonoBehaviour
 
 //  fall factor
     [Header("Fall Factor")]
-    public float HeadDistance;
+    public float HeadHeightDistance;
     public float FallFactor;
+
+    [Header("Misc")]
+    public float HeadDistance;
 
     [Header("Gizmos")]
     public int ObjectForPointDistancesGizmo;
@@ -137,7 +140,7 @@ public class DReConRewards : MonoBehaviour
         { 
             var angle = Quaternion.Angle(_mocapBodyStats.Rotations[i], _ragDollBodyStats.Rotations[i]);
             Assert.IsTrue(angle <= 180f);
-            angle /=180f;
+            angle = DReConObservationStats.NormalizedAngle(angle);
             var sqrAngle = angle * angle;
             RotationDifferences[i] = angle;
             SumOfRotationDifferences += angle;
@@ -153,6 +156,9 @@ public class DReConRewards : MonoBehaviour
         FallFactor = 1.4f*FallFactor;
         FallFactor = 1.3f-FallFactor;
         FallFactor = Mathf.Clamp(FallFactor, 0f, 1f);
+
+        HeadHeightDistance = (_mocapHead.position.y - _ragDollHead.position.y);
+        HeadHeightDistance = Mathf.Abs(HeadHeightDistance);
 
         // reward
         SumOfSubRewards = PositionReward+ComReward+PointsVelocityReward+LocalPoseReward;
