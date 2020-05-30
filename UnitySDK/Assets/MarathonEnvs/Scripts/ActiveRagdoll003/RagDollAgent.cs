@@ -151,18 +151,20 @@ public class RagDollAgent : Agent
         _dReConObservations.PreviousActions = vectorAction;
 
         AddReward(_dReConRewards.Reward);
-        if (_dReConRewards.HeadHeightDistance > 0.5f || _dReConRewards.Reward < 1f)
+        // if (_dReConRewards.HeadHeightDistance > 0.5f || _dReConRewards.Reward < 1f)
+        if (_dReConRewards.HeadHeightDistance > 0.5f || _dReConRewards.Reward <= 0f)
         {
             if (!dontResetOnZeroReward)
                 Done();
         }
         // else if (_dReConRewards.HeadDistance > 1.5f)
-        // {
-        //     Transform ragDollCom = _dReConObservations.GetRagDollCOM();
-        //     Vector3 snapPosition = ragDollCom.position;
-        //     snapPosition.y = 0f;
-        //     _mocapController.SnapTo(snapPosition);
-        // }
+        else if (_dReConRewards.Reward <= 0.1f)
+        {
+            Transform ragDollCom = _dReConObservations.GetRagDollCOM();
+            Vector3 snapPosition = ragDollCom.position;
+            snapPosition.y = 0f;
+            _mocapController.SnapTo(snapPosition);
+        }
     }
 
     float[] SmoothActions(float[] vectorAction)
