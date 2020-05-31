@@ -38,6 +38,7 @@ public class RagDollAgent : Agent
     DecisionRequester _decisionRequester;
 
     bool _hasLazyInitialized;
+    bool _skipRewardAfterTeleport;
     float[] _smoothedActions;
 
     void Awake()
@@ -150,7 +151,9 @@ public class RagDollAgent : Agent
         }
         _dReConObservations.PreviousActions = vectorAction;
 
-        AddReward(_dReConRewards.Reward);
+        if (!_skipRewardAfterTeleport)
+            AddReward(_dReConRewards.Reward);
+        _skipRewardAfterTeleport = false;
         // if (_dReConRewards.HeadHeightDistance > 0.5f || _dReConRewards.Reward < 1f)
         if (_dReConRewards.HeadHeightDistance > 0.5f || _dReConRewards.Reward <= 0f)
         {
@@ -164,6 +167,8 @@ public class RagDollAgent : Agent
             Vector3 snapPosition = ragDollCom.position;
             snapPosition.y = 0f;
             _mocapController.SnapTo(snapPosition);
+            AddReward(-.5f);
+            _skipRewardAfterTeleport = true;
         }
     }
 
@@ -234,6 +239,7 @@ public class RagDollAgent : Agent
         _dReConRewards.OnReset();
         _dReConObservations.OnStep(timeDelta);
         _dReConRewards.OnStep(timeDelta);
+        _skipRewardAfterTeleport = false;
 #if UNITY_EDITOR		
 		if (DebugPauseOnReset)
 		{

@@ -1138,7 +1138,7 @@ ArticulationBody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8721655427382561055}
   m_Enabled: 1
-  m_Mass: 10.71
+  m_Mass: 10
   m_ParentAnchorPosition: {x: 0.0000000018626451, y: 0.10341197, z: 0.008000001}
   m_ParentAnchorRotation: {x: 0, y: 0, z: 0, w: 1}
   m_AnchorPosition: {x: 0, y: -0.06058806, z: 0}
@@ -1238,7 +1238,7 @@ ArticulationBody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8721681659342934139}
   m_Enabled: 1
-  m_Mass: 12.55
+  m_Mass: 8
   m_ParentAnchorPosition: {x: 0.01874464, y: 0.13, z: 0.06669329}
   m_ParentAnchorRotation: {x: 0, y: 0, z: 0.70710677, w: 0.70710677}
   m_AnchorPosition: {x: 0.018744636, y: 3.316053e-15, z: 0.066693276}
@@ -1762,7 +1762,7 @@ ArticulationBody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8721806364151867171}
   m_Enabled: 1
-  m_Mass: 11.2
+  m_Mass: 11
   m_ParentAnchorPosition: {x: 0, y: 0, z: 0}
   m_ParentAnchorRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_AnchorPosition: {x: 0, y: 0, z: 0}
@@ -2035,8 +2035,9 @@ MonoBehaviour:
   RagDollCOMVelocityMagnitude: 0
   COMVelocityDifference: 0
   ComReward: 0
-  HeadDistance: 0
+  HeadHeightDistance: 0
   FallFactor: 0
+  HeadDistance: 0
   ObjectForPointDistancesGizmo: 3
 --- !u!114 &6615205430042084611
 MonoBehaviour:
@@ -2845,7 +2846,7 @@ ArticulationBody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8723104234892138299}
   m_Enabled: 1
-  m_Mass: 10.71
+  m_Mass: 8
   m_ParentAnchorPosition: {x: 0.0000000018626451, y: 0.065418124, z: 0.012000008}
   m_ParentAnchorRotation: {x: 0, y: 0, z: 0, w: 1}
   m_AnchorPosition: {x: 0, y: -0.070581675, z: 0}
