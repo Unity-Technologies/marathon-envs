@@ -157,7 +157,7 @@ public class InputController : MonoBehaviour
         TargetMovementVector = new Vector2(Mathf.Cos(direction), Mathf.Sin(direction));
         TargetMovementVector *= power;
         Jump = ChooseJump();
-        _delayUntilNextAction = 2f;
+        _delayUntilNextAction = 1f + (UnityEngine.Random.value * 5f);
     }
     bool ChooseBackflip()
     {
