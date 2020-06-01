@@ -16,8 +16,6 @@ public class DReConRewards : MonoBehaviour
     public float PositionReward;
 
     [Header("Velocity Reward")]
-    public float MocapPointsVelocity;
-    public float RagDollPointsVelocity;    
     public float PointsVelocityDifferenceSquared;
     public float PointsVelocityReward;
 
@@ -119,13 +117,10 @@ public class DReConRewards : MonoBehaviour
         ComReward = Mathf.Exp(ComReward);
 
         // points velocity
-        MocapPointsVelocity = _mocapBodyStats.PointVelocity.Sum();
-        RagDollPointsVelocity = _ragDollBodyStats.PointVelocity.Sum();
-        var pointsDifference = _mocapBodyStats.PointVelocity
-            .Zip(_ragDollBodyStats.PointVelocity, (a,b )=> (a-b) * (a-b));
-        PointsVelocityDifferenceSquared = pointsDifference.Sum();
-        PointsVelocityReward = PointsVelocityDifferenceSquared;
-        PointsVelocityReward = (-1f/_mocapBodyStats.PointVelocity.Length) * PointsVelocityReward;
+        List<float> velocityDistances = _mocapBodyStats.GetPointVelocityDistancesFrom(_ragDollBodyStats);
+        List<float> sqrVelocityDistances = velocityDistances.Select(x=> x*x).ToList();
+        PointsVelocityDifferenceSquared = sqrVelocityDistances.Sum();
+        PointsVelocityReward = (-1f/_mocapBodyStats.PointVelocity.Length) * PointsVelocityDifferenceSquared;
         PointsVelocityReward = Mathf.Exp(PointsVelocityReward);
 
         // local pose reward
