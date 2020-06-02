@@ -36,7 +36,7 @@ public class DReConRewardStats : MonoBehaviour
     public List<Quaternion> Rotations;
     public Vector3[] Points;
     Vector3[] _lastPoints;
-    public float[] PointVelocity;
+    public Vector3[] PointVelocity;
 
     public void OnAwake(Transform defaultTransform, DReConRewardStats orderToCopy = null)
     {
@@ -82,7 +82,7 @@ public class DReConRewardStats : MonoBehaviour
             .Select(x=>Vector3.zero)
             .ToArray();            
         PointVelocity = Enumerable.Range(0,_capsuleColliders.Count * 6)
-            .Select(x=>0f)
+            .Select(x=>Vector3.zero)
             .ToArray();
         Rotations = Enumerable.Range(0,_trackRotations.Count)
             .Select(x=>Quaternion.identity)
@@ -109,7 +109,7 @@ public class DReConRewardStats : MonoBehaviour
         Array.Copy(Points, 0, _lastPoints, 0, Points.Length);
         for (int i = 0; i < Points.Length; i++)
         {
-            PointVelocity[i] = 0f;
+            PointVelocity[i] = Vector3.zero;
         }
         for (int i = 0; i < _trackRotations.Count; i++)
         {
@@ -155,7 +155,7 @@ public class DReConRewardStats : MonoBehaviour
         }
         for (int i = 0; i < Points.Length; i++)
         {
-            PointVelocity[i] = (Points[i] - _lastPoints[i]).magnitude / timeDelta;
+            PointVelocity[i] = (Points[i] - _lastPoints[i]) / timeDelta;
         }
         Array.Copy(Points, 0, _lastPoints, 0, Points.Length);
 
@@ -182,14 +182,14 @@ public class DReConRewardStats : MonoBehaviour
         return distances;
     }
 
-    // public List<float> GetPointVelocityDistancesFrom(DReConRewardStats target) {
-    //     List<float> distances = new List<float>();
-    //     for (int i = 0; i < PointVelocity.Length; i++) {
-    //         float distance = (PointVelocity[i] - target.PointVelocity[i]).sqrMagnitude;
-    //         distances.Add(distance);
-    //     }
-    //     return distances;
-    // }
+    public List<float> GetPointVelocityDistancesFrom(DReConRewardStats target) {
+        List<float> distances = new List<float>();
+        for (int i = 0; i < PointVelocity.Length; i++) {
+            float distance = (PointVelocity[i] - target.PointVelocity[i]).magnitude;
+            distances.Add(distance);
+        }
+        return distances;
+    }
 
     public void AssertIsCompatible(DReConRewardStats target)
     {
@@ -335,11 +335,11 @@ public class DReConRewardStats : MonoBehaviour
             Gizmos.color = Color.white;
             Gizmos.DrawLine(from, toTarget);
             // show this objects velocity
-            Vector3 velocityTarget = new Vector3(0f, PointVelocity[i], 0f);
+            Vector3 velocity = PointVelocity[i];
             Gizmos.color = Color.blue;
-            Gizmos.DrawRay(from, velocityTarget);
+            Gizmos.DrawRay(from, velocity);
             // show targets velocity
-            velocityTarget = new Vector3(0f, target.PointVelocity[i], 0f);
+            Vector3 velocityTarget = target.PointVelocity[i];
             Gizmos.color = Color.green;
             Gizmos.DrawRay(toTarget, velocityTarget);
         }

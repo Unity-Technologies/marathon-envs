@@ -12,7 +12,8 @@ public class InputController : MonoBehaviour
     public bool NoJumpsInMockMode;
 
     [Header("User or Mock input states")]
-    public Vector2 MovementVector; // User-input desired horizontal center of mass velocity.
+    public Vector2 TargetMovementVector; // User-input desired horizontal center of mass velocity.
+    public Vector2 MovementVector; // smoothed version of TargetMovementVector.
     public Vector2 CameraRotation; // User-input desired rotation for camera.
     public bool Jump; // User wants to jump
     public bool Backflip; // User wants to backflip
@@ -26,6 +27,10 @@ public class InputController : MonoBehaviour
     float _delayUntilNextAction;
     float _timeUnillDemo;
 
+    const float kGroundAcceleration = .6f;
+    const float kGroundDeceleration = .75f;
+
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -36,25 +41,58 @@ public class InputController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        DoUpdate();
+        
     }
-    void DoUpdate()
+    void FixedUpdate()
+    {
+        DoUpdate(Time.fixedDeltaTime);
+    }
+    void DoUpdate(float deltaTime)
     {
         if (UseHumanInput)
             GetHumanInput();
         else
             GetMockInput();
-        if (!Mathf.Approximately(MovementVector.sqrMagnitude, 0f))
-            HorizontalDirection = new Vector3(MovementVector.normalized.x, 0f, MovementVector.normalized.y);
-        if (MovementVector.magnitude < .1f)
-            MovementVector = Vector2.zero;
-        DesiredHorizontalVelocity = MovementVector.normalized * MaxVelocity * MovementVector.magnitude;
+        SmoothAcceleration(deltaTime);
     }
     public void OnReset()
     {
         SetRandomHorizontalDirection();
         _delayUntilNextAction = -1f;
-        DoUpdate();
+        DoUpdate(Time.fixedDeltaTime);
+    }
+    void SmoothAcceleration(float deltaTime)
+    {
+        // Determine change to speed based on whether there is currently any move input.
+        float acceleration = TargetMovementVector.magnitude > 0 ? kGroundAcceleration : kGroundDeceleration;
+
+        var difference = (MovementVector - TargetMovementVector);
+        if (difference.magnitude > MovementVector.magnitude)
+        {
+            acceleration *= 5f;
+        }
+
+        // Adjust the forward speed towards the desired speed.
+        MovementVector = Vector2.MoveTowards(MovementVector, TargetMovementVector, acceleration * deltaTime);
+
+        // Handle deadzone
+        if (MovementVector.magnitude < .1f)
+        {
+            if (TargetMovementVector.magnitude < .1f)
+            {
+                TargetMovementVector = Vector2.zero;
+                MovementVector = Vector2.zero;
+            }
+            else
+            {
+                MovementVector = TargetMovementVector.normalized * .1f;
+            }
+        }
+
+        // handle direction
+        if (!Mathf.Approximately(MovementVector.sqrMagnitude, 0f))
+            HorizontalDirection = new Vector3(MovementVector.normalized.x, 0f, MovementVector.normalized.y);
+        DesiredHorizontalVelocity = MovementVector.normalized * MaxVelocity * MovementVector.magnitude;
     }
     void GetHumanInput()
     {
@@ -74,7 +112,7 @@ public class InputController : MonoBehaviour
         }
         if (!Mathf.Approximately(newMovementVector.sqrMagnitude, 0f))
         {
-            MovementVector = newMovementVector;
+            TargetMovementVector = newMovementVector;
             resetTimeUntilDemo = true;
         }
         else if (DemoMockIfNoInput && _timeUnillDemo <= 0)
@@ -116,10 +154,10 @@ public class InputController : MonoBehaviour
         {
             power *= ClipInput;
         }
-        MovementVector = new Vector2(Mathf.Cos(direction), Mathf.Sin(direction));
-        MovementVector *= power;
+        TargetMovementVector = new Vector2(Mathf.Cos(direction), Mathf.Sin(direction));
+        TargetMovementVector *= power;
         Jump = ChooseJump();
-        _delayUntilNextAction = 2f;
+        _delayUntilNextAction = 1f + (UnityEngine.Random.value * 5f);
     }
     bool ChooseBackflip()
     {
@@ -141,7 +179,7 @@ public class InputController : MonoBehaviour
         var movementVector = new Vector2(Mathf.Cos(direction), Mathf.Sin(direction));
         HorizontalDirection = new Vector3(movementVector.normalized.x, 0f, movementVector.normalized.y);
         movementVector /= float.MinValue;
-        MovementVector = new Vector2(movementVector.x, movementVector.y);
+        TargetMovementVector = new Vector2(movementVector.x, movementVector.y);
     }
 
 }

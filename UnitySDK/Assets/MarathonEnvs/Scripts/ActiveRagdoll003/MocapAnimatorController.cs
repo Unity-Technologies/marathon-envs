@@ -25,8 +25,6 @@ public class MocapAnimatorController : MonoBehaviour
     const float kMinEnemyDotCoeff = 0.2f;
     const float kInverseOneEighty = 1f / 180f;
     const float kStickingGravityProportion = 0.3f;
-    const float kGroundAcceleration = 20f;
-    const float kGroundDeceleration = 25f;
 
     Material materialUnderFoot;
     float _forwardVelocity;
@@ -245,11 +243,8 @@ public class MocapAnimatorController : MonoBehaviour
         // Calculate the speed intended by input.
         _desiredForwardSpeed = moveInput.magnitude * MaxForwardVelocity;
 
-        // Determine change to speed based on whether there is currently any move input.
-        float acceleration = IsMoveInput ? kGroundAcceleration : kGroundDeceleration;
-
-        // Adjust the forward speed towards the desired speed.
-        _forwardVelocity = Mathf.MoveTowards(_forwardVelocity, _desiredForwardSpeed, acceleration * deltaTime);
+        // Note: acceleration is handle in InputController
+        _forwardVelocity = _desiredForwardSpeed;
 
         // Set the animator parameter to control what animation is being played.
         _anim.SetFloat("forwardVelocity", _forwardVelocity);

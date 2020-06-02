@@ -906,7 +906,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxVelocity: 8
-  ClipInput: 0.5
+  ClipInput: 0
   NoJumpsInMockMode: 1
   MovementVector: {x: 0, y: 0}
   CameraRotation: {x: 0, y: 0}
