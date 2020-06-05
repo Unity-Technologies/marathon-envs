@@ -24,7 +24,7 @@ public class RagDollAgent : Agent
     public bool DebugPauseOnReset;
 
     MocapController _mocapController;
-    List<ArticulationBody> _mocapBodyParts;
+    List<Rigidbody> _mocapBodyParts;
     List<ArticulationBody> _bodyParts;
     SpawnableEnv _spawnableEnv;
     DReConObservations _dReConObservations;
@@ -191,7 +191,7 @@ public class RagDollAgent : Agent
     		Time.fixedDeltaTime = FixedDeltaTime;
             _spawnableEnv = GetComponentInParent<SpawnableEnv>();
             _mocapController = _spawnableEnv.GetComponentInChildren<MocapController>();
-            _mocapBodyParts = _mocapController.GetComponentsInChildren<ArticulationBody>().ToList();
+            _mocapBodyParts = _mocapController.GetComponentsInChildren<Rigidbody>().ToList();
             _bodyParts = GetComponentsInChildren<ArticulationBody>().ToList();
             _dReConObservations = GetComponent<DReConObservations>();
             _dReConRewards = GetComponent<DReConRewards>();
