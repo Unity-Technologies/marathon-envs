@@ -2021,8 +2021,6 @@ MonoBehaviour:
   SumOfDistances: 0
   SumOfSqrDistances: 0
   PositionReward: 0
-  MocapPointsVelocity: 0
-  RagDollPointsVelocity: 0
   PointsVelocityDifferenceSquared: 0
   PointsVelocityReward: 0
   RotationDifferences: []
@@ -2036,8 +2034,8 @@ MonoBehaviour:
   COMVelocityDifference: 0
   ComReward: 0
   HeadHeightDistance: 0
-  FallFactor: 0
-  HeadDistance: 0
+  DistanceFactor: 0
+  ComDistance: 0
   ObjectForPointDistancesGizmo: 3
 --- !u!114 &6615205430042084611
 MonoBehaviour:

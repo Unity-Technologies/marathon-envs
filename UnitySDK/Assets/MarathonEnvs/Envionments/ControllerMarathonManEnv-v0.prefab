@@ -908,6 +908,7 @@ MonoBehaviour:
   MaxVelocity: 8
   ClipInput: 0
   NoJumpsInMockMode: 1
+  TargetMovementVector: {x: 0, y: 0}
   MovementVector: {x: 0, y: 0}
   CameraRotation: {x: 0, y: 0}
   Jump: 0
@@ -1341,7 +1342,7 @@ PrefabInstance:
     - target: {fileID: 8690789666678175709, guid: e41b6ea7d7185480f93948a920da7583,
         type: 3}
       propertyPath: Stiffness
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8712265431949821219, guid: e41b6ea7d7185480f93948a920da7583,
         type: 3}
