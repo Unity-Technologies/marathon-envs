@@ -2029,8 +2029,6 @@ MonoBehaviour:
   LocalPoseReward: 0
   MocapCOMVelocity: {x: 0, y: 0, z: 0}
   RagDollCOMVelocity: {x: 0, y: 0, z: 0}
-  MocapCOMVelocityMagnitude: 0
-  RagDollCOMVelocityMagnitude: 0
   COMVelocityDifference: 0
   ComReward: 0
   HeadHeightDistance: 0
