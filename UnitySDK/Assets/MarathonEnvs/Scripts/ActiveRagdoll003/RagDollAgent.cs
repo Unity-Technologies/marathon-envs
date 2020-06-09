@@ -22,6 +22,7 @@ public class RagDollAgent : Agent
     public bool ignorActions;
     public bool dontResetOnZeroReward;
     public bool DebugPauseOnReset;
+    public bool UsePDControl = true;
 
     MocapController _mocapController;
     List<Rigidbody> _mocapBodyParts;
@@ -117,8 +118,12 @@ public class RagDollAgent : Agent
 		}
 
         bool shouldDebug = _debugController != null;
+        bool dontUpdateMotor = false;
         if (_debugController != null)
         {
+            dontUpdateMotor = _debugController.DontUpdateMotor;
+            dontUpdateMotor &= _debugController.isActiveAndEnabled;
+            dontUpdateMotor &= _debugController.gameObject.activeInHierarchy;
             shouldDebug &= _debugController.isActiveAndEnabled;
             shouldDebug &= _debugController.gameObject.activeInHierarchy;
         }
@@ -139,15 +144,35 @@ public class RagDollAgent : Agent
 		{
             if (m.isRoot)
                 continue;
+            if (dontUpdateMotor)
+                continue;
             Vector3 targetNormalizedRotation = Vector3.zero;
-            if (m.swingYLock == ArticulationDofLock.LimitedMotion)
-				targetNormalizedRotation.x = vectorAction[i++];
-            if (m.swingZLock == ArticulationDofLock.LimitedMotion)
-				targetNormalizedRotation.y = vectorAction[i++];
-			if (m.twistLock == ArticulationDofLock.LimitedMotion)
-				targetNormalizedRotation.z = vectorAction[i++];
-            UpdateMotor(m, targetNormalizedRotation);
             
+			// if (m.twistLock == ArticulationDofLock.LimitedMotion)
+			// 	targetNormalizedRotation.x = vectorAction[i++];
+            // if (m.swingYLock == ArticulationDofLock.LimitedMotion)
+			// 	targetNormalizedRotation.y = vectorAction[i++];
+            // if (m.swingZLock == ArticulationDofLock.LimitedMotion)
+			// 	targetNormalizedRotation.z = vectorAction[i++];
+
+            // keep old order
+            if (m.swingYLock == ArticulationDofLock.LimitedMotion)
+				targetNormalizedRotation.y = vectorAction[i++];
+            if (m.swingZLock == ArticulationDofLock.LimitedMotion)
+				targetNormalizedRotation.z = vectorAction[i++];
+			if (m.twistLock == ArticulationDofLock.LimitedMotion)
+				targetNormalizedRotation.x = vectorAction[i++];
+
+            if (UsePDControl)
+            {
+                // UpdateMotorAsPD
+                Rigidbody targetBody = _mocapBodyParts.First(x=>x.name == m.name);
+                UpdateMotorAsPD(m, targetBody, targetNormalizedRotation);
+            }
+            else
+            {
+                UpdateMotor(m, targetNormalizedRotation);
+            }
         }
         _dReConObservations.PreviousActions = vectorAction;
 
@@ -215,11 +240,11 @@ public class RagDollAgent : Agent
             var individualMotors = new List<float>();
             foreach (var m in _motors)
             {
+                if (m.twistLock == ArticulationDofLock.LimitedMotion)
+                    individualMotors.Add(0f);
                 if (m.swingYLock == ArticulationDofLock.LimitedMotion)
                     individualMotors.Add(0f);
                 if (m.swingZLock == ArticulationDofLock.LimitedMotion)
-                    individualMotors.Add(0f);
-                if (m.twistLock == ArticulationDofLock.LimitedMotion)
                     individualMotors.Add(0f);
             }
             _dReConObservations.PreviousActions = individualMotors.ToArray();
@@ -248,38 +273,53 @@ public class RagDollAgent : Agent
 #endif	        
     }    
 
+    void UpdateMotorAsPD(ArticulationBody joint, Rigidbody targetBody, Vector3 targetNormalizedRotation)
+    {
+        Vector3 power = _ragDollSettings.MusclePowers.First(x=>x.Muscle == joint.name).PowerVector;
+        power *= _ragDollSettings.Stiffness;
+        float damping = _ragDollSettings.Damping; 
+    }
     void UpdateMotor(ArticulationBody joint, Vector3 targetNormalizedRotation)
     {
         Vector3 power = _ragDollSettings.MusclePowers.First(x=>x.Muscle == joint.name).PowerVector;
         power *= _ragDollSettings.Stiffness;
         float damping = _ragDollSettings.Damping;
 
-		var drive = joint.yDrive;
-        var scale = (drive.upperLimit-drive.lowerLimit) / 2f;
-        var midpoint = drive.lowerLimit + scale;
-        var target = midpoint + (targetNormalizedRotation.x *scale);
-        drive.target = target;
-        drive.stiffness = power.x;
-        drive.damping = damping;
-		joint.yDrive = drive;
+        if (joint.twistLock == ArticulationDofLock.LimitedMotion)
+        {
+            var drive = joint.xDrive;
+            var scale = (drive.upperLimit-drive.lowerLimit) / 2f;
+            var midpoint = drive.lowerLimit + scale;
+            var target = midpoint + (targetNormalizedRotation.x *scale);
+            drive.target = target;
+            drive.stiffness = power.x;
+            drive.damping = damping;
+            joint.xDrive = drive;
+        }
 
-		drive = joint.zDrive;
-        scale = (drive.upperLimit-drive.lowerLimit) / 2f;
-        midpoint = drive.lowerLimit + scale;
-        target = midpoint + (targetNormalizedRotation.y *scale);
-        drive.target = target;
-        drive.stiffness = power.y;
-        drive.damping = damping;
-		joint.zDrive = drive;
+        if (joint.swingYLock == ArticulationDofLock.LimitedMotion)
+        {
+            var drive = joint.yDrive;
+            var scale = (drive.upperLimit-drive.lowerLimit) / 2f;
+            var midpoint = drive.lowerLimit + scale;
+            var target = midpoint + (targetNormalizedRotation.y *scale);
+            drive.target = target;
+            drive.stiffness = power.y;
+            drive.damping = damping;
+            joint.yDrive = drive;
+        }
 
-		drive = joint.xDrive;
-        scale = (drive.upperLimit-drive.lowerLimit) / 2f;
-        midpoint = drive.lowerLimit + scale;
-        target = midpoint + (targetNormalizedRotation.z *scale);
-        drive.target = target;
-        drive.stiffness = power.z;
-        drive.damping = damping;
-		joint.xDrive = drive;
+        if (joint.swingZLock == ArticulationDofLock.LimitedMotion)
+        {
+            var drive = joint.zDrive;
+            var scale = (drive.upperLimit-drive.lowerLimit) / 2f;
+            var midpoint = drive.lowerLimit + scale;
+            var target = midpoint + (targetNormalizedRotation.z *scale);
+            drive.target = target;
+            drive.stiffness = power.z;
+            drive.damping = damping;
+            joint.zDrive = drive;
+        }
 	}
 
     void FixedUpdate()
