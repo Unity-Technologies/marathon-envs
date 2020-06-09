@@ -1094,11 +1094,6 @@ PrefabInstance:
       propertyPath: maxStep
       value: 2000
       objectReference: {fileID: 0}
-    - target: {fileID: 4177175816300940728, guid: e41b6ea7d7185480f93948a920da7583,
-        type: 3}
-      propertyPath: UsePDControl
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6032172806317267978, guid: e41b6ea7d7185480f93948a920da7583,
         type: 3}
       propertyPath: m_ParentAnchorPosition.x

@@ -155,20 +155,20 @@ public class RagDollAgent : Agent
                 continue;
             Vector3 targetNormalizedRotation = Vector3.zero;
 
-			// if (m.twistLock == ArticulationDofLock.LimitedMotion)
-			// 	targetNormalizedRotation.x = vectorAction[i++];
-            // if (m.swingYLock == ArticulationDofLock.LimitedMotion)
-			// 	targetNormalizedRotation.y = vectorAction[i++];
-            // if (m.swingZLock == ArticulationDofLock.LimitedMotion)
-			// 	targetNormalizedRotation.z = vectorAction[i++];
-
-            // keep old order
+			if (m.twistLock == ArticulationDofLock.LimitedMotion)
+				targetNormalizedRotation.x = vectorAction[i++];
             if (m.swingYLock == ArticulationDofLock.LimitedMotion)
 				targetNormalizedRotation.y = vectorAction[i++];
             if (m.swingZLock == ArticulationDofLock.LimitedMotion)
 				targetNormalizedRotation.z = vectorAction[i++];
-			if (m.twistLock == ArticulationDofLock.LimitedMotion)
-				targetNormalizedRotation.x = vectorAction[i++];
+
+            // // keep old order (delete me when retrained)
+            // if (m.swingYLock == ArticulationDofLock.LimitedMotion)
+			// 	targetNormalizedRotation.y = vectorAction[i++];
+            // if (m.swingZLock == ArticulationDofLock.LimitedMotion)
+			// 	targetNormalizedRotation.z = vectorAction[i++];
+			// if (m.twistLock == ArticulationDofLock.LimitedMotion)
+			// 	targetNormalizedRotation.x = vectorAction[i++];
             UpdateMotor(m, targetNormalizedRotation);
         }
         _dReConObservations.PreviousActions = vectorAction;
