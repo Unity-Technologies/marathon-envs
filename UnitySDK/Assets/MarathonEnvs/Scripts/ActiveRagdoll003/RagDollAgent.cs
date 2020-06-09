@@ -41,7 +41,7 @@ public class RagDollAgent : Agent
     bool _hasLazyInitialized;
     bool _skipRewardAfterTeleport;
     float[] _smoothedActions;
-
+    float[] _mocapTargets;
     void Awake()
     {
 		if (RequestCamera && CameraTarget != null)
@@ -135,6 +135,13 @@ public class RagDollAgent : Agent
             }
             vectorAction = _debugController.Actions.Select(x=>Mathf.Clamp(x,-1f,1f)).ToArray();
         }
+        if (UsePDControl)
+        {
+            var targets = GetMocapTargets();
+            vectorAction = vectorAction
+                .Zip(targets, (action, target)=> Mathf.Clamp(target + action, -1f, 1f))
+                .ToArray();
+        }
         if (!SkipRewardSmoothing)
             vectorAction = SmoothActions(vectorAction);
         if (ignorActions)
@@ -147,7 +154,7 @@ public class RagDollAgent : Agent
             if (dontUpdateMotor)
                 continue;
             Vector3 targetNormalizedRotation = Vector3.zero;
-            
+
 			// if (m.twistLock == ArticulationDofLock.LimitedMotion)
 			// 	targetNormalizedRotation.x = vectorAction[i++];
             // if (m.swingYLock == ArticulationDofLock.LimitedMotion)
@@ -162,17 +169,7 @@ public class RagDollAgent : Agent
 				targetNormalizedRotation.z = vectorAction[i++];
 			if (m.twistLock == ArticulationDofLock.LimitedMotion)
 				targetNormalizedRotation.x = vectorAction[i++];
-
-            if (UsePDControl)
-            {
-                // UpdateMotorAsPD
-                Rigidbody targetBody = _mocapBodyParts.First(x=>x.name == m.name);
-                UpdateMotorAsPD(m, targetBody, targetNormalizedRotation);
-            }
-            else
-            {
-                UpdateMotor(m, targetNormalizedRotation);
-            }
+            UpdateMotor(m, targetNormalizedRotation);
         }
         _dReConObservations.PreviousActions = vectorAction;
 
@@ -271,14 +268,68 @@ public class RagDollAgent : Agent
 	        UnityEditor.EditorApplication.isPaused = true;
 		}
 #endif	        
-    }    
+    }   
 
-    void UpdateMotorAsPD(ArticulationBody joint, Rigidbody targetBody, Vector3 targetNormalizedRotation)
+    float[] GetMocapTargets()
     {
-        Vector3 power = _ragDollSettings.MusclePowers.First(x=>x.Muscle == joint.name).PowerVector;
-        power *= _ragDollSettings.Stiffness;
-        float damping = _ragDollSettings.Damping; 
+        if (_mocapTargets == null)
+        {
+            _mocapTargets = _motors
+                .Where(x=>!x.isRoot)
+                .SelectMany(x => {
+                    List<float> list = new List<float>();
+                    if (x.twistLock == ArticulationDofLock.LimitedMotion)
+                        list.Add(0f);
+                    if (x.swingYLock == ArticulationDofLock.LimitedMotion)
+                        list.Add(0f);
+                    if (x.swingZLock == ArticulationDofLock.LimitedMotion)
+                        list.Add(0f);
+                    return list.ToArray();
+                })
+                .ToArray();
+        }
+        int i=0;
+        foreach (var joint in _motors)
+		{
+            if (joint.isRoot)
+                continue;
+            Rigidbody mocapBody = _mocapBodyParts.First(x=>x.name == joint.name);
+            Vector3 targetRotationInJointSpace = -(Quaternion.Inverse(joint.anchorRotation) * Quaternion.Inverse(mocapBody.transform.localRotation) * joint.parentAnchorRotation).eulerAngles;
+            targetRotationInJointSpace = new Vector3(
+                Mathf.DeltaAngle(0, targetRotationInJointSpace.x),
+                Mathf.DeltaAngle(0, targetRotationInJointSpace.y),
+                Mathf.DeltaAngle(0, targetRotationInJointSpace.z));
+            if (joint.twistLock == ArticulationDofLock.LimitedMotion)
+            {
+                var drive = joint.xDrive;
+                var scale = (drive.upperLimit-drive.lowerLimit) / 2f;
+                var midpoint = drive.lowerLimit + scale;
+                var target = (targetRotationInJointSpace.x -midpoint) / scale;
+                _mocapTargets[i] = target;
+                i++;
+            }
+            if (joint.swingYLock == ArticulationDofLock.LimitedMotion)
+            {
+                var drive = joint.yDrive;
+                var scale = (drive.upperLimit-drive.lowerLimit) / 2f;
+                var midpoint = drive.lowerLimit + scale;
+                var target = (targetRotationInJointSpace.y -midpoint) / scale;
+                _mocapTargets[i] = target;
+                i++;
+            }
+            if (joint.swingZLock == ArticulationDofLock.LimitedMotion)
+            {
+                var drive = joint.zDrive;
+                var scale = (drive.upperLimit-drive.lowerLimit) / 2f;
+                var midpoint = drive.lowerLimit + scale;
+                var target = (targetRotationInJointSpace.z -midpoint) / scale;
+                _mocapTargets[i] = target;
+                i++;
+            }
+        }
+        return _mocapTargets;
     }
+
     void UpdateMotor(ArticulationBody joint, Vector3 targetNormalizedRotation)
     {
         Vector3 power = _ragDollSettings.MusclePowers.First(x=>x.Muscle == joint.name).PowerVector;
