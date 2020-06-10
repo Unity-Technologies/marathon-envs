@@ -39,9 +39,9 @@ public class DReConRewards : MonoBehaviour
     public float ComDistance;
     public float DistanceFactor;
 
-    [Header("Direction Factor")]
-    public float DirectionDistance;
-    public float DirectionFactor;
+    // [Header("Direction Factor")]
+    // public float DirectionDistance;
+    // public float DirectionFactor;
 
 
     [Header("Misc")]
@@ -154,14 +154,14 @@ public class DReConRewards : MonoBehaviour
         DistanceFactor = 1.01f-DistanceFactor;
         DistanceFactor = Mathf.Clamp(DistanceFactor, 0f, 1f);
 
-        // direction factor
-        Vector3 desiredDirection = _inputController.HorizontalDirection;
-        var curDirection = _ragDollBodyStats.transform.forward;
-        // cosAngle
-        var directionDifference = Vector3.Dot(desiredDirection, curDirection);
-        DirectionDistance = (1f + directionDifference) /2f; // normalize the error 
-        DirectionFactor = Mathf.Pow(DirectionDistance,2);
-        DirectionFactor = Mathf.Clamp(DirectionFactor, 0f, 1f);
+        // // direction factor
+        // Vector3 desiredDirection = _inputController.HorizontalDirection;
+        // var curDirection = _ragDollBodyStats.transform.forward;
+        // // cosAngle
+        // var directionDifference = Vector3.Dot(desiredDirection, curDirection);
+        // DirectionDistance = (1f + directionDifference) /2f; // normalize the error 
+        // DirectionFactor = Mathf.Pow(DirectionDistance,2);
+        // DirectionFactor = Mathf.Clamp(DirectionFactor, 0f, 1f);
 
         // misc
         HeadHeightDistance = (_mocapHead.position.y - _ragDollHead.position.y);
@@ -169,8 +169,8 @@ public class DReConRewards : MonoBehaviour
 
         // reward
         SumOfSubRewards = PositionReward+ComReward+PointsVelocityReward+LocalPoseReward;
-        Reward = DirectionFactor*Reward;
         Reward = DistanceFactor*SumOfSubRewards;
+        // Reward = (DirectionFactor*SumOfSubRewards) * DistanceFactor;
     }
     public void OnReset()
     {
