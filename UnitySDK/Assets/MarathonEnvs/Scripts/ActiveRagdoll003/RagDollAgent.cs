@@ -139,7 +139,7 @@ public class RagDollAgent : Agent
         {
             var targets = GetMocapTargets();
             vectorAction = vectorAction
-                .Zip(targets, (action, target)=> Mathf.Clamp(target + action, -1f, 1f))
+                .Zip(targets, (action, target)=> Mathf.Clamp(target + action *2f, -1f, 1f))
                 .ToArray();
         }
         if (!SkipRewardSmoothing)
