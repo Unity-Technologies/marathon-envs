@@ -37,6 +37,7 @@ public class MocapAnimatorController : MonoBehaviour
     Quaternion _targetRotation;
     bool _readyToJump;
     bool _inCombo;
+    int _layerMask;
 
 
     protected bool IsMoveInput
@@ -52,6 +53,10 @@ public class MocapAnimatorController : MonoBehaviour
         _spawnableEnv = GetComponentInParent<SpawnableEnv>();
         _inputController = _spawnableEnv.GetComponentInChildren<InputController>();
         _targetDirection = Quaternion.Euler(0, 90, 0);
+        var ragDoll = _spawnableEnv.GetComponentInChildren<RagDollAgent>();
+        _layerMask = 1<<ragDoll.gameObject.layer;
+        _layerMask |= 1<<this.gameObject.layer;
+        _layerMask = ~(_layerMask);
     }
 
     void Update()
@@ -121,10 +126,11 @@ public class MocapAnimatorController : MonoBehaviour
             // find ground
             RaycastHit hit;
             Ray ray = new Ray(transform.position + Vector3.up * kGroundedRayDistance * 0.5f, -Vector3.up);
-            if (Physics.Raycast(ray, out hit, kGroundedRayDistance, Physics.AllLayers, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(ray, out hit, kGroundedRayDistance, _layerMask, QueryTriggerInteraction.Ignore))
             {
                 // project velocity on plane
-                var deltaPosition = _anim.deltaPosition;
+                // movement = _anim.deltaPosition;
+                // movement.y = 0f;
                 movement = Vector3.ProjectOnPlane(_anim.deltaPosition, hit.normal);
                 
                 // store material under foot
@@ -145,6 +151,7 @@ public class MocapAnimatorController : MonoBehaviour
         }
         // Rotate the transform of the character controller by the animation's root rotation.
         _characterController.transform.rotation *= _anim.deltaRotation;
+        print ($"delta:{_anim.deltaPosition.magnitude} movement:{movement.magnitude} delta:{_anim.deltaPosition} movement:{movement}");
 
         // Add to the movement with the calculated vertical speed.
         movement += verticalVelocity * Vector3.up * Time.deltaTime;
