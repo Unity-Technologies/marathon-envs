@@ -30,19 +30,22 @@ public class DReConRewards : MonoBehaviour
     [Header("Center of Mass Velocity Reward")]
     public Vector3 MocapCOMVelocity;
     public Vector3 RagDollCOMVelocity;
-    public float MocapCOMVelocityMagnitude;
-    public float RagDollCOMVelocityMagnitude;
 
     public float COMVelocityDifference;
     public float ComReward;
 
 
     [Header("Distance Factor")]
-    public float HeadHeightDistance;
+    public float ComDistance;
     public float DistanceFactor;
 
+    // [Header("Direction Factor")]
+    // public float DirectionDistance;
+    // public float DirectionFactor;
+
+
     [Header("Misc")]
-    public float ComDistance;
+    public float HeadHeightDistance;
 
     [Header("Gizmos")]
     public int ObjectForPointDistancesGizmo;
@@ -50,6 +53,7 @@ public class DReConRewards : MonoBehaviour
     SpawnableEnv _spawnableEnv;
     GameObject _mocap;
     GameObject _ragDoll;
+    InputController _inputController;
 
     internal DReConRewardStats _mocapBodyStats;
     internal DReConRewardStats _ragDollBodyStats;
@@ -69,6 +73,7 @@ public class DReConRewards : MonoBehaviour
         _ragDoll = _spawnableEnv.GetComponentInChildren<RagDollAgent>().gameObject;
         Assert.IsNotNull(_mocap);
         Assert.IsNotNull(_ragDoll);
+        _inputController = _spawnableEnv.GetComponentInChildren<InputController>();
         // _mocapBodyParts = _mocap.GetComponentsInChildren<ArticulationBody>().ToList();
         // _ragDollBodyParts = _ragDoll.GetComponentsInChildren<ArticulationBody>().ToList();
         // Assert.AreEqual(_mocapBodyParts.Count, _ragDollBodyParts.Count);
@@ -110,8 +115,6 @@ public class DReConRewards : MonoBehaviour
         // center of mass velocity reward
         MocapCOMVelocity = _mocapBodyStats.CenterOfMassVelocity;
         RagDollCOMVelocity = _ragDollBodyStats.CenterOfMassVelocity;
-        MocapCOMVelocityMagnitude = MocapCOMVelocity.magnitude;
-        RagDollCOMVelocityMagnitude = RagDollCOMVelocity.magnitude;
         COMVelocityDifference = (MocapCOMVelocity-RagDollCOMVelocity).magnitude;
         ComReward = -Mathf.Pow(COMVelocityDifference,2);
         ComReward = Mathf.Exp(ComReward);
@@ -148,15 +151,26 @@ public class DReConRewards : MonoBehaviour
         ComDistance = (_mocapBodyStats.transform.position - _ragDollBodyStats.transform.position).magnitude;
         DistanceFactor = Mathf.Pow(ComDistance,2);
         DistanceFactor = 1.4f*DistanceFactor;
-        DistanceFactor = 1.3f-DistanceFactor;
+        DistanceFactor = 1.01f-DistanceFactor;
         DistanceFactor = Mathf.Clamp(DistanceFactor, 0f, 1f);
 
+        // // direction factor
+        // Vector3 desiredDirection = _inputController.HorizontalDirection;
+        // var curDirection = _ragDollBodyStats.transform.forward;
+        // // cosAngle
+        // var directionDifference = Vector3.Dot(desiredDirection, curDirection);
+        // DirectionDistance = (1f + directionDifference) /2f; // normalize the error 
+        // DirectionFactor = Mathf.Pow(DirectionDistance,2);
+        // DirectionFactor = Mathf.Clamp(DirectionFactor, 0f, 1f);
+
+        // misc
         HeadHeightDistance = (_mocapHead.position.y - _ragDollHead.position.y);
         HeadHeightDistance = Mathf.Abs(HeadHeightDistance);
 
         // reward
         SumOfSubRewards = PositionReward+ComReward+PointsVelocityReward+LocalPoseReward;
         Reward = DistanceFactor*SumOfSubRewards;
+        // Reward = (DirectionFactor*SumOfSubRewards) * DistanceFactor;
     }
     public void OnReset()
     {

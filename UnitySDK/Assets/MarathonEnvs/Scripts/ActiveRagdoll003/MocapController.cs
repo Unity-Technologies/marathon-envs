@@ -257,6 +257,13 @@ public class MocapController : MonoBehaviour, IOnSensorCollision
             }
 			float stiffness = 0f;
 			float damping = 10000f;
+			if (targetRb.twistLock == ArticulationDofLock.LimitedMotion)
+			{
+				var drive = targetRb.xDrive;
+				drive.stiffness = stiffness;
+				drive.damping = damping;
+				targetRb.xDrive = drive;
+			}			
             if (targetRb.swingYLock == ArticulationDofLock.LimitedMotion)
 			{
 				var drive = targetRb.yDrive;
@@ -270,13 +277,6 @@ public class MocapController : MonoBehaviour, IOnSensorCollision
 				drive.stiffness = stiffness;
 				drive.damping = damping;
 				targetRb.zDrive = drive;
-			}
-			if (targetRb.twistLock == ArticulationDofLock.LimitedMotion)
-			{
-				var drive = targetRb.xDrive;
-				drive.stiffness = stiffness;
-				drive.damping = damping;
-				targetRb.xDrive = drive;
 			}
         }
         root.gameObject.SetActive(true);

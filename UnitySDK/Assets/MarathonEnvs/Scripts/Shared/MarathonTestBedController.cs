@@ -16,6 +16,8 @@ public class MarathonTestBedController : MonoBehaviour
 
     public bool FreezeHead = false;
     public bool FreezeHips = false;
+    public bool DontUpdateMotor = false;
+
     bool _hasFrozen;
 
 
