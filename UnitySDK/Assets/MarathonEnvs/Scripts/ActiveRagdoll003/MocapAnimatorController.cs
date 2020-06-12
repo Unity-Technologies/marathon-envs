@@ -151,7 +151,7 @@ public class MocapAnimatorController : MonoBehaviour
         }
         // Rotate the transform of the character controller by the animation's root rotation.
         _characterController.transform.rotation *= _anim.deltaRotation;
-        print ($"delta:{_anim.deltaPosition.magnitude} movement:{movement.magnitude} delta:{_anim.deltaPosition} movement:{movement}");
+        // print ($"delta:{_anim.deltaPosition.magnitude} movement:{movement.magnitude} delta:{_anim.deltaPosition} movement:{movement}");
 
         // Add to the movement with the calculated vertical speed.
         movement += verticalVelocity * Vector3.up * Time.deltaTime;
