@@ -5,7 +5,6 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 ![MarathonEnvs](images/MarathonEnvsBanner.gif)
 
 ## Preview MarathonEnvs using the **[Web Demo](http://marathonenvs.joebooth.com)**
-## Style transfer [video playlist](https://www.youtube.com/playlist?list=PLX7INEUkOHp-uXg6xhqDWuDT4ENb6sSWA)
 
 **MarathonEnvs** is a set of high-dimensional continuous control benchmarks using Unity’s native physics simulator, PhysX. MarathonEnvs can be trained using Unity ML-Agents or any OpenAI Gym compatable algorthem. MarathonEnvs maybe useful for:
 
@@ -17,94 +16,78 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 * [Joe Booth (@Sohojoe)](https://github.com/Sohojoe), Twitter - [@iAmVidyaGamer](https://twitter.com/iAmVidyaGamer)
 * [Vladimir Ivanov (@vivanov879)](https://github.com/vivanov879)
 
-**Need Help**
+**Need Help?**
 
 * Open an [issue](https://github.com/Unity-Technologies/marathon-envs/issues)
 * Join our [Discord server](https://discord.gg/MPEbHPP) 
 * Say hi on Twitter - [@iAmVidyaGamer](https://twitter.com/iAmVidyaGamer)
 
 ---
+## Environments
 
-## What's new in MarathonEnvs-v2.0.0
+### Controller (DReCon)- Preview
 
-### New Style Transfer Environments
-* MarathonManWalking-v0
-* MarathonManRunning-v0
-* MarathonManJazzDancing-v0
-* MarathonManMMAKick-v0
-* MarathonManPunchingBag-v0
-* MarathonManBackflip-v0
-* Plus various fixes to improve performance and make it closer to DeepMimic paper.
+A controller based agent, inspired by the DReCon paper (link below). The agent learns to follow a simple traditional controller agent and exhibits emergent behavior. **In Preview**
 
-### Guide to Working With Style Transfer
-* [Guide](https://github.com/Unity-Technologies/marathon-envs/blob/master/Training.md#working-with-style-transfer) on how to train your custom motion capture sequence.
-
-### WebGL Demo / Support for in browser
-
-* See [Web Demo](http://marathonenvs.joebooth.com)
-
-### marathon-envs Gym wrapper (Preview)
-
-* Use marathon-envs as a OpenAI Gym environment - see [documentation](marathon-envs/README.md)
-
-### ml-agents 0.14.1 support
-
-* Updated to work with ml-agents 0.14.1 / new inference engine
-
-### Unity 2018.4 LTS
-
-* Updated to use Unity 2018.4 LTS. Should work with later versions. However, sometimes Unity makes breaking physics changes.
-
-### MarathonManBackflip-v0
-
-* Train the agent to complete a backflip based on motion capture data
-* Merged from StyleTransfer experimental repro
+|  | Video |
+|:-----------------------------------------------------------------------------|:-----:|
+| <ul><li>ControllerMarathonMan-v0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li></ul> | [![Style Transfer Videos](https://img.youtube.com/vi/itUtkgCTma4/mqdefault.jpg)](https://www.youtube.com/watch?v=itUtkgCTma4) |
 
 
-### MarathonMan-v0
+### Style Transfer (DeepMimic)
 
-* Optimized for Unity3d + fixes some bugs with the DeepMind.xml version
-* Merged from StyleTransfer experimental repro
-* Replaces DeepMindHumanoid
+Learning from motion capture examples, inspired by the DeepMimic paper (link below). The agent learns the motion capture sequence using a phase value.
 
-### ManathonManSparse-v0
+|  | Video |
+|:-----------------------------------------------------------------------------|:-----:|
+| <ul style="font-weight: 100;"><li>MarathonManWalking-v0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li><li>MarathonManRunning-v0</li><li>arathonManJazzDancing-v0</li><li>MarathonManMMAKick-v0</li><li>MarathonManPunchingBag-v0</li><li>MarathonManBackflip-v0</li></ul>     | [![Style Transfer Videos](https://img.youtube.com/vi/eSu1SXnEgsM/mqdefault.jpg)](https://www.youtube.com/watch?v=eSu1SXnEgsM&list=PLX7INEUkOHp-uXg6xhqDWuDT4ENb6sSWA&index=1) |
 
-* Sparse version of MarathonMan.
-* Single reward is given at end of the episode.
 
-### TerrainHopperEnv-v0, TerrainWalker2dEnv-v0, TerrainAntEnv-v0, TerrainMarathonManEnv-v0
 
-* Random Terrain environments
-* Merged from AssaultCourse experimental repro
+### Procedural Environments
 
-### SpawnableEnvs (Preview)
+Procedurally-generated terrains aimed at addressing overfitting in Reinforcement Learning and generalizable skills. 
 
-* Set the number of instances of an environment you want for training and inference
-* Environments are spawned from prefabs, so no need to manually duplicate
-* Supports ability to select from multiple agents in one build
-* Unique Physics Scene per Environment (makes it easier to port environments however runs slower)
-* SelectEnvToSpawn.cs - Optional menu to enable user to select from all agents in build
+* TerrainHopper-v0
+* TerrainWalker2d-v0
+* TerrainAnt-v0
+* TerrainMarathonMan-v0
 
-### Scorer.cs
+### Sparce - Experimental
 
-* Score agent against 'goal' (for example, max distance) to distinguish rewards from goals
-* Gives mean and std-div over 100 agents
+Sparce reward version of a humanoid learning to walk. The agent recives a single reward at the end of the episode.
 
-### Normalized Observations (-1 to 1) and reward (0 to 1)
+* MarathonManSparse-v0
 
-* No need to use normalize flag in training. Helps with OpenAI.Baselines training
+### Classical Environments
 
-### Merge CameraHelper.cs from StyleTransfer. Controls are
+Classical implementations of Ant, Hopper, Walker-2d, Humanoid
 
-* 1, 2, 3 - Slow-mo modes
-* arrow keys or w-a-s-d rotate around agent
-* q-e zoom in / out
+* Hopper-v0
+* Walker2d-v0
+* MarathonMan-v0
+* MarathonManSparse-v0
 
-### Default hyperparams are now closer to OpenAI.Baselines
 
-* (1m steps for hopper, walker, ant, 10m for humanoid)
+---
+## Releases
 
-### Training speed improvements - All feet detect distance from floor
+**The latest version is v3.0.0** 
+
+The following table lists releases, the required unity version, and links to release note, source code, and binaries:
+
+ **Version** | **Unity Version** | **Updated Environments** | **Release Notes** | **MacOS** | **Windows** | **Linux** | **Web** |
+|:-------:|:------------:|:-------------------:|:-------:|:--------:|:--------:|:---------:|:---------:|
+| **master (unstable)** | 2020.1 beta.12 | ControllerMarathonMan-v0 | -- | -- | -- | -- | -- |
+| **v3.0.0** | 2020.1 beta.12 | ControllerMarathonMan-v0 | [Release](https://github.com/Unity-Technologies/marathon-envs/releases/tag/v3.0.0) [Source](https://github.com/Unity-Technologies/marathon-envs/tree/v3.0.0) | -- | -- | -- | -- |
+| **v2.0.0** | 2018.4 LTS | MarathonManWalking-v0 MarathonManRunning-v0 MarathonManJazzDancing-v0 MarathonManMMAKick-v0 MarathonManPunchingBag-v0 | [Release](https://github.com/Unity-Technologies/marathon-envs/releases/tag/v2.0.0) [Source](https://github.com/Unity-Technologies/marathon-envs/tree/v2.0.0) | -- | -- | -- | [Web](http://marathonenvs.joebooth.com) |
+| **v2.0.0-alpha.2** | 2018.4 LTS | -- | [Release](https://github.com/Unity-Technologies/marathon-envs/releases/tag/v2.0.0-alpha.2) [Source](https://github.com/Unity-Technologies/marathon-envs/tree/v2.0.0-alpha.2) | [MacOS](https://github.com/Unity-Technologies/marathon-envs/releases/download/v2.0.0-alpha.2/MarathonEnvsMacOS.zip) | [Windows](https://github.com/Unity-Technologies/marathon-envs/releases/download/v2.0.0-alpha.2/MarathonEnvsWindows.zip) | [Linux](https://github.com/Unity-Technologies/marathon-envs/releases/download/v2.0.0-alpha.2/MarathonEnvsLinux.zip) | -- |
+| **v2.0.0-alpha.1** | 2018.4 LTS | MarathonManBackflip-v0 MarathonMan-v0 ManathonManSparse-v0 TerrainHopperEnv-v0, TerrainWalker2dEnv-v0, TerrainAntEnv-v0, TerrainMarathonManEnv-v0 | [Release](https://github.com/Unity-Technologies/marathon-envs/releases/tag/v2.0.0-alpha.1) [Source](https://github.com/Unity-Technologies/marathon-envs/tree/v2.0.0-alpha.1) | -- | -- | -- | -- |
+| **v0.5.0a** | 2018.2 | Hopper-v0, Walker2d-v0, Ant-v0, Humanoid-v0 | [Release](https://github.com/Unity-Technologies/marathon-envs/releases/tag/0.5.0a) [Source](https://github.com/Unity-Technologies/marathon-envs/tree/0.5.0a) | -- | -- | -- | -- |
+
+
+
+---
 
 ## Getting Started
 
@@ -143,7 +126,8 @@ pip3 install mlagents==0.14.1
 ---
 
 ## References
-
+* [DReCon: data-driven responsive control of physics-based characters](https://dl.acm.org/doi/10.1145/3355089.3356536) Insperation for ControllerMarathonMan environment.
+* [DeepMimic: Example-Guided Deep Reinforcement Learning of Physics-Based Character Skills](https://arxiv.org/abs/1804.02717) Insperation for Style Transfer environments.
 * [OpenAI.Gym Mujoco](https://github.com/openai/gym/tree/master/gym/envs/mujoco) implementation. Good reference for enviroment setup, reward functions and termination functions.
 * [PyBullet pybullet_envs](https://pybullet.org) - a bit harder than MuJoCo gym environments but with an open source simulator. Pre-trained environments in [stable-baselines zoo](https://github.com/araffin/rl-baselines-zoo).
 * [DeepMind Control Suite](https://github.com/deepmind/dm_control) - Set of continuous control tasks.
