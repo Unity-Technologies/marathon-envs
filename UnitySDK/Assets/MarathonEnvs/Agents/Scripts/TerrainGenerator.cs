@@ -81,8 +81,8 @@ public class TerrainGenerator : MonoBehaviour
         coord.y = tempCoord.y / terrain.terrainData.size.y;
         coord.z = tempCoord.z / terrain.terrainData.size.z;
         // get the position of the terrain heightmap where this game object is
-        posXInTerrain = (int) (coord.x * terrain.terrainData.heightmapWidth); 
-        posYInTerrain = (int) (coord.z * terrain.terrainData.heightmapHeight);
+        posXInTerrain = (int) (coord.x * terrain.terrainData.heightmapResolution); 
+        posYInTerrain = (int) (coord.z * terrain.terrainData.heightmapResolution);
         // we set an offset so that all the raising terrain is under this game object
         int offset = 0 / 2;
         // get the heights of the terrain under this game object
@@ -96,7 +96,7 @@ public class TerrainGenerator : MonoBehaviour
 	void ResetHeights()
 	{
 		if (_heightMap == null){
-			_heightMap = new float [terrain.terrainData.heightmapWidth, terrain.terrainData.heightmapHeight];
+			_heightMap = new float [terrain.terrainData.heightmapResolution, terrain.terrainData.heightmapResolution];
         }
 		heightIndex = 0;
 		while(heightIndex <posXInTerrain)
@@ -108,7 +108,7 @@ public class TerrainGenerator : MonoBehaviour
 		SetNextHeight(0);
 		SetNextHeight(0);
 		SetNextHeight(0);
-		while(heightIndex < terrain.terrainData.heightmapWidth)
+		while(heightIndex < terrain.terrainData.heightmapResolution)
 		{
 			int action = Random.Range(0,21);
 			try
@@ -149,7 +149,7 @@ public class TerrainGenerator : MonoBehaviour
 		int startH = heightIndex * unit;
         for (int h = startH; h < startH+unit; h++)
         {
-            for (int w = 0; w < terrain.terrainData.heightmapWidth; w++){
+            for (int w = 0; w < terrain.terrainData.heightmapResolution; w++){
                 _heightMap[w,h] = height;
 			}
 			height += 1/300f/_mapScaleY;

@@ -23,3 +23,65 @@ Update Mode: updateDependencies
 
 The following packages were updated:
   com.unity.analytics from version 3.2.2 to 3.2.3
+
+=== Wed May 27 18:22:11 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were added:
+  com.unity.2d.sprite@1.0.0
+  com.unity.2d.tilemap@1.0.0
+  com.unity.ide.rider@1.1.4
+  com.unity.ide.vscode@1.2.0
+  com.unity.modules.androidjni@1.0.0
+  com.unity.multiplayer-hlapi@1.0.4
+  com.unity.test-framework@1.1.13
+  com.unity.timeline@1.2.6
+  com.unity.ugui@1.0.0
+  com.unity.xr.legacyinputhelpers@2.1.3
+The following packages were updated:
+  com.unity.ads from version 2.0.8 to 3.4.4
+  com.unity.analytics from version 3.2.3 to 3.3.5
+  com.unity.collab-proxy from version 1.2.15 to 1.2.16
+  com.unity.purchasing from version 2.0.3 to 2.0.6
+  com.unity.textmeshpro from version 1.4.1 to 2.0.1
+The following packages were removed:
+  com.unity.package-manager-ui@2.0.8
+
+=== Wed May 27 18:29:16 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were added:
+  com.unity.ide.visualstudio@2.0.1
+The following packages were updated:
+  com.unity.ads from version 3.4.4 to 3.4.5
+  com.unity.collab-proxy from version 1.2.16 to 1.3.7
+  com.unity.ide.rider from version 1.1.4 to 1.2.1
+  com.unity.textmeshpro from version 2.0.1 to 3.0.0-preview.1
+
+=== Wed May 27 19:19:13 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.xr.legacyinputhelpers from version 2.1.3 to 2.1.4
+
+=== Thu Jun  4 22:39:30 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.test-framework from version 1.1.13 to 1.1.14
+
+=== Wed Jun 10 21:03:27 2020
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.ide.vscode from version 1.2.0 to 1.2.1

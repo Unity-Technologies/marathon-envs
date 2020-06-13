@@ -118,13 +118,16 @@ namespace MLAgents
             if (showPopUp)
             {
                 var oldEnvIdIdex = envIdIdex;
-                if (Input.GetKeyDown(KeyCode.UpArrow))
-                    envIdIdex--;
-                if (Input.GetKeyDown(KeyCode.DownArrow))
-                    envIdIdex++;
-                envIdIdex = Mathf.Clamp(envIdIdex, 0, agentSpawner.spawnableEnvDefinitions.Count - 1);
-                if (Input.GetKeyDown(KeyCode.Return))
-                    Go();
+        		if (!Input.GetKey(KeyCode.LeftShift) && !Input.GetKey(KeyCode.RightShift))
+                {
+                    if (Input.GetKeyDown(KeyCode.UpArrow))
+                        envIdIdex--;
+                    if (Input.GetKeyDown(KeyCode.DownArrow))
+                        envIdIdex++;
+                    envIdIdex = Mathf.Clamp(envIdIdex, 0, agentSpawner.spawnableEnvDefinitions.Count - 1);
+                    if (Input.GetKeyDown(KeyCode.Return))
+                        Go();
+                }
                 return;
             }
             if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown("`") || Input.GetKeyDown(KeyCode.Delete))
