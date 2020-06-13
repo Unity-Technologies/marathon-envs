@@ -12,11 +12,32 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 * Video Game researchers interested in apply bleeding edge robotics research into the domain of locomotion and AI for video games.
 * Academic researchers looking to leverage the strengths of Unity and ML-Agents along with the body of existing research and benchmarks provided by projects such as the [DeepMind Control Suite](https://github.com/deepmind/dm_control), or [OpenAI Mujoco](http://gym.openai.com/envs/#mujoco) environments.
 
-*Note: This project is the result of a contribution from [Joe Booth (@Sohojo)](https://github.com/Sohojoe), a member of the Unity community who currently maintains the repository. As such, the contents of this repository are not officially supported by Unity Technologies.*
+*Note: This project is the result of contributions from members of the Unity community (see below) who actively maintain the repository. As such, the contents of this repository are not officially supported by Unity Technologies.*
+
+* [Joe Booth (@Sohojoe)](https://github.com/Sohojoe), Twitter - [@iAmVidyaGamer](https://twitter.com/iAmVidyaGamer)
+* [Vladimir Ivanov (@vivanov879)](https://github.com/vivanov879)
+
+**Need Help**
+
+* Open an [issue](https://github.com/Unity-Technologies/marathon-envs/issues)
+* Join our [Discord server](https://discord.gg/MPEbHPP) 
+* Say hi on Twitter - [@iAmVidyaGamer](https://twitter.com/iAmVidyaGamer)
 
 ---
 
-## What's new in MarathonEnvs-v2.0.0-alpha.2
+## What's new in MarathonEnvs-v2.0.0
+
+### New Style Transfer Environments
+* MarathonManWalking-v0
+* MarathonManRunning-v0
+* MarathonManJazzDancing-v0
+* MarathonManMMAKick-v0
+* MarathonManPunchingBag-v0
+* MarathonManBackflip-v0
+* Plus various fixes to improve performance and make it closer to DeepMimic paper.
+
+### Guide to Working With Style Transfer
+* [Guide](https://github.com/Unity-Technologies/marathon-envs/blob/master/Training.md#working-with-style-transfer) on how to train your custom motion capture sequence.
 
 ### WebGL Demo / Support for in browser
 
@@ -49,19 +70,19 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 ### ManathonManSparse-v0
 
 * Sparse version of MarathonMan.
-* Single reward is given at end of episode.
+* Single reward is given at end of the episode.
 
 ### TerrainHopperEnv-v0, TerrainWalker2dEnv-v0, TerrainAntEnv-v0, TerrainMarathonManEnv-v0
 
-* Random Terrain envionments
+* Random Terrain environments
 * Merged from AssaultCourse experimental repro
 
 ### SpawnableEnvs (Preview)
 
-* Set the number of instances of an envrionmwnt you want for training and inference
-* Envrionments are spawned from prefabs, so no need to manually duplicate
+* Set the number of instances of an environment you want for training and inference
+* Environments are spawned from prefabs, so no need to manually duplicate
 * Supports ability to select from multiple agents in one build
-* Unique Physics Scene per Environment (makes it easier to port envionments however runs slower)
+* Unique Physics Scene per Environment (makes it easier to port environments however runs slower)
 * SelectEnvToSpawn.cs - Optional menu to enable user to select from all agents in build
 
 ### Scorer.cs
