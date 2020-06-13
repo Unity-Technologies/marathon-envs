@@ -27,6 +27,18 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 
 ## What's new in MarathonEnvs-v2.0.0
 
+### New Style Transfer Environments
+* MarathonManWalking-v0
+* MarathonManRunning-v0
+* MarathonManJazzDancing-v0
+* MarathonManMMAKick-v0
+* MarathonManPunchingBag-v0
+* MarathonManBackflip-v0
+* Plus various fixes to improve performance and make it closer to DeepMimic paper.
+
+### Guide to Working With Style Transfer
+* [Guide](https://github.com/Unity-Technologies/marathon-envs/blob/master/Training.md#working-with-style-transfer) on how to train your custom motion capture sequence.
+
 ### WebGL Demo / Support for in browser
 
 * See [Web Demo](http://marathonenvs.joebooth.com)
