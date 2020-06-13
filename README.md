@@ -70,19 +70,19 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 ### ManathonManSparse-v0
 
 * Sparse version of MarathonMan.
-* Single reward is given at end of episode.
+* Single reward is given at end of the episode.
 
 ### TerrainHopperEnv-v0, TerrainWalker2dEnv-v0, TerrainAntEnv-v0, TerrainMarathonManEnv-v0
 
-* Random Terrain envionments
+* Random Terrain environments
 * Merged from AssaultCourse experimental repro
 
 ### SpawnableEnvs (Preview)
 
-* Set the number of instances of an envrionmwnt you want for training and inference
-* Envrionments are spawned from prefabs, so no need to manually duplicate
+* Set the number of instances of an environment you want for training and inference
+* Environments are spawned from prefabs, so no need to manually duplicate
 * Supports ability to select from multiple agents in one build
-* Unique Physics Scene per Environment (makes it easier to port envionments however runs slower)
+* Unique Physics Scene per Environment (makes it easier to port environments however runs slower)
 * SelectEnvToSpawn.cs - Optional menu to enable user to select from all agents in build
 
 ### Scorer.cs
