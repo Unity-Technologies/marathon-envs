@@ -25,44 +25,18 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 ---
 ## Environments
 
-### Controller (DReCon)- Preview
-
-|  | Walkthrough |
+| **Controller (DReCon)** - Preview |  |
 |:----------|:------------------------:|
-| <p>A controller based agent, inspired by the DReCon paper (link below). The agent learns to follow a simple traditional controller agent and exhibits emergent behavior. **In Preview** </p> <p><ul><li>ControllerMarathonMan-v0</li></ul></p> | [![Style Transfer Videos](https://img.youtube.com/vi/itUtkgCTma4/mqdefault.jpg)](https://www.youtube.com/watch?v=itUtkgCTma4) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
+| <p>A controller based agent, inspired by the DReCon paper (link below). The agent learns to follow a simple traditional controller agent and exhibits emergent behavior. **In Preview** </p> <p><ul><li>ControllerMarathonMan-v0</li></ul></p> | ![Controller](images/Controller.gif) |
+| **Style Transfer** (DeepMimic) |  |
+| <p>Learning from motion capture examples, inspired by the DeepMimic paper (link below). The agent learns the motion capture sequence using a phase value. <p><ul><li>MarathonManWalking-v0</li><li>MarathonManRunning-v0</li><li>arathonManJazzDancing-v0</li><li>MarathonManMMAKick-v0</li><li>MarathonManPunchingBag-v0</li><li>MarathonManBackflip-v0</li></ul></p>   | ![StyleTransfer](images/StyleTransfer.gif) |
+| **Procedural Environments** |  |
+| <p>Procedurally-generated terrains aimed at addressing overfitting in Reinforcement Learning and generalizable skills.</p><p><ul><li>TerrainHopper-v0</li><li>TerrainWalker2d-v0</li><li>TerrainAnt-v0</li><li>TerrainMarathonMan-v0</li></p> | ![Terrain](images/Terrain.gif) |
+| **Sparce - Experimental** |  |
+| <p>Sparce reward version of a humanoid learning to walk. The agent recives a single reward at the end of the episode.</p><p><ul><li>MarathonManSparse-v0</li></ul></p> | |
+| **Classical Environments** |  |
+| <p>Classical implementations of Ant, Hopper, Walker-2d, Humanoid</p><p><ul><li>Hopper-v0</li><li>Walker2d-v0</li><li>Ant-v0</li><li>MarathonMan-v0</li></ul></p> | ![Classical](images/Classical.gif) |
 
-
-### Style Transfer (DeepMimic)
-
-|  | Videos |
-|:-----------------------------------------------------------------------------|:------------------------:|
-| <p>Learning from motion capture examples, inspired by the DeepMimic paper (link below). The agent learns the motion capture sequence using a phase value. <p><ul><li>MarathonManWalking-v0</li><li>MarathonManRunning-v0</li><li>arathonManJazzDancing-v0</li><li>MarathonManMMAKick-v0</li><li>MarathonManPunchingBag-v0</li><li>MarathonManBackflip-v0</li></ul></p>   | [![Style Transfer Videos](https://img.youtube.com/vi/eSu1SXnEgsM/mqdefault.jpg)](https://www.youtube.com/watch?v=eSu1SXnEgsM&list=PLX7INEUkOHp-uXg6xhqDWuDT4ENb6sSWA&index=1) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |
-
-
-
-### Procedural Environments
-
-Procedurally-generated terrains aimed at addressing overfitting in Reinforcement Learning and generalizable skills. 
-
-* TerrainHopper-v0
-* TerrainWalker2d-v0
-* TerrainAnt-v0
-* TerrainMarathonMan-v0
-
-### Sparce - Experimental
-
-Sparce reward version of a humanoid learning to walk. The agent recives a single reward at the end of the episode.
-
-* MarathonManSparse-v0
-
-### Classical Environments
-
-Classical implementations of Ant, Hopper, Walker-2d, Humanoid
-
-* Hopper-v0
-* Walker2d-v0
-* MarathonMan-v0
-* MarathonManSparse-v0
 
 
 ---
@@ -102,6 +76,13 @@ pip3 install mlagents==0.14.1
 ### Training
 
 * See [Training.md](Training.md) for training us ML-Agents
+
+### Guides
+
+* Video walkthrough:-
+
+    [![Video walkthrough](https://img.youtube.com/vi/itUtkgCTma4/mqdefault.jpg)](https://www.youtube.com/watch?v=itUtkgCTma4) 
+* Getting started with Marathon Environments v0.5.0a [**BLOG**](https://github.com/Unity-Technologies/marathon-envs/releases/tag/0.5.0a)
 
 ---
 
