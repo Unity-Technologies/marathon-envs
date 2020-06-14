@@ -29,13 +29,13 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 |:----------|:------------------------:|
 | <p>A controller based agent, inspired by the DReCon paper (link below). The agent learns to follow a simple traditional controller agent and exhibits emergent behavior. **In Preview** </p> <p><ul><li>ControllerMarathonMan-v0</li></ul></p> | ![Controller](images/Controller.gif) |
 | **Style Transfer** (DeepMimic) |  |
-| <p>Learning from motion capture examples, inspired by the DeepMimic paper (link below). The agent learns the motion capture sequence using a phase value. <p><ul><li>MarathonManWalking-v0</li><li>MarathonManRunning-v0</li><li>arathonManJazzDancing-v0</li><li>MarathonManMMAKick-v0</li><li>MarathonManPunchingBag-v0</li><li>MarathonManBackflip-v0</li></ul></p>   | ![StyleTransfer](images/StyleTransfer.gif) |
+| ![StyleTransfer](images/StyleTransfer.gif) | <p>Learning from motion capture examples, inspired by the DeepMimic paper (link below). The agent learns the motion capture sequence using a phase value. <p><ul><li>MarathonManWalking-v0</li><li>MarathonManRunning-v0</li><li>arathonManJazzDancing-v0</li><li>MarathonManMMAKick-v0</li><li>MarathonManPunchingBag-v0</li><li>MarathonManBackflip-v0</li></ul></p> |
 | **Procedural Environments** |  |
 | <p>Procedurally-generated terrains aimed at addressing overfitting in Reinforcement Learning and generalizable skills.</p><p><ul><li>TerrainHopper-v0</li><li>TerrainWalker2d-v0</li><li>TerrainAnt-v0</li><li>TerrainMarathonMan-v0</li></p> | ![Terrain](images/Terrain.gif) |
+| **Classical Environments** |  |
+| ![Classical](images/Classical.gif) | <p>Classical implementations of Ant, Hopper, Walker-2d, Humanoid</p><p><ul><li>Hopper-v0</li><li>Walker2d-v0</li><li>Ant-v0</li><li>MarathonMan-v0</li></ul></p> |
 | **Sparce - Experimental** |  |
 | <p>Sparce reward version of a humanoid learning to walk. The agent recives a single reward at the end of the episode.</p><p><ul><li>MarathonManSparse-v0</li></ul></p> | |
-| **Classical Environments** |  |
-| <p>Classical implementations of Ant, Hopper, Walker-2d, Humanoid</p><p><ul><li>Hopper-v0</li><li>Walker2d-v0</li><li>Ant-v0</li><li>MarathonMan-v0</li></ul></p> | ![Classical](images/Classical.gif) |
 
 
 
