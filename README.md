@@ -64,7 +64,7 @@ The following table lists releases, the required unity version, and links to rel
 ### Requirements
 
 * Unity 2018.4 (Download [here](https://unity3d.com/get-unity/download)).
-* Cloan / Download this repro
+* Clone / Download this repro
 * Install ml-agents version 0.14.1 - install via:
 
 ``` sh
