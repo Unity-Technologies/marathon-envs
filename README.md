@@ -49,7 +49,7 @@ The following table lists releases, the required unity version, and links to rel
  **Version** | **Unity** | **Updated Environments** | **Source** | **MacOS** | **Windows** | **Linux** | **Web** | **Paper** |
 |:-------:|:------------:|:-------------------:|:-------:|:--------:|:---------:|:---------:|:---------:|:---------:|
 | **master (unstable)** | 2020.1 beta.12 | ControllerMarathonMan-v0 | -- | -- | -- | -- | -- | -- | -- |
-| [**v3.0.0**](https://github.com/Unity-Technologies/marathon-envs/releases/tag/v3.0.0) | 2020.1 beta.12 | ControllerMarathonMan-v0 | [Source](https://github.com/Unity-Technologies/marathon-envs/tree/v3.0.0) | [MacOS](https://github.com/Unity-Technologies/marathon-envs/releases/download/v3.0.0/MarathonEnvsMacOS.zip) | -- | [Linux](https://github.com/Unity-Technologies/marathon-envs/releases/download/v3.0.0/MarathonEnvsLinux.zip) | [Web](http://marathonenvs.joebooth.com) | Coming Soon | 
+| [**v3.0.0**](https://github.com/Unity-Technologies/marathon-envs/releases/tag/v3.0.0) | 2020.1 beta.12 | ControllerMarathonMan-v0 | [Source](https://github.com/Unity-Technologies/marathon-envs/tree/v3.0.0) | [MacOS](https://github.com/Unity-Technologies/marathon-envs/releases/download/v3.0.0/MarathonEnvsMacOS.zip) | -- | [Linux](https://github.com/Unity-Technologies/marathon-envs/releases/download/v3.0.0/MarathonEnvsLinux.zip) | [Web](http://marathonenvs.joebooth.com) | [arXiv](https://arxiv.org/abs/2006.07508) | 
 | [**v2.0.0**](https://github.com/Unity-Technologies/marathon-envs/releases/tag/v2.0.0) | 2018.4 LTS | MarathonManWalking-v0 MarathonManRunning-v0 MarathonManJazzDancing-v0 MarathonManMMAKick-v0 MarathonManPunchingBag-v0  | [Source](https://github.com/Unity-Technologies/marathon-envs/tree/v2.0.0) | [MacOS](https://github.com/Unity-Technologies/marathon-envs/releases/download/v2.0.0/MarathonEnvsMacOS.zip) | -- | [Linux](https://github.com/Unity-Technologies/marathon-envs/releases/download/v2.0.0/MarathonEnvsLinux.zip) | -- | -- |
 | [**v2.0.0-alpha.2**](https://github.com/Unity-Technologies/marathon-envs/releases/tag/v2.0.0-alpha.2) | 2018.4 LTS | -- | [Source](https://github.com/Unity-Technologies/marathon-envs/tree/v2.0.0-alpha.2) | [MacOS](https://github.com/Unity-Technologies/marathon-envs/releases/download/v2.0.0-alpha.2/MarathonEnvsMacOS.zip) | [Windows](https://github.com/Unity-Technologies/marathon-envs/releases/download/v2.0.0-alpha.2/MarathonEnvsWindows.zip) | [Linux](https://github.com/Unity-Technologies/marathon-envs/releases/download/v2.0.0-alpha.2/MarathonEnvsLinux.zip) | -- | [AAAI 2019](https://arxiv.org/abs/1902.09097) |
 | [**v2.0.0-alpha.1**](https://github.com/Unity-Technologies/marathon-envs/releases/tag/v2.0.0-alpha.1) | 2018.4 LTS | MarathonManBackflip-v0 MarathonMan-v0 ManathonManSparse-v0 TerrainHopperEnv-v0, TerrainWalker2dEnv-v0, TerrainAntEnv-v0, TerrainMarathonManEnv-v0 | [Source](https://github.com/Unity-Technologies/marathon-envs/tree/v2.0.0-alpha.1) | -- | -- | -- | -- | -- |
@@ -90,6 +90,7 @@ pip3 install mlagents==0.14.1
 
 ### Publications
 
+* Technical Paper: [Realistic Physics Based Character Controller](https://arxiv.org/abs/2006.07508)
 * AAAI 2019 Workshop on Games and Simulations for Artificial Intelligence: [Marathon Environments: Multi-Agent Continuous Control Benchmarks in a Modern Video Game Engine](https://arxiv.org/abs/1902.09097)
 * An early version of this work was presented March 19th, 2018 at the AI Summit - [Game Developer Conference 2018](http://schedule.gdconf.com/session/beyond-bots-making-machine-learning-accessible-and-useful/856147)
 
@@ -115,6 +116,6 @@ pip3 install mlagents==0.14.1
 
 ### Citing MarathonEnvs
 
-If you use MarathonEnvs in your research, we ask that you please cite our [paper](https://arxiv.org/abs/1902.09097).
+If you use MarathonEnvs in your research, we ask that you please cite our [paper](https://arxiv.org/abs/2006.07508).
 
 
