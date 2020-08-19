@@ -6,9 +6,9 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 
 ## Preview MarathonEnvs using the **[Web Demo](http://marathonenvs.joebooth.com)**
 
-**MarathonEnvs** is a set of high-dimensional continuous control benchmarks using Unity’s native physics simulator, PhysX. MarathonEnvs can be trained using Unity ML-Agents or any OpenAI Gym compatable algorthem. MarathonEnvs maybe useful for:
+**MarathonEnvs** is a set of high-dimensional continuous control benchmarks using Unity’s native physics simulator, PhysX. MarathonEnvs can be trained using Unity ML-Agents or any OpenAI Gym compatible algorithm. MarathonEnvs may be useful for:
 
-* Video Game researchers interested in apply bleeding edge robotics research into the domain of locomotion and AI for video games.
+* Video Game researchers interested in apply bleeding-edge robotics research into the domain of locomotion and AI for video games.
 * Academic researchers looking to leverage the strengths of Unity and ML-Agents along with the body of existing research and benchmarks provided by projects such as the [DeepMind Control Suite](https://github.com/deepmind/dm_control), or [OpenAI Mujoco](http://gym.openai.com/envs/#mujoco) environments.
 
 *Note: This project is the result of contributions from members of the Unity community (see below) who actively maintain the repository. As such, the contents of this repository are not officially supported by Unity Technologies.*
@@ -26,16 +26,16 @@ A set of high-dimensional continuous control environments for use with Unity ML-
 ## Environments
 
 | **Controller (DReCon)** - Preview |  |
-|:----------|:------------------------:|
-| <p>A controller based agent, inspired by the DReCon paper (link below). The agent learns to follow a simple traditional controller agent and exhibits emergent behavior. **In Preview** </p> <p><ul><li>ControllerMarathonMan-v0</li></ul></p> | ![Controller](images/Controller.gif) |
+|:----------|:----------|
+| ![Controller](images/Controller.gif) | <p>A controller based agent, inspired by the DReCon paper (link below). The agent learns to follow a simple traditional controller agent and exhibits emergent behavior. **In Preview** </p> <p><ul><li>ControllerMarathonMan-v0</li></ul></p> |
 | **Style Transfer** (DeepMimic) |  |
-| <p>Learning from motion capture examples, inspired by the DeepMimic paper (link below). The agent learns the motion capture sequence using a phase value. <p><ul><li>MarathonManWalking-v0</li><li>MarathonManRunning-v0</li><li>arathonManJazzDancing-v0</li><li>MarathonManMMAKick-v0</li><li>MarathonManPunchingBag-v0</li><li>MarathonManBackflip-v0</li></ul></p>   | ![StyleTransfer](images/StyleTransfer.gif) |
+| <p>Learning from motion capture examples, inspired by the DeepMimic paper (link below). The agent learns the motion capture sequence using a phase value. <p><ul><li>MarathonManWalking-v0</li><li>MarathonManRunning-v0</li><li>arathonManJazzDancing-v0</li><li>MarathonManMMAKick-v0</li><li>MarathonManPunchingBag-v0</li><li>MarathonManBackflip-v0</li></ul></p> | ![StyleTransfer](images/StyleTransfer.gif) |
 | **Procedural Environments** |  |
-| <p>Procedurally-generated terrains aimed at addressing overfitting in Reinforcement Learning and generalizable skills.</p><p><ul><li>TerrainHopper-v0</li><li>TerrainWalker2d-v0</li><li>TerrainAnt-v0</li><li>TerrainMarathonMan-v0</li></p> | ![Terrain](images/Terrain.gif) |
-| **Sparce - Experimental** |  |
-| <p>Sparce reward version of a humanoid learning to walk. The agent recives a single reward at the end of the episode.</p><p><ul><li>MarathonManSparse-v0</li></ul></p> | |
+| ![Terrain](images/Terrain.gif) | <p>Procedurally-generated terrains aimed at addressing overfitting in Reinforcement Learning and generalizable skills.</p><p><ul><li>TerrainHopper-v0</li><li>TerrainWalker2d-v0</li><li>TerrainAnt-v0</li><li>TerrainMarathonMan-v0</li></p> |
 | **Classical Environments** |  |
 | <p>Classical implementations of Ant, Hopper, Walker-2d, Humanoid</p><p><ul><li>Hopper-v0</li><li>Walker2d-v0</li><li>Ant-v0</li><li>MarathonMan-v0</li></ul></p> | ![Classical](images/Classical.gif) |
+| **Sparse - Experimental** |  |
+| <p>Sparse reward version of a humanoid learning to walk. The agent recives a single reward at the end of the episode.</p><p><ul><li>MarathonManSparse-v0</li></ul></p> | |
 
 
 
@@ -64,7 +64,7 @@ The following table lists releases, the required unity version, and links to rel
 ### Requirements
 
 * Unity 2018.4 (Download [here](https://unity3d.com/get-unity/download)).
-* Cloan / Download this repro
+* Clone / Download this repro
 * Install ml-agents version 0.14.1 - install via:
 
 ``` sh
@@ -90,6 +90,7 @@ pip3 install mlagents==0.14.1
 
 ### Publications
 
+* Technical Paper: [Realistic Physics Based Character Controller](https://arxiv.org/abs/2006.07508)
 * AAAI 2019 Workshop on Games and Simulations for Artificial Intelligence: [Marathon Environments: Multi-Agent Continuous Control Benchmarks in a Modern Video Game Engine](https://arxiv.org/abs/1902.09097)
 * An early version of this work was presented March 19th, 2018 at the AI Summit - [Game Developer Conference 2018](http://schedule.gdconf.com/session/beyond-bots-making-machine-learning-accessible-and-useful/856147)
 
@@ -115,4 +116,6 @@ pip3 install mlagents==0.14.1
 
 ### Citing MarathonEnvs
 
-If you use MarathonEnvs in your research, we ask that you please cite our [paper](https://arxiv.org/abs/1902.09097).
+If you use MarathonEnvs in your research, we ask that you please cite our [paper](https://arxiv.org/abs/2006.07508).
+
+
